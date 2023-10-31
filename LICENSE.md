@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2023 - present [Daniel Escalona](https://github.com/DanielEsc0911/), [Ramses Duque](), [Javier Leaaal]()
+Copyright (c) 2023 - present [Daniel Escalona](https://github.com/DanielEsc0911/), [Ramses Duque](), [Javier Leal]()
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,8 @@ SOFTWARE.
 <br />
 
 ## Licensing Information
-
 <br />
-
+| Item | - |
 | ---------------------------------- | --- |
 | License Type | MIT  |
 | Use for print | **YES** |
@@ -35,3 +34,10 @@ SOFTWARE.
 | Create multiple SaaS applications | **NO** |
 | End-product paying users | **NO** |
 | Product sale | **NO** |
+| Remove footer credits | **YES** |
+| --- | --- |
+| Remove copyright mentions from source code | NO |
+| Production deployment assistance | NO |
+| Create HTML/CSS template for sale | NO |
+| Create Theme/Template for CMS for sale | NO |
+| Separate sale of our UI Elements | NO |
