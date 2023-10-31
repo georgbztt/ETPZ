@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2023 - present [Daniel Escalona](https://github.com/DanielEsc0911/), [Ramses Duque](), [Javier Leal]()
+Copyright (c) 2023 - present [Daniel Escalona](https://github.com/DanielEsc0911/), [Ramses Duque](https://github.com/RamsesDuque), [Javier Leal](https://github.com/MetalBlade393)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
