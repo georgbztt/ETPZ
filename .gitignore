@@ -17,6 +17,7 @@ avatars/
 
 # venv
 !.env
+.venv
 venv
 !env.sample
 env
