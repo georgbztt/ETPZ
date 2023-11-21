@@ -57,8 +57,8 @@ def carga_notas(request, pd):
     estudiantes = Estudiante.objects.filter(periodo=periodo)
     print(estudiantes)
     print(materias)
-    materias_count=materias.count()
-    total_forms = materias_count * estudiantes.count()
+    cantidad_materias = materias.count()
+    total_forms = cantidad_materias * estudiantes.count()
     print(total_forms)
     
     formset = formset_factory(NotasForm, extra=total_forms)
@@ -67,7 +67,7 @@ def carga_notas(request, pd):
         'periodo': periodo,
         'carga': carga,
         'materias': materias,
-        'materias_count': materias_count,
+        'cantidad_materias': cantidad_materias,
         'estudiantes': estudiantes,
         'formset': formset,
         'segment': 'carga'

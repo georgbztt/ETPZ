@@ -33,22 +33,21 @@
                   </thead>
                   <tbody>
                     {% for estudiante in estudiantes %}
-                    {% multiply forloop.counter0 materias_count as materia_counter %}
+                    {% multiply forloop.counter0 cantidad_materias as multiplicador_materias %}
                     <tr>
                       <td class="text-primary align-middle text-center text-sm">{{ forloop.counter }} </td>
                       <td class="text-primary ">{{ estudiante.ci_tipo }}-{{ estudiante.ci }}</td>
                       <td class="text-primary ">{{ estudiante.nombre }} {{ estudiante.apellido }}</td>
-                      {% for materia in materias %}
-                      
-                      {% with loop_counter=forloop.counter0 %}
+
+                      {% for materia in materias %}                      
                       <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-lapso_1" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-lapso_1">
-                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-lapso_2" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-lapso_2">
-                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-lapso_3" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-lapso_3">
-                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-reparacion" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-reparacion">
+                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_1" class="form-control" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_1">
+                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_2" class="form-control" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_2">
+                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_3" class="form-control" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_3">
+                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-reparacion" class="form-control" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-reparacion">
                       </td>     
-                      {% endwith %}
                       {% endfor %}
+
                     </tr>
                     {% endfor %}
                   </tbody>
