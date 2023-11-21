@@ -1,0 +1,82 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    {% load tags %}
+    <div class="container-fluid py-4">
+
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header pb-0">
+              <h6>Carga de notas</h6>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+              {{ formset.management_form }}
+              <div class="d-none">
+                {{ formset.empty_form.lapso_1 }}
+                {{ formset.empty_form.lapso_2 }}
+                {{ formset.empty_form.lapso_3 }}
+                {{ formset.empty_form.reparacion }}
+              </div>
+
+              <div class="table-responsive p-0">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <!-- 
+                    periodo
+                    carga
+                    materias
+                    estudiantes
+                    formset
+                    -->
+                    <tr>
+                      <th ></th>
+                      <th class="text-primary text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Cédula</th>     
+                      <th class="text-primary text-uppercase text-xxs font-weight-bolder opacity-7">Estudiante</th>
+                      {% for materia in materias %}
+                      <th class="text-primary text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">{{ materia.nombre }} </th>     
+                      {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    {% for estudiante in estudiantes %}
+                    {% multiply forloop.counter0 materias_count as materia_counter %}
+                    <tr>
+                      <td class="text-primary align-middle text-center text-sm">{{ forloop.counter }} </td>
+                      <td class="text-primary ">{{ estudiante.ci_tipo }}-{{ estudiante.ci }}</td>
+                      <td class="text-primary ">{{ estudiante.nombre }} {{ estudiante.apellido }}</td>
+                      {% for materia in materias %}
+                      
+                      {% with loop_counter=forloop.counter0 %}
+                      <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-lapso_1" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-lapso_1">
+                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-lapso_2" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-lapso_2">
+                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-lapso_3" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-lapso_3">
+                        <input type="text" name="form-{{ loop_counter|add:materia_counter }}-reparacion" class="form-control" maxlength="2" id="id_form-{{ loop_counter|add:materia_counter }}-reparacion">
+                      </td>     
+                      {% endwith %}
+                      {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

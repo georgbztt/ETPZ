@@ -7,23 +7,15 @@ from .models import *
 class NotaInlineAdmin(admin.TabularInline):
     model = Nota
 
-@admin.register(Estudiante)
-class EstudianteAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'ci')
-    fields = (
-            ('nombre', 'apellido'),
-            ('ci_tipo', 'ci')
-    )
 
 @admin.register(Boleta)
 class BoletaAdmin(admin.ModelAdmin):
-    inlines = [NotaInlineAdmin]
-    list_display = ('estudiante','periodo')
+    'inlines = [NotaInlineAdmin]'
+    list_display = ('estudiante',)
     fields = (
-            ('estudiante', 'periodo'),
-            'nota_inline'
+            ('estudiante', ),
             )
-    
+"""     
     readonly_fields = ('nota_inline',)
     
     def nota_inline(self, *args, **kwargs):
@@ -39,7 +31,10 @@ class BoletaAdmin(admin.ModelAdmin):
     def render_change_form(self, request, *args, **kwargs):
         self.request = request
         self.response = super().render_change_form(request, *args, **kwargs)
-        return self.response
+        return self.response """
     
+admin.site.register(Estudiante)
+admin.site.register(Periodo)
+admin.site.register(Carga)
 admin.site.register(Materia)
 admin.site.register(Nota)

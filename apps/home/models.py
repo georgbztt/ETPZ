@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import *
@@ -13,7 +14,7 @@ class Estudiante(models.Model):
     nombre = models.CharField(max_length=30, null=True)
     apellido = models.CharField(max_length=30, null=True)
     entidad_federal = models.CharField(max_length=30, null=True)
-    # periodo = models.OneToOneField("home.Estudiante", on_delete=models.CASCADE, blank=True, null=True)
+    periodo = models.ForeignKey('home.Periodo', on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = ("Estudiante")
@@ -23,13 +24,9 @@ class Estudiante(models.Model):
         return f'{self.nombre} {self.apellido}'
 
 
-
 class Boleta(models.Model):
 
-    carga = models.ForeignKey('home.Carga', on_delete=models.CASCADE, null=True)
-    sección = models.CharField(max_length=1, null=True)
-    estudiante = models.ForeignKey('home.Estudiante', on_delete=models.CASCADE, null=True)
-    periodo = models.CharField(max_length=30, null=True)
+    estudiante = models.ForeignKey('home.Estudiante', on_delete=models.SET_NULL, null=True)
     fecha = models.DateField(null=True)
 
     class Meta:
@@ -41,7 +38,7 @@ class Boleta(models.Model):
 
 class Materia(models.Model):
 
-    nombre = models.CharField(max_length=30, null=True)
+    nombre = models.CharField(max_length=30, unique=True, null=True)
 
     class Meta:
         verbose_name = ("Materia")
@@ -56,25 +53,37 @@ class Carga(models.Model):
     materias = models.ManyToManyField(Materia)
 
     class Meta:
-        verbose_name = ("Periodo")
-        verbose_name_plural = ("Periodos")
+        verbose_name = ("Carga ")
+        verbose_name_plural = ("Cargas")
 
     def __str__(self):
         return self.titulo 
 
+class Periodo(models.Model):
+
+    fecha = models.DateField(null=True)
+    carga = models.ForeignKey('home.Carga', on_delete=models.RESTRICT, null=True)
+
+    class Meta:
+        verbose_name = ("Periodo")
+        verbose_name_plural = ("Periodos")
+
+    def __str__(self):
+        return f'{self.fecha} {self.carga.titulo}'
+
 class Nota(models.Model):
 
-    boleta = models.ForeignKey('home.Boleta', on_delete=models.CASCADE, null=True)
+    estudiante = models.ForeignKey('home.Estudiante', on_delete=models.SET_NULL, null=True)
+    materia = models.ForeignKey('home.Materia', on_delete=models.RESTRICT, null=True)
     lapso_1 = models.CharField(max_length=2, blank=True, null=True)
     lapso_2 = models.CharField(max_length=2, blank=True, null=True)
     lapso_3 = models.CharField(max_length=2, blank=True, null=True)
-    reparacion = models.CharField(max_length=2, blank=True, null=True)
     promedio = models.CharField(max_length=2, blank=True, null=True)
+    reparacion = models.CharField(max_length=2, blank=True, null=True)
 
     class Meta:
         verbose_name = ("Nota")
         verbose_name_plural = ("Notas")
 
     def __str__(self):
-        return str(self.boleta)
-
+        return self.estudiante

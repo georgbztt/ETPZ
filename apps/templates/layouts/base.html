@@ -29,11 +29,15 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!--     Select2     -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="{{ ASSETS_ROOT }}/css/soft-ui-dashboard.css?v=1.0.6" rel="stylesheet" />
   
   <link id="pagestyle_dark" href="{{ ASSETS_ROOT }}/css/dark-theme-core.css" rel="stylesheet" />
 
+     
   <!-- Specific CSS goes HERE -->
   {% block stylesheets %}{% endblock stylesheets %}  
 
@@ -72,12 +76,12 @@
   <script src="{{ ASSETS_ROOT }}/js/soft-ui-dashboard.min.js?v=1.0.6"></script>
 
 </body>
-let currentTheme = localStorage.getItem("theme");
+<!-- let currentTheme = localStorage.getItem("theme");
 
 let navBg;
 if (currentTheme == 'light'){
   navBg = 'bg-white';
 }else{
   navBg = 'bg-dark';
-};
+}; -->
 </html>
