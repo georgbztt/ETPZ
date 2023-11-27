@@ -64,10 +64,10 @@ class NotasForm(ModelForm):
             'reparacion',
         )
         widgets = {
-            'lapso_1': TextInput(attrs={'class':'form-control'}),
-            'lapso_2': TextInput(attrs={'class':'form-control'}),
-            'lapso_3': TextInput(attrs={'class':'form-control'}),
-            'reparacion': TextInput(attrs={'class':'form-control'}),
+            'lapso_1': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 1'}),
+            'lapso_2': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 2'}),
+            'lapso_3': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 3'}),
+            'reparacion': TextInput(attrs={'class':'form-control', 'placeholder':'Resparación'}),
         }
    
 
