@@ -20774,7 +20774,7 @@ hr.horizontal.gray-light {
 }
 
 .table {
-  border-collapse: inherit;
+  border-collapse: collapse;
 }
 .table thead th {
   padding: 0.75rem 1.5rem;

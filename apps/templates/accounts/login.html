@@ -22,7 +22,7 @@
                     {% if msg %}
                       <span class="text-danger">{{ msg | safe }}</span>
                     {% else %}
-                      Add your credentials
+                      Introduzca sus datos
                     {% endif %}                     
                   </p>
                 </div>
@@ -32,18 +32,18 @@
                     
                     {% csrf_token %}
 
-                    <label>Username</label>
+                    <label>Usuario</label>
                     <div class="mb-3">
                       {{ form.username }}
                     </div>
 
-                    <label>Password</label>
+                    <label>Contraseña</label>
                     <div class="mb-3">
                       {{ form.password }}
                     </div>
 
                     <div class="text-center">
-                      <button type="submit" name="login" class="btn bg-gradient-primary w-100 mt-4 mb-0">Sign IN</button>
+                      <button type="submit" name="login" class="btn bg-gradient-primary w-100 mt-4 mb-0">Iniciar Sesión</button>
                     </div>
 
                   </form>
@@ -63,6 +63,7 @@
     </section>
   </main>
 
+  
 {% endblock content %}
 
 <!-- Specific JS goes HERE --> 

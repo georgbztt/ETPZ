@@ -15,19 +15,18 @@
             <div class="card-header pb-0">
               <h6>Carga de notas</h6>
             </div>
-            <div class="card-body px-0 pt-0 pb-2">
-              
+            <div class="card-body p-0">
               <div class="table-responsive p-0">
                 <form method="post">
                   {{ formset.management_form }}
-                <table class="table align-items-center mb-0">
+                <table class="table table-striped mb-0 ">
                   <thead>
                     <tr>
-                      <th ></th>
-                      <th class="text-primary text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">Cédula</th>     
-                      <th class="text-primary text-uppercase text-xxs font-weight-bolder opacity-7">Estudiante</th>
+                      <th class="text-xs font-weight-bolder opacity-7 text-center">N°</th>
+                      <th class="text-xs font-weight-bolder opacity-7 text-center">Cédula</th>     
+                      <th class="text-xs font-weight-bolder opacity-7 text-center">Estudiante</th>
                       {% for materia in materias %}
-                      <th class="text-primary text-uppercase text-xxs font-weight-bolder opacity-7 ps-2">{{ materia.nombre }} </th>     
+                      <th class="text-xs font-weight-bolder opacity-7 text-center">{{ materia.nombre }}</th>     
                       {% endfor %}
                     </tr>
                   </thead>
@@ -35,16 +34,24 @@
                     {% for estudiante in estudiantes %}
                     {% multiply forloop.counter0 cantidad_materias as multiplicador_materias %}
                     <tr>
-                      <td class="text-primary align-middle text-center text-sm">{{ forloop.counter }} </td>
-                      <td class="text-primary ">{{ estudiante.ci_tipo }}-{{ estudiante.ci }}</td>
-                      <td class="text-primary ">{{ estudiante.nombre }} {{ estudiante.apellido }}</td>
+                      <td class="font-weight-bold align-middle text-center text-sm">
+                        <h6 class="text-sm m-0">{{ forloop.counter }}</h6>
+                      </td>
+                      <td class="font-weight-bold align-middle text-center">
+                        <h6 class="text-sm m-0">{{ estudiante.ci_tipo }}-{{ estudiante.ci }}</h6>
+                      </td>
+                      <td class="font-weight-bold align-middle text-center">
+                        <h6 class="text-sm m-0">{{ estudiante.nombre }} {{ estudiante.apellido }}</h6>
+                      </td>
 
                       {% for materia in materias %}                      
-                      <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_1" class="form-control" placeholder="Lapso 1" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_1">
-                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_2" class="form-control" placeholder="Lapso 2" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_2">
-                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_3" class="form-control" placeholder="Lapso 3" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_3">
-                        <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-reparacion" class="form-control" placeholder="Reparación" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-reparacion">
+                      <td class="p-2 opacity-7">
+                        <div class="d-flex flex-column gap-2  ">
+                          <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_1" class="form-control form-control-sm w-auto text-center" placeholder="Lapso 1" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_1">
+                          <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_2" class="form-control form-control-sm w-auto text-center" placeholder="Lapso 2" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_2">
+                          <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_3" class="form-control form-control-sm w-auto text-center" placeholder="Lapso 3" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_3">
+                          <input type="text" name="form-{{ forloop.counter0|add:multiplicador_materias }}-reparacion" class="form-control form-control-sm w-auto text-center"  placeholder="Reparación" maxlength="2" id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-reparacion">  
+                        </div>
                       </td>     
                       {% endfor %}
 
