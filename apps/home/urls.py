@@ -10,6 +10,7 @@ urlpatterns = [
 
     # The home page
     path('', views.index, name='home'),
+    path('periodos', views.periodos, name='periodos'),
     path('notas/<str:pd>/carga', views.carga_notas, name='carga_notas'),
 
     # Matches any html file

@@ -1,0 +1,37 @@
+<table class="table table-striped mb-0 ">
+  <thead>
+    <tr>
+      <th class="text-xs font-weight-bolder opacity-7">Fecha</th>
+      <th class="text-xs font-weight-bolder opacity-7 text-center">Carga</th>
+      <th class="text-xs font-weight-bolder opacity-7 text-center">Estudiantes</th>
+      <th class="text-xs font-weight-bolder opacity-7 text-center">Cargar Notas</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for periodo in periodos %}
+    <tr class="text-primary">
+      <td class="font-weight-bold align-middle ps-4">
+        <h6 class="text-sm m-0">{{ periodo.fecha }}</h6>
+      </td>
+      <td class="font-weight-bold align-middle text-center">
+        <h6 class="text-sm m-0">{{ periodo.carga.titulo }}</h6>
+
+        <!-- Lista de materias en la carga -->
+        {% for materia in periodo.carga.materias.all %}
+          <p class="p-0 m-0">{{ materia.nombre }}</p>
+        {% endfor %}
+        <!-- final -->
+
+      </td>
+      <td class="font-weight-bold align-middle text-center">
+        <h6 class="text-sm m-0">{{ periodo.num_estudiantes }}</h6>
+      </td>
+      <td class="font-weight-bold align-middle text-center">
+        <a href="{% url 'carga_notas' periodo.id %}">
+          <i class="fas fa-file-signature"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

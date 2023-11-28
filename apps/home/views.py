@@ -4,11 +4,13 @@ Copyright (c) 2019 - present AppSeed.us
 """
 import datetime, decimal
 from itertools import count
+from multiprocessing import context
+from urllib import request
 from django import template
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.template import loader
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
@@ -49,12 +51,26 @@ def pages(request):
         return HttpResponse(html_template.render(context, request))
 
 #----------------------------------------------------------------------------------
+
+def periodos(request):
+    periodos = Periodo.objects.all().annotate(num_estudiantes=Count('estudiante'))
+
+    context={
+        'periodos':periodos,
+        'segment':'periodo',
+        'title':'Periodos',
+        'table':'home/table-content/periodos.html',
+    }
+
+    return render(request, 'home/table.html', context)
+
+
 def carga_notas(request, pd):
     
     periodo = get_object_or_404(Periodo, pk=pd)
     carga = periodo.carga
-    materias = carga.materias.all()
-    estudiantes = Estudiante.objects.filter(periodo=periodo)
+    materias = carga.materias.all().order_by("nombre")
+    estudiantes = Estudiante.objects.filter(periodo=periodo).order_by("ci")
     print(estudiantes)
     print(materias)
     cantidad_materias = materias.count()
@@ -62,7 +78,8 @@ def carga_notas(request, pd):
     print(total_forms)
     
     formset = formset_factory(NotasForm, extra=total_forms)
-
+    formset(request.POST or None)
+    
     context = {
         'periodo': periodo,
         'carga': carga,
