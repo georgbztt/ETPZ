@@ -75,11 +75,11 @@ class Nota(models.Model):
 
     estudiante = models.ForeignKey('home.Estudiante', on_delete=models.SET_NULL, null=True)
     materia = models.ForeignKey('home.Materia', on_delete=models.RESTRICT, null=True)
-    lapso_1 = models.CharField(max_length=2, blank=True, null=True)
-    lapso_2 = models.CharField(max_length=2, blank=True, null=True)
-    lapso_3 = models.CharField(max_length=2, blank=True, null=True)
+    lapso_1 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], blank=True, null=True)
+    lapso_2 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], blank=True, null=True)
+    lapso_3 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], blank=True, null=True)
     promedio = models.CharField(max_length=2, blank=True, null=True)
-    reparacion = models.CharField(max_length=2, blank=True, null=True)
+    reparacion = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], blank=True, null=True)
 
     class Meta:
         verbose_name = ("Nota")
