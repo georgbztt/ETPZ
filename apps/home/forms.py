@@ -54,7 +54,7 @@ class EstudianteForm(ModelForm):
             'periodo': Select(attrs={'class': 'form-control'}),
         }
 
-class NotasForm(ModelForm):
+class NotasForm(ModelForm):#Actualmente esta clase no tiene niguna utilidad
     class Meta:
         model = Nota
         fields = (
@@ -64,6 +64,8 @@ class NotasForm(ModelForm):
             'reparacion',
         )
         widgets = {
+            'estudiante': HiddenInput(),
+            'materia': HiddenInput(),
             'lapso_1': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 1'}),
             'lapso_2': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 2'}),
             'lapso_3': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 3'}),

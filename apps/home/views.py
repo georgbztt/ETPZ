@@ -4,11 +4,11 @@ Copyright (c) 2019 - present AppSeed.us
 """
 import datetime, decimal
 from itertools import count
-from multiprocessing import context
 from urllib import request
 from django import template
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.forms import modelformset_factory
 from django.template import loader
 from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
@@ -51,7 +51,7 @@ def pages(request):
         return HttpResponse(html_template.render(context, request))
 
 #----------------------------------------------------------------------------------
-
+@login_required(login_url="/login/")
 def periodos(request):
     periodos = Periodo.objects.all().annotate(num_estudiantes=Count('estudiante'))
 
@@ -65,21 +65,36 @@ def periodos(request):
     return render(request, 'home/table.html', context)
 
 
+@login_required(login_url="/login/")
 def carga_notas(request, pd):
     
     periodo = get_object_or_404(Periodo, pk=pd)
     carga = periodo.carga
     materias = carga.materias.all().order_by("nombre")
     estudiantes = Estudiante.objects.filter(periodo=periodo).order_by("ci")
-    print(estudiantes)
-    print(materias)
+
     cantidad_materias = materias.count()
     total_forms = cantidad_materias * estudiantes.count()
-    print(total_forms)
     
-    formset = formset_factory(NotasForm, extra=total_forms)
-    formset(request.POST or None)
+    NotasFormSet = modelformset_factory(Nota, fields='__all__', extra=total_forms)
+    formset = NotasFormSet(request.POST or None)
     
+    if request.POST:
+        notas = formset.save(commit=False)
+        print(notas)
+        for nota in notas:#Co digo spagueti, pendiente por optimizar ``
+            lapsos = []
+            if nota.lapso_1 != 'NA':
+                lapsos.append(int(nota.lapso_1))
+            if nota.lapso_2 != 'NA':
+                lapsos.append(int(nota.lapso_2))
+            if nota.lapso_3 != 'NA':
+                lapsos.append(int(nota.lapso_3))
+            suma = sum(lapsos) / len(lapsos)
+            promedio = str(decimal.Decimal(suma).quantize(decimal.Decimal('0'),rounding=decimal.ROUND_HALF_UP))
+            nota.promedio = promedio.zfill(2)
+            print(f'{nota.estudiante.nombre} {nota.estudiante.apellido} {nota.materia.nombre} = {nota.promedio}')
+
     context = {
         'periodo': periodo,
         'carga': carga,
