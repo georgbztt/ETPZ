@@ -93,6 +93,7 @@ def carga_notas(request, pd):
             suma = sum(lapsos) / len(lapsos)
             promedio = str(decimal.Decimal(suma).quantize(decimal.Decimal('0'),rounding=decimal.ROUND_HALF_UP))
             nota.promedio = promedio.zfill(2)
+            nota.save()
             print(f'{nota.estudiante.nombre} {nota.estudiante.apellido} {nota.materia.nombre} = {nota.promedio}')
 
     context = {
