@@ -18,7 +18,7 @@
 
         <!-- Lista de materias en la carga -->
         {% for materia in periodo.carga.materias.all %}
-          <p class="p-0 m-0">{{ materia.nombre }}</p>
+          <p class="p-0 m-0 mt-n1 text-primary">{{ materia.nombre }}</p>
         {% endfor %}
         <!-- final -->
 
@@ -27,7 +27,7 @@
         <h6 class="text-sm m-0">{{ periodo.num_estudiantes }}</h6>
       </td>
       <td class="font-weight-bold align-middle text-center">
-        <a href="{% url 'carga_notas' periodo.id %}">
+        <a class="" href="{% url 'carga_notas' periodo.id %}">
           <i class="fas fa-file-signature"></i>
         </a>
       </td>

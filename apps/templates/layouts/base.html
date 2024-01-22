@@ -22,7 +22,7 @@
   <link rel="icon" type="image/png" href="{{ ASSETS_ROOT }}/img/favicon.png">
 
   <title>
-    Soft UI Dashboard - {% block title %}{% endblock %}
+    Escuela Técnicna Pedro Zaraza
   </title>
 
   <!--     Fonts and icons     -->
@@ -37,7 +37,7 @@
   
   <link id="pagestyle_dark" href="{{ ASSETS_ROOT }}/css/dark-theme-core.css" rel="stylesheet" />
 
-     
+  <script src="https://code.jquery.com/jquery-3.6.2.min.js" integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
   <!-- Specific CSS goes HERE -->
   {% block stylesheets %}{% endblock stylesheets %}  
 
@@ -55,7 +55,9 @@
   </main>
 
   <!-- APP Configurator -->
+  {% comment $ %}
   {% include "includes/fixed-plugin.html" %} 
+  {% endcomment %}
 
   <!-- Core JS Files -->
   {% include "includes/scripts.html" %}

@@ -1,0 +1,28 @@
+<table class="table table-striped mb-0 ">
+    <thead>
+      <tr>
+        <th class="text-xs font-weight-bolder opacity-7 text-center">CI</th>
+        <th class="text-xs font-weight-bolder opacity-7">Nombre y Apellido</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center">Entidad Federal</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center">Periodo actual</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for estudiante in estudiantes %}
+      <tr class="text-primary">
+        <td class="font-weight-bold align-middle text-center">
+          <h6 class="text-sm m-0">{{ estudiante.ci_tipo }}-{{ estudiante.ci }}</h6>
+        </td>
+        <td class="font-weight-bold ps-4">
+          <h6 class="text-sm m-0">{{ estudiante.nombre }}&thinsp;{{ estudiante.apellido }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center">
+          <h6 class="text-sm m-0">{{ estudiante.entidad_federal }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center">
+            <h6 class="text-sm m-0">{{ estudiante.periodo }}</h6>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>

@@ -1,3 +1,4 @@
+from email.policy import default
 from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
@@ -15,6 +16,7 @@ class Estudiante(models.Model):
     apellido = models.CharField(max_length=30, null=True)
     entidad_federal = models.CharField(max_length=30, null=True)
     periodo = models.ForeignKey('home.Periodo', on_delete=models.SET_NULL, null=True)
+    periodo_completo = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = ("Estudiante")

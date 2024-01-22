@@ -5,7 +5,15 @@ body {
 body.dark-page {
   background-color: #283149;
   color: #d7d7d7 !important;
+}
+body.dark-page a{
   color: #d7d7d7 !important;
+}
+body.dark-page a:hover{
+  color: var(--bs-link-hover-color) !important;
+}
+body.dark-page thead{
+  color: #bdbdbd !important;
 }
 body.dark-page .bg-gray-100 {
   background-color: transparent !important;
@@ -113,6 +121,7 @@ body.dark-page label, body.dark-page .form-label {
   color: #d7d7d7 !important;
 }
 body.dark-page input {
+  color: #fff;
   background-color: rgba(40, 49, 73, 0.6);
   border-color: rgba(64, 75, 105, 0.6);
 }

@@ -32,7 +32,7 @@ superuser.cmd
 package-lock.json
 
 !staticfiles/.gitkeep
-!staticfiles/
+staticfiles/*
 .vscode/symbols.json
 
 apps/static/assets/node_modules

@@ -1,7 +1,5 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}{{ title }}{% endblock title %}
-
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
@@ -16,7 +14,7 @@
           <h6>{{ title }}</h6>
         </div>
         <div class="card-body p-0">
-          <div class="table-responsive p-0">
+          <div class="table-responsive p-0" id="contenedor-tabla">
             {% include table %}
           </div>
         </div>
@@ -29,4 +27,45 @@
 {% endblock content %}
 
 <!-- Specific JS goes HERE --> 
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script> 
+  $('#buscar').keyup(function() {
+    var params = new URLSearchParams(window.location.search);
+    var data = {};
+    for (var pair of params.entries()) {
+      data[pair[0]] = pair[1];
+    }
+    data['buscar'] = $('#buscar').val();
+    $.ajax({
+        url: "{% url segment %}",
+        data: data,
+        dataType: 'json',
+        success: function(data) {
+            $('#contenedor-tabla').html(data.table_html);
+            //$('#contenedor-paginador').html(data.paginator_html);
+        }
+    });
+  })
+  /*
+  $(document).on('click', '.paginador', function(e) {
+    e.preventDefault();
+    var page = $(this).attr('href').split('page=')[1];
+    var params = new URLSearchParams(window.location.search);
+    var data = {};
+    for (var pair of params.entries()) {
+        data[pair[0]] = pair[1];
+    }
+    data['page'] = page;
+    $.ajax({
+        url: "{% url segment %}",
+        data: data,
+        dataType: 'json',
+        success: function(data) {
+            $('#contenedor-tabla').html(data.table_html);
+            //$('#contenedor-paginador').html(data.paginator_html);
+        }
+    });
+  });*/
+  
+</script>
+{% endblock javascripts %}

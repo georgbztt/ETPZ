@@ -3,7 +3,9 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 import datetime, decimal
+from email import message
 from itertools import count
+from re import T
 from urllib import request
 from django import template
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -64,15 +66,42 @@ def periodos(request):
 
     return render(request, 'home/table.html', context)
 
+@login_required(login_url="/login/")
+def estudiantes(request):
+    estudiantes = Estudiante.objects.all().order_by('periodo')
+
+    buscar = request.GET.get('buscar')#Tomar texto del buscador
+    if buscar:#Si exste, filtrar
+        estudiantes = estudiantes.filter(Q(nombre__icontains=buscar)|Q(apellido__icontains=buscar)|Q(ci__icontains=buscar))#Filtros
+
+    table = 'home/table-content/estudiantes.html'
+    context={
+        'estudiantes':estudiantes,
+        'segment':'estudiante',
+        'title':'Estudiantes',
+        'buscar':True,
+        'table':table,
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
+        table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
+        #paginator_html = render_to_string('home/paginator.html', context, request)#Rendereziar el paginador actualizado 'paginator_html': paginator_html
+        return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
+
+    return render(request, 'home/table.html', context)
+
 
 @login_required(login_url="/login/")
 def carga_notas(request, pd):
     
     periodo = get_object_or_404(Periodo, pk=pd)
     carga = periodo.carga
+    estudiantes = Estudiante.objects.filter(periodo=periodo).order_by("ci").exclude(periodo_completo=True)[:10]
+    if not estudiantes:
+        return render(request, 'home/carga_de_notas.html', {'fail_message':'No hay estudiantes pendientes por cargas en este periodo'})
+    
     materias = carga.materias.all().order_by("nombre")
-    estudiantes = Estudiante.objects.filter(periodo=periodo).order_by("ci")
-
+    
     cantidad_materias = materias.count()
     total_forms = cantidad_materias * estudiantes.count()
     
@@ -82,8 +111,8 @@ def carga_notas(request, pd):
     if request.POST:
         notas = formset.save(commit=False)
         print(notas)
-        for nota in notas:#Co digo spagueti, pendiente por optimizar ``
-            lapsos = []
+        for nota in notas:#Código spagueti, pendiente por optimizar 
+            lapsos = [] 
             if nota.lapso_1 != 'NA':
                 lapsos.append(int(nota.lapso_1))
             if nota.lapso_2 != 'NA':
@@ -91,10 +120,15 @@ def carga_notas(request, pd):
             if nota.lapso_3 != 'NA':
                 lapsos.append(int(nota.lapso_3))
             suma = sum(lapsos) / len(lapsos)
-            promedio = str(decimal.Decimal(suma).quantize(decimal.Decimal('0'),rounding=decimal.ROUND_HALF_UP))
+            promedio = str(decimal.Decimal(suma).quantize(decimal.Decimal('0'),rounding=decimal.ROUND_HALF_UP))#Crear una función que maneje todo este proceso
             nota.promedio = promedio.zfill(2)
             nota.save()
+            
             print(f'{nota.estudiante.nombre} {nota.estudiante.apellido} {nota.materia.nombre} = {nota.promedio}')
+        
+        for estudiante in estudiantes:
+            estudiante.periodo_completo = True
+            estudiante.save()
 
     context = {
         'periodo': periodo,

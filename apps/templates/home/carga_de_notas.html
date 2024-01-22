@@ -11,16 +11,24 @@
 
       <div class="row">
         <div class="col-12">
-          <div class="card mb-4">
-            <form method="post">
-              {% csrf_token %}
-              <div class="card-header border-bottom">
+          <form method="post">
+            {% csrf_token %}
+            <div class="card mb-4">
+              <div class="card-header">
                 <div class="m-0 d-flex flex-sm-row justify-content-between align-items-center">
                   <h6 class="m-0">Carga de notas - Periodo {{ periodo }} </h6>
-                  <button class="btn btn-primary btm-sm m-0" type="submit">Guardar</button>
+                  <div>
+                    {% if not fail_message %}
+                    <button class="btn btn-primary btm-sm m-0 me-2" type="submit">Guardar</button>
+                    {% endif %}
+                    <button class="btn btn-danger btm-sm m-0" onClick="window.history.back();return false;">Cancelar</button>
+                  </div>
                 </div>
               </div>
               <div class="card-body p-0">
+                {% if fail_message %}
+                <p class="text-center">{{ fail_message }}</p>
+                {% else %}
                 <div class="table-responsive p-0">
                     {{ formset.management_form }}
                   <table class="table table-striped mb-0 ">
@@ -49,8 +57,8 @@
                         </td>
 
                         {% for materia in materias %}                      
-                        <td class="p-2 opacity-7">
-                          <div class="d-flex flex-column gap-2  ">
+                        <td class="p-2 ">
+                          <div class="d-flex-inline flex-column gap-2  ">
                             <input 
                               type="hidden" 
                               name="form-{{ forloop.counter0|add:multiplicador_materias }}-estudiante" 
@@ -67,7 +75,7 @@
                               required 
                               type="text" 
                               name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_1" 
-                              class="form-control form-control-sm w-auto text-center" 
+                              class="form-control form-control-sm flex-shrink-1 text-center" 
                               pattern="([0-1][0-9]|20|NA)" 
                               title="Ingrese solo números del 01 al 20 o NA en mayúsculas"
                               placeholder="Lapso 1" 
@@ -78,7 +86,7 @@
                               required 
                               type="text" 
                               name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_2" 
-                              class="form-control form-control-sm w-auto text-center" 
+                              class="form-control form-control-sm flex-shrink-1 text-center" 
                               pattern="([0-1][0-9]|20|NA)" 
                               title="Ingrese solo números del 01 al 20 o NA en mayúsculas"
                               placeholder="Lapso 2" 
@@ -89,7 +97,7 @@
                               required 
                               type="text" 
                               name="form-{{ forloop.counter0|add:multiplicador_materias }}-lapso_3" 
-                              class="form-control form-control-sm w-auto text-center" 
+                              class="form-control form-control-sm flex-shrink-1 text-center" 
                               pattern="([0-1][0-9]|20|NA)" 
                               title="Ingrese solo números del 01 al 20 o NA en mayúsculas"
                               placeholder="Lapso 3" 
@@ -99,7 +107,7 @@
                             <input 
                               type="text" 
                               name="form-{{ forloop.counter0|add:multiplicador_materias }}-reparacion" 
-                              class="form-control form-control-sm w-auto text-center" 
+                              class="form-control form-control-sm flex-shrink-1 text-center" 
                               pattern="([0-1][0-9]|20|NA)" 
                               title="Ingrese solo números del 01 al 20 o NA en mayúsculas"
                               placeholder="Reparación" 
@@ -115,9 +123,10 @@
                     </tbody>
                   </table>
                 </div>
+                {% endif %}
               </div>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
 
