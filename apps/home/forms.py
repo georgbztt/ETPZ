@@ -46,12 +46,12 @@ class estudianteForm(ModelForm):
             'periodo',
             )
         widgets ={
-            'ci': TextInput(attrs={'class': 'form-control'}),
-            'ci_tipo': Select(attrs={'class': 'form-control'}),
-            'nombre': TextInput(attrs={'class': 'form-control'}),
-            'apellido': TextInput(attrs={'class': 'form-control'}),
-            'entidad_federal': TextInput(attrs={'class': 'form-control'}),
-            'periodo': Select(attrs={'class': 'form-control'}),
+            'ci': TextInput(attrs={'class': 'form-control flex-grow-1 flat-left', 'id':'ci'}),
+            'ci_tipo': Select(attrs={'class': 'form-control flex-shrink-1 flat-right', 'id':'ci_tipo'}),
+            'nombre': TextInput(attrs={'class': 'form-control', 'id':'nombre'}),
+            'apellido': TextInput(attrs={'class': 'form-control', 'id':'apellido'}),
+            'entidad_federal': TextInput(attrs={'class': 'form-control', 'id':'entidad_federal'}),
+            'periodo': Select(attrs={'class': 'form-control', 'id':'periodo'}),
         }
 
 class NotasForm(ModelForm):#Actualmente esta clase no tiene niguna utilidad

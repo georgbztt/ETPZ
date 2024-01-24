@@ -1,0 +1,56 @@
+<div class="d-flex flex-wrap gap-3 p-4">
+
+    <div class="flex-grow-1"> 
+        <label for="ci">Cédula</label>
+        <div class="d-flex flex-row">
+            <div class="flex-shrink-1">
+                {{ form.ci_tipo }}
+            </div>
+            <div class="flex-grow-1">
+                {{ form.ci }}
+            </div>
+        </div>
+    </div>
+    <div class="flex-grow-1"> 
+        <label for="nombre">Nombre</label>
+        {{ form.nombre }}
+    </div>
+    <div class="flex-grow-1"> 
+        <label for="apellido">Apellido</label>
+        {{ form.apellido }}
+    </div>
+    <div class="flex-grow-1"> 
+        <label for="entidad_federal">Eentidad Federal</label>
+        {{ form.entidad_federal }}
+    </div>
+    <div class="flex-grow-1"> 
+        <label for="periodo">Periodo</label>
+        {{ form.periodo }}
+    </div>
+    <div class="d-flex justify-content-center col-12 pt-2">
+        <button class="btn btn-primary btm-sm m-0 me-2" type="submit">Guardar</button>
+        <button class="btn btn-danger btm-sm m-0" onClick="window.history.back();return false;">Cancelar</button> 
+    </div>
+</div>
+{% block inner_javascripts %}
+<script>
+    $(document).ready(function(){
+        $('#ci_tipo').select2({
+            minimumResultsForSearch: Infinity,
+		    placeholder: '-',
+		    allowClear: true,
+		    width: '100%',
+		    selectionCssClass: ':all:',
+		    dropdownCssClass: ':all:'
+        });
+        $('#periodo').select2({
+            minimumResultsForSearch: Infinity,
+		    placeholder: 'Seleccione...',
+		    allowClear: true,
+		    width: '100%',
+		    selectionCssClass: ':all:',
+		    dropdownCssClass: ':all:'
+        });
+    });
+</script>
+{% endblock inner_javascripts %}

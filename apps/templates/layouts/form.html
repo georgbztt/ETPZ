@@ -1,0 +1,37 @@
+{% extends 'layouts/base.html' %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+{% load tags %}
+<div class="container-fluid py-4">
+
+  <div class="row justify-content-center">
+    <div class="col-7">
+      <div class="card mb-4">
+        <div class="card-header pb-0 bg-primary">
+          <div class="d-flex justify-content-between"> 
+            <h6 class="text-white mb-3 mt-n1 fw-bolder">{{ title }}</h6>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive p-0" id="contenedor-tabla">
+            <form method="POST">
+              {% csrf_token %}
+              {% include content %}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+{% endblock content %}
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+{% block inner_javascripts %}
+{% endblock inner_javascripts %}
+{% endblock javascripts %}

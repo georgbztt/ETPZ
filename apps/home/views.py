@@ -82,6 +82,7 @@ def estudiantes(request):
         'title':'Estudiantes',
         'buscar':True,
         'table':table,
+        'url_crear':'/estudiantes/crear'
     }
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
