@@ -12,7 +12,7 @@ class BaseInlineFormset(BaseInlineFormSet):#Builder para los formsets
     def get_deletion_widget(self):
         return CheckboxInput(attrs={'class': 'form-check-input justify-content-center'}),
 
-class MateriaForm(ModelForm):
+class materiaForm(ModelForm):
     class Meta:
         model = Materia
         fields = (
@@ -22,7 +22,7 @@ class MateriaForm(ModelForm):
             'nombre': TextInput(attrs={'class': 'form-control', 'placeholder':'Nombre'}),
         }
 
-class CargaForm(ModelForm):
+class cargaForm(ModelForm):
     class Meta:
         model = Carga
         fields = (
@@ -34,7 +34,7 @@ class CargaForm(ModelForm):
             'materias': SelectMultiple(attrs={'class': 'form-control'}),
         }
 
-class EstudianteForm(ModelForm):
+class estudianteForm(ModelForm):
     class Meta:
         model = Estudiante
         fields = (

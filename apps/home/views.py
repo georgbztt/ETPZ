@@ -5,6 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 import datetime, decimal
 from email import message
 from itertools import count
+from multiprocessing import context
 from re import T
 from urllib import request
 from django import template
@@ -68,7 +69,7 @@ def periodos(request):
 
 @login_required(login_url="/login/")
 def estudiantes(request):
-    estudiantes = Estudiante.objects.all().order_by('periodo')
+    estudiantes = Estudiante.objects.all().order_by('ci')
 
     buscar = request.GET.get('buscar')#Tomar texto del buscador
     if buscar:#Si exste, filtrar
@@ -90,6 +91,24 @@ def estudiantes(request):
 
     return render(request, 'home/table.html', context)
 
+@login_required
+@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
+def estudianteCrear(request):
+    form = estudianteForm(request.POST or None)
+    content = 'home/form-content/estudiante_form.html'
+    context = {
+        'form':form,
+        'segment':'estudiante',
+        'title':'Registrar Estudiante',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+    
+    return render(request, 'layouts/form.html', context)
 
 @login_required(login_url="/login/")
 def carga_notas(request, pd):

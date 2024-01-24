@@ -1,3 +1,4 @@
+{% load tags %}
 <table class="table table-striped mb-0 ">
     <thead>
       <tr>
@@ -11,16 +12,16 @@
       {% for estudiante in estudiantes %}
       <tr class="text-primary">
         <td class="font-weight-bold align-middle text-center">
-          <h6 class="text-sm m-0">{{ estudiante.ci_tipo }}-{{ estudiante.ci }}</h6>
+          <h6 class="text-sm m-0">{{ estudiante.ci_tipo }}-{{ estudiante.ci|remove_dot }}</h6>
         </td>
         <td class="font-weight-bold ps-4">
           <h6 class="text-sm m-0">{{ estudiante.nombre }}&thinsp;{{ estudiante.apellido }}</h6>
         </td>
         <td class="font-weight-bold align-middle text-center">
-          <h6 class="text-sm m-0">{{ estudiante.entidad_federal }}</h6>
+          <h6 class="text-sm m-0">{{ estudiante.entidad_federal|default_if_none:'Sin especificar' }}</h6>
         </td>
         <td class="font-weight-bold align-middle text-center">
-            <h6 class="text-sm m-0">{{ estudiante.periodo }}</h6>
+            <h6 class="text-sm m-0">{{ estudiante.periodo|default_if_none:'No asignado' }}</h6>
         </td>
       </tr>
       {% endfor %}

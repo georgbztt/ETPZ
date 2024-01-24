@@ -1,5 +1,6 @@
 from email.policy import default
 from pyexpat import model
+from tokenize import blank_re
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import *
@@ -15,7 +16,7 @@ class Estudiante(models.Model):
     nombre = models.CharField(max_length=30, null=True)
     apellido = models.CharField(max_length=30, null=True)
     entidad_federal = models.CharField(max_length=30, null=True)
-    periodo = models.ForeignKey('home.Periodo', on_delete=models.SET_NULL, null=True)
+    periodo = models.ForeignKey('home.Periodo', on_delete=models.SET_NULL, blank=True, null=True)
     periodo_completo = models.BooleanField(default=False)
 
     class Meta:

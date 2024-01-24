@@ -5,3 +5,8 @@ register = template.Library()
 def multiply(a, b, *args, **kwargs):
     # you would need to do any localization of the result here
     return a * b
+
+@register.filter
+def remove_dot(value):
+  text = str(value).replace('.','')
+  return text
