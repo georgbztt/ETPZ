@@ -4,7 +4,8 @@
       <th class="text-xs font-weight-bolder opacity-7">Fecha</th>
       <th class="text-xs font-weight-bolder opacity-7 text-center">Carga</th>
       <th class="text-xs font-weight-bolder opacity-7 text-center">Estudiantes</th>
-      <th class="text-xs font-weight-bolder opacity-7 text-center">Cargar Notas</th>
+      <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Cargar Notas</th>
+      <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Editar</th>
     </tr>
   </thead>
   <tbody>
@@ -26,10 +27,17 @@
       <td class="font-weight-bold align-middle text-center">
         <h6 class="text-sm m-0">{{ periodo.num_estudiantes }}</h6>
       </td>
-      <td class="font-weight-bold align-middle text-center">
+      
+      <td class="font-weight-bold align-middle text-center user-select-none">
         <a class="" href="{% url 'carga_notas' periodo.id %}">
           <i class="fas fa-file-signature"></i>
         </a>
+      </td>
+      <td class="font-weight-bold align-middle text-center user-select-none">
+        <a class="" href="{% url 'periodo_editar' periodo.id %}">
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+        </a>
+        {% include 'includes/del_modal.html' with target=periodo.id objeto='el Periodo académico' url_name='periodo_eliminar' %}
       </td>
     </tr>
     {% endfor %}

@@ -1,0 +1,52 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+{% load tags %}
+<div class="d-flex justify-content-center">
+    <div class="card flex-shrink-1">
+        <div class="card-body">
+            <i class="fas fa-times close-card-x" onClick="window.history.back();return false;"></i>
+            <h5 class="card-title">{{ estudiante.nombre }} {{ estudiante.apellido }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ estudiante.ci_tipo }}-{{ estudiante.ci|remove_dot }}</h6>
+            <p class="card-text">
+                Entidad Federal: {{ estudiante.entidad_federal }}<br>
+                Periodo: {{ estudiante.periodo|default_if_none:'No asignado' }}<br>
+                Periodo Completo: {{ estudiante.periodo_completo }}
+            </p>
+            {% comment %}
+            <a href="{% url 'estudiante_editar' estudiante.id %}" class="card-link"><i class="fas fa-edit"></i> Editar</a>
+            <a href="{% url 'estudiante_eliminar' estudiante.id %}" class="card-link"><i class="fas fa-trash"></i> Eliminar</a>
+            {% endcomment %}
+            {% if estudiante.periodo %}
+            <h5>Notas Periodo Actual</h5>
+            <div class="table-responsive p-0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th class="text-xs">Materia</th>
+                      <th class="text-center text-xs">Lapso 1</th>
+                      <th class="text-center text-xs">Lapso 2</th>
+                      <th class="text-center text-xs">Lapso 3</th>
+                      <th class="text-center text-xs">Promedio</th>
+                      <th class="text-center text-xs">Reparación</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for nota in notas %}
+                      <tr>
+                        <td class="">{{ nota.materia|default_if_none:'-' }}</td>
+                        <td class="text-center">{{ nota.lapso_1|default_if_none:'-' }}</td>
+                        <td class="text-center">{{ nota.lapso_2|default_if_none:'-' }}</td>
+                        <td class="text-center">{{ nota.lapso_3|default_if_none:'-' }}</td>
+                        <td class="text-center">{{ nota.promedio|default_if_none:'-' }}</td>
+                        <td class="text-center">{{ nota.reparacion|default_if_none:'-' }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

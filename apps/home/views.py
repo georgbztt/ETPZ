@@ -53,18 +53,6 @@ def pages(request):
         return HttpResponse(html_template.render(context, request))
 
 #----------------------------------------------------------------------------------
-@login_required(login_url="/login/")
-def periodos(request):
-    periodos = Periodo.objects.all().annotate(num_estudiantes=Count('estudiante'))
-
-    context={
-        'periodos':periodos,
-        'segment':'periodo',
-        'title':'Periodos',
-        'table':'home/table-content/periodos.html',
-    }
-
-    return render(request, 'home/table.html', context)
 
 @login_required(login_url="/login/")
 def materias(request):
@@ -92,7 +80,7 @@ def materias(request):
 
 @login_required
 @permission_required('home.add_estudiante', raise_exception=True)#type:ignore
-def materiasCrear(request):
+def materiaCrear(request):
     form = materiaForm(request.POST or None)
     content = 'home/form-content/materia_form.html'
     context = {
@@ -114,7 +102,7 @@ def materiasCrear(request):
 
 @login_required
 @permission_required('home.change_materia', raise_exception=True)#type:ignore
-def materiasEditar(request, pk):
+def materiaEditar(request, pk):
     obj = get_object_or_404(Materia, pk=pk)
     form = materiaForm(request.POST or None, instance=obj)
     content = 'home/form-content/materia_form.html'
@@ -134,6 +122,16 @@ def materiasEditar(request, pk):
             print(form.errors)
     
     return render(request, 'layouts/form.html', context)
+
+@login_required(login_url="/login/")
+@permission_required('home.delete_materia', raise_exception=True)#Validar permiso
+def materiaEliminar(request, pk):
+    materia = get_object_or_404(Materia, pk=pk)#Obtener el materia a eliminar
+    materia.delete()#Eliminar
+
+    if 'next' in request.GET:
+        return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+    return redirect('materia')#Redireccionar normalmente
 
 @login_required(login_url="/login/")
 def cargas(request):
@@ -160,8 +158,8 @@ def cargas(request):
     return render(request, 'home/table.html', context)
 
 @login_required
-@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
-def cargasCrear(request):
+@permission_required('home.add_carga', raise_exception=True)#type:ignore
+def cargaCrear(request):
     form = cargaForm(request.POST or None)
     content = 'home/form-content/carga_form.html'
     context = {
@@ -183,7 +181,7 @@ def cargasCrear(request):
 
 @login_required
 @permission_required('home.change_carga', raise_exception=True)#type:ignore
-def cargasEditar(request, pk):
+def cargaEditar(request, pk):
     obj = get_object_or_404(Carga, pk=pk)
     form = cargaForm(request.POST or None, instance=obj)
     content = 'home/form-content/carga_form.html'
@@ -203,6 +201,16 @@ def cargasEditar(request, pk):
             print(form.errors)
     
     return render(request, 'layouts/form.html', context)
+
+@login_required(login_url="/login/")
+@permission_required('home.delete_carga', raise_exception=True)#Validar permiso
+def cargaEliminar(request, pk):
+    carga = get_object_or_404(Carga, pk=pk)#Obtener la carga a eliminar
+    carga.delete()#Eliminar
+
+    if 'next' in request.GET:
+        return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+    return redirect('carga')#Redireccionar normalmente
 
 @login_required(login_url="/login/")
 def estudiantes(request):
@@ -228,6 +236,13 @@ def estudiantes(request):
         return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
 
     return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+@permission_required('home.view_estudiante', raise_exception=True)#Validar permiso
+def estudianteVer(request, pk):
+    estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante a eliminar
+    notas = Nota.objects.filter(Q(estudiante_id=pk)|Q(periodo=estudiante.periodo))
+    return render(request, 'home/perfil_estudiante.html', {'estudiante':estudiante, 'notas':notas, 'segment':'estudiante'})#Redireccionar normalmente
 
 @login_required
 @permission_required('home.add_estudiante', raise_exception=True)#type:ignore
@@ -275,6 +290,16 @@ def estudianteEditar(request, pk):
     return render(request, 'layouts/form.html', context)
 
 @login_required(login_url="/login/")
+@permission_required('home.delete_estudiante', raise_exception=True)#Validar permiso
+def estudianteEliminar(request, pk):
+    estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante a eliminar
+    estudiante.delete()#Eliminar
+
+    if 'next' in request.GET:
+        return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+    return redirect('estudiante')#Redireccionar normalmente
+
+@login_required(login_url="/login/")
 def carga_notas(request, pd):
     
     periodo = get_object_or_404(Periodo, pk=pd)
@@ -296,7 +321,7 @@ def carga_notas(request, pd):
         print(notas)
         for nota in notas:
             lapsos = [] 
-            
+
             lapsos = [int(nota.lapso_1), int(nota.lapso_2), int(nota.lapso_3)]
             lapsos = [lapso for lapso in lapsos if lapso != 'IN']
 
@@ -324,4 +349,84 @@ def carga_notas(request, pd):
         }
 
     return render(request, 'home/carga_de_notas.html', context)
+
+@login_required(login_url="/login/")
+def periodos(request):
+    periodos = Periodo.objects.all().annotate(num_estudiantes=Count('estudiante'))
+
+    buscar = request.GET.get('buscar')#Tomar texto del buscador
+    if buscar:#Si exste, filtrar
+        periodos = periodos.filter(Q(fecha__icontains=buscar)|Q(carga__titulo__icontains=buscar))
+
+    table = 'home/table-content/periodos.html'
+
+    context={
+        'periodos':periodos,
+        'segment':'periodo',
+        'title':'Periodos',
+        'buscar':True,
+        'table':table,
+        'url_crear':'/periodos/crear'
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
+        table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
+        return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
+        
+    return render(request, 'home/table.html', context)
+
+@login_required
+@permission_required('home.add_periodo', raise_exception=True)#type:ignore
+def periodoCrear(request):
+    form = periodoForm(request.POST or None)
+    content = 'home/form-content/periodo_form.html'
+    context = {
+        'form':form,
+        'segment':'periodo',
+        'title':'Registrar Periodo académico',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+            return redirect('periodo')
+        else:
+            print(form.errors)
+    
+    return render(request, 'layouts/form.html', context)
+
+@login_required
+@permission_required('home.change_periodo', raise_exception=True)#type:ignore
+def periodoEditar(request, pk):
+    obj = get_object_or_404(Periodo, pk=pk)
+    form = periodoForm(request.POST or None, instance=obj)
+    content = 'home/form-content/periodo_form.html'
+    context = {
+        'form':form,
+        'segment':'periodo',
+        'title':'Editar Periodo académico',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+            return redirect('periodo')
+        else:
+            print(form.errors)
+    
+    return render(request, 'layouts/form.html', context)
+
+@login_required(login_url="/login/")
+@permission_required('home.delete_periodo', raise_exception=True)#Validar permiso
+def periodoEliminar(request, pk):
+    periodo = get_object_or_404(Periodo, pk=pk)#Obtener la periodo a eliminar
+    periodo.delete()#Eliminar
+
+    if 'next' in request.GET:
+        return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+    return redirect('periodo')#Redireccionar normalmente
 

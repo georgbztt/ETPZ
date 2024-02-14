@@ -65,7 +65,7 @@ class Carga(models.Model):
 
 class Periodo(models.Model):
 
-    fecha = models.DateField(null=True)
+    fecha = models.DateField(unique=True, null=True)
     carga = models.ForeignKey('home.Carga', on_delete=models.RESTRICT, null=True)
 
     class Meta:

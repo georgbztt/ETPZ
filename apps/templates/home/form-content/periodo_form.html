@@ -1,0 +1,29 @@
+<div class="d-flex flex-wrap gap-3 p-4">
+
+    <div class="col-12 {% if form.fecha.errors %}form-error{% endif %}">
+        <label for="fecha">Fecha</label>
+        {{ form.fecha }}
+    </div>
+
+    <div class="col-12 {% if form.carga.errors %}form-error{% endif %}">
+        <label for="carga">Carga Académica</label>
+        {{ form.carga }}
+    </div>
+    
+    <div class="d-flex justify-content-center col-12 pt-2">
+        <button class="btn btn-primary btm-sm m-0 me-2" type="submit">Guardar</button>
+        <button class="btn btn-danger btm-sm m-0" onClick="window.history.back();return false;">Cancelar</button> 
+    </div>
+</div>
+{% block inner_javascripts %}
+<script>
+    $(document).ready(function(){
+        $('#carga').select2({
+		    placeholder: '-',
+		    width: '100%',
+		    selectionCssClass: ':all:',
+		    dropdownCssClass: ':all:'
+        });
+    });
+</script>
+{% endblock inner_javascripts %}

@@ -1,0 +1,23 @@
+<i class="fa fa-trash del-icon" data-bs-toggle="modal" data-bs-target="#modalId{{ target }}"></i>
+
+<div class="modal fade user-select-none" id="modalId{{ target }}" tabindex="-10028" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border: none;">
+      <div class="modal-header bg-primary">
+        <h5 class="modal-title text-white" id="">¡Advertencia!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-start">
+        <h6>¿Seguro que desea eliminar {{ objeto }}?</h6>
+        <p class="text-secondary">Esta acción no puede deshacerse</p>
+      </div>
+      <div class="modal-footer">
+        <form method="POST" action="{% url url_name target %}">
+          {% csrf_token %}
+          <button type="button" class="mb-0 btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="mb-0 btn btn-danger">Eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

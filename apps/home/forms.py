@@ -35,6 +35,17 @@ class cargaForm(ModelForm):
             'titulo': TextInput(attrs={'class': 'form-control', 'placeholder':'Nombre'}),
             'materias': SelectMultiple(attrs={'class': 'form-control', 'id':'materias'}),
         }
+class periodoForm(ModelForm):
+    class Meta:
+        model = Periodo
+        fields = (
+            'fecha',
+            'carga',
+            )
+        widgets ={
+            'fecha': TextInput(attrs={'class': 'form-control', 'placeholder':'Nombre', 'id':'fecha'}),
+            'carga': Select(attrs={'class': 'form-control', 'id':'carga'}),
+        }
 
 class estudianteForm(ModelForm):
     class Meta:
