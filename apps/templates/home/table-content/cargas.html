@@ -1,0 +1,23 @@
+{% load tags %}
+<table class="table table-striped mb-0 ">
+    <thead>
+      <tr>
+        <th class="text-xs font-weight-bolder opacity-7">Titulo</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Editar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for carga in cargas %}
+      <tr class="text-primary">
+        <td class="font-weight-bold ps-4">
+          <h6 class="text-sm m-0">{{ carga.titulo }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center">
+          <a href="{% url 'carga_editar' carga.id %}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>

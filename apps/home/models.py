@@ -16,8 +16,8 @@ class Estudiante(models.Model):
     nombre = models.CharField(max_length=30, null=True)
     apellido = models.CharField(max_length=30, null=True)
     entidad_federal = models.CharField(max_length=30, null=True)
-    periodo = models.ForeignKey('home.Periodo', on_delete=models.SET_NULL, blank=True, null=True)
-    periodo_completo = models.BooleanField(default=False)
+    periodo = models.ForeignKey('home.Periodo', on_delete=models.SET_NULL, blank=True, null=True)#Relación a periodo para asignar carga y tomar en cuenta en carga de notas
+    periodo_completo = models.BooleanField(default=False)#Filtro para excluir de la carga de notas una vez fue cargada la nota
 
     class Meta:
         verbose_name = ("Estudiante")
@@ -42,6 +42,7 @@ class Boleta(models.Model):
 class Materia(models.Model):
 
     nombre = models.CharField(max_length=30, unique=True, null=True)
+    literales = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = ("Materia")
@@ -76,13 +77,14 @@ class Periodo(models.Model):
 
 class Nota(models.Model):
 
-    estudiante = models.ForeignKey('home.Estudiante', on_delete=models.SET_NULL, null=True)
+    estudiante = models.ForeignKey('home.Estudiante', on_delete=models.RESTRICT, null=True)
+    periodo = models.ForeignKey('home.Periodo', on_delete=models.RESTRICT, null=True)#Relación a periodo para agrupar notas las notas y mantener un registro histórico
     materia = models.ForeignKey('home.Materia', on_delete=models.RESTRICT, null=True)
-    lapso_1 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], null=True)
-    lapso_2 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], null=True)
-    lapso_3 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], null=True)
+    lapso_1 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
+    lapso_2 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
+    lapso_3 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
     promedio = models.CharField(max_length=2, blank=True, null=True)
-    reparacion = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|NA)$')], blank=True, null=True)
+    reparacion = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], blank=True, null=True)
 
     class Meta:
         verbose_name = ("Nota")

@@ -6,6 +6,7 @@
         <th class="text-xs font-weight-bolder opacity-7">Nombre y Apellido</th>
         <th class="text-xs font-weight-bolder opacity-7 text-center">Entidad Federal</th>
         <th class="text-xs font-weight-bolder opacity-7 text-center">Periodo actual</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Editar</th>
       </tr>
     </thead>
     <tbody>
@@ -22,6 +23,11 @@
         </td>
         <td class="font-weight-bold align-middle text-center">
             <h6 class="text-sm m-0">{{ estudiante.periodo|default_if_none:'No asignado' }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center">
+          <a href="{% url 'estudiante_editar' estudiante.id %}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
         </td>
       </tr>
       {% endfor %}

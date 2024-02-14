@@ -19853,6 +19853,14 @@ hr.horizontal.gray-light {
 .navbar-vertical.bg-white .navbar-nav .nav-link.active {
   box-shadow: none;
 }
+.sidenav .nav-link i {
+  margin-top: -3px;
+  font-size: small;
+  color: #283149 !important;
+}
+.sidenav .nav-link.active i {
+  color: #fff !important;
+}
 .navbar-vertical.bg-white .navbar-nav .nav-link .icon {
   background-image: linear-gradient(310deg, #e9ecef 0%, #e9ecef 100%);
 }

@@ -1,0 +1,23 @@
+{% load tags %}
+<table class="table table-striped mb-0 ">
+    <thead>
+      <tr>
+        <th class="text-xs font-weight-bolder opacity-7">Nombre Materia</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Editar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for materia in materias %}
+      <tr class="text-primary">
+        <td class="font-weight-bold ps-4">
+          <h6 class="text-sm m-0">{{ materia.nombre }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center">
+          <a href="{% url 'materia_editar' materia.id %}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>

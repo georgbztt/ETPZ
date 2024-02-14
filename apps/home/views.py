@@ -5,7 +5,6 @@ Copyright (c) 2019 - present AppSeed.us
 import datetime, decimal
 from email import message
 from itertools import count
-from multiprocessing import context
 from re import T
 from urllib import request
 from django import template
@@ -25,7 +24,7 @@ from .forms import *
 @login_required(login_url="/login/")
 def index(request):
     context = {'segment': 'index'}
-
+    return redirect('estudiante')
     return render(request, 'home/index.html', context)
 
 @login_required(login_url="/login/")
@@ -68,12 +67,150 @@ def periodos(request):
     return render(request, 'home/table.html', context)
 
 @login_required(login_url="/login/")
+def materias(request):
+    materias = Materia.objects.all()
+
+    buscar = request.GET.get('buscar')#Tomar texto del buscador
+    if buscar:#Si exste, filtrar
+        materias = materias.filter(Q(nombre__icontains=buscar))
+
+    table = 'home/table-content/materias.html'
+    context={
+        'materias':materias,
+        'segment':'materia',
+        'title':'Materias',
+        'buscar':True,
+        'table':table,
+        'url_crear':'/materias/crear'
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
+        table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
+        return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
+
+    return render(request, 'home/table.html', context)
+
+@login_required
+@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
+def materiasCrear(request):
+    form = materiaForm(request.POST or None)
+    content = 'home/form-content/materia_form.html'
+    context = {
+        'form':form,
+        'segment':'materia',
+        'title':'Registrar Materia',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+            return redirect('materia')
+        else:
+            print(form.errors)
+    
+    return render(request, 'layouts/form.html', context)
+
+@login_required
+@permission_required('home.change_materia', raise_exception=True)#type:ignore
+def materiasEditar(request, pk):
+    obj = get_object_or_404(Materia, pk=pk)
+    form = materiaForm(request.POST or None, instance=obj)
+    content = 'home/form-content/materia_form.html'
+    context = {
+        'form':form,
+        'segment':'materia',
+        'title':'Editar Materia',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+            return redirect('materia')
+        else:
+            print(form.errors)
+    
+    return render(request, 'layouts/form.html', context)
+
+@login_required(login_url="/login/")
+def cargas(request):
+    cargas = Carga.objects.all()
+
+    buscar = request.GET.get('buscar')#Tomar texto del buscador
+    if buscar:#Si exste, filtrar
+        cargas = cargas.filter(Q(titulo__icontains=buscar))
+
+    table = 'home/table-content/cargas.html'
+    context={
+        'cargas':cargas,
+        'segment':'carga',
+        'title':'Cargas académicas',
+        'buscar':True,
+        'table':table,
+        'url_crear':'/cargas/crear'
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
+        table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
+        return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
+
+    return render(request, 'home/table.html', context)
+
+@login_required
+@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
+def cargasCrear(request):
+    form = cargaForm(request.POST or None)
+    content = 'home/form-content/carga_form.html'
+    context = {
+        'form':form,
+        'segment':'carga',
+        'title':'Registrar Carga académica',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+            return redirect('carga')
+        else:
+            print(form.errors)
+    
+    return render(request, 'layouts/form.html', context)
+
+@login_required
+@permission_required('home.change_carga', raise_exception=True)#type:ignore
+def cargasEditar(request, pk):
+    obj = get_object_or_404(Carga, pk=pk)
+    form = cargaForm(request.POST or None, instance=obj)
+    content = 'home/form-content/carga_form.html'
+    context = {
+        'form':form,
+        'segment':'carga',
+        'title':'Editar Carga académica',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+            return redirect('carga')
+        else:
+            print(form.errors)
+    
+    return render(request, 'layouts/form.html', context)
+
+@login_required(login_url="/login/")
 def estudiantes(request):
     estudiantes = Estudiante.objects.all().order_by('ci')
 
     buscar = request.GET.get('buscar')#Tomar texto del buscador
     if buscar:#Si exste, filtrar
-        estudiantes = estudiantes.filter(Q(nombre__icontains=buscar)|Q(apellido__icontains=buscar)|Q(ci__icontains=buscar))#Filtros
+        estudiantes = estudiantes.filter(Q(nombre__icontains=buscar)|Q(apellido__icontains=buscar)|Q(entidad_federal__icontains=buscar)|Q(periodo__carga__titulo__icontains=buscar)|Q(periodo__fecha__icontains=buscar)|Q(ci__icontains=buscar))#Filtros
 
     table = 'home/table-content/estudiantes.html'
     context={
@@ -108,6 +245,32 @@ def estudianteCrear(request):
             form.save(commit=False)
             #validación
             form.save()
+            return redirect('estudiante')
+        else:
+            print(form.errors)
+    
+    return render(request, 'layouts/form.html', context)
+
+@login_required
+@permission_required('home.change_estudiante', raise_exception=True)#type:ignore
+def estudianteEditar(request, pk):
+    obj = get_object_or_404(Estudiante, pk=pk)
+    form = estudianteForm(request.POST or None, instance=obj)
+    content = 'home/form-content/estudiante_form.html'
+    context = {
+        'form':form,
+        'segment':'estudiante',
+        'title':'Editar Estudiante',
+        'content':content
+    }
+    if request.POST:
+        if form.is_valid():
+            form.save(commit=False)
+            #validación
+            form.save()
+            return redirect('estudiante')
+        else:
+            print(form.errors)
     
     return render(request, 'layouts/form.html', context)
 
@@ -131,17 +294,17 @@ def carga_notas(request, pd):
     if request.POST:
         notas = formset.save(commit=False)
         print(notas)
-        for nota in notas:#Código spagueti, pendiente por optimizar 
+        for nota in notas:
             lapsos = [] 
-            if nota.lapso_1 != 'NA':
-                lapsos.append(int(nota.lapso_1))
-            if nota.lapso_2 != 'NA':
-                lapsos.append(int(nota.lapso_2))
-            if nota.lapso_3 != 'NA':
-                lapsos.append(int(nota.lapso_3))
-            suma = sum(lapsos) / len(lapsos)
-            promedio = str(decimal.Decimal(suma).quantize(decimal.Decimal('0'),rounding=decimal.ROUND_HALF_UP))#Crear una función que maneje todo este proceso
-            nota.promedio = promedio.zfill(2)
+            
+            lapsos = [int(nota.lapso_1), int(nota.lapso_2), int(nota.lapso_3)]
+            lapsos = [lapso for lapso in lapsos if lapso != 'IN']
+
+            if lapsos:
+                suma = sum(lapsos) / len(lapsos)
+                promedio = "{:.1f}".format(suma)
+                nota.promedio = promedio.zfill(2)
+            nota.periodo = periodo
             nota.save()
             
             print(f'{nota.estudiante.nombre} {nota.estudiante.apellido} {nota.materia.nombre} = {nota.promedio}')

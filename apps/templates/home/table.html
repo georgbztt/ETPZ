@@ -13,9 +13,11 @@
         <div class="card-header pb-0">
           <div class="d-flex justify-content-between"> 
             <h6>{{ title }}</h6>
-            <a href="{{ url_crear }}" title="Crear {{ segment }}">
-              <i class="fa fa-user-plus" aria-hidden="true"></i>
+            {% if url_crear %}
+            <a href="{{ url_crear }}" title="Agregar {{ segment }}">
+              <i class="fa fa-plus-circle" aria-hidden="true"></i>
             </a>
+            {% endif %}
           </div>
         </div>
         <div class="card-body p-0">

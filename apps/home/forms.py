@@ -17,9 +17,11 @@ class materiaForm(ModelForm):
         model = Materia
         fields = (
             'nombre',
+            'literales',
             )
         widgets ={
             'nombre': TextInput(attrs={'class': 'form-control', 'placeholder':'Nombre'}),
+            'literales': CheckboxInput(attrs={'class': 'form-check-input justify-content-center', 'aria-label':'Seleccionar Pre-Prensa', 'id':'literales'}),
         }
 
 class cargaForm(ModelForm):
@@ -31,7 +33,7 @@ class cargaForm(ModelForm):
             )
         widgets ={
             'titulo': TextInput(attrs={'class': 'form-control', 'placeholder':'Nombre'}),
-            'materias': SelectMultiple(attrs={'class': 'form-control'}),
+            'materias': SelectMultiple(attrs={'class': 'form-control', 'id':'materias'}),
         }
 
 class estudianteForm(ModelForm):

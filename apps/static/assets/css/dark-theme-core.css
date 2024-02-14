@@ -82,6 +82,14 @@ body.dark-page .sidenav .nav-link.active {
   background-color: #404B69 !important;
   color: #fff !important;
 }
+body.dark-page .sidenav .nav-link i {
+  margin-top: -3px;
+  font-size: small;
+  color: #283149 !important;
+}
+body.dark-page .sidenav .nav-link.active i {
+  color: #fff !important;
+}
 body.dark-page .list-group-item {
   background-color: transparent;
 }

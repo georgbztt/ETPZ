@@ -3,27 +3,28 @@
     <div class="flex-grow-1"> 
         <label for="ci">Cédula</label>
         <div class="d-flex flex-row">
-            <div class="flex-shrink-1">
+            <div class="flex-shrink-1 {% if form.ci_tipo.errors %}form-error{% endif %}">
                 {{ form.ci_tipo }}
             </div>
-            <div class="flex-grow-1">
+            <div class="flex-grow-1 {% if form.ci.errors %}form-error{% endif %}">
                 {{ form.ci }}
+                {{ form.ci.errors }}
             </div>
         </div>
     </div>
-    <div class="flex-grow-1"> 
+    <div class="flex-grow-1 {% if form.nombre.errors %}form-error{% endif %}">
         <label for="nombre">Nombre</label>
         {{ form.nombre }}
     </div>
-    <div class="flex-grow-1"> 
+    <div class="flex-grow-1 {% if form.apellido.errors %}form-error{% endif %}">
         <label for="apellido">Apellido</label>
         {{ form.apellido }}
     </div>
-    <div class="flex-grow-1"> 
+    <div class="flex-grow-1 {% if form.entidad_federal.errors %}form-error{% endif %}">
         <label for="entidad_federal">Eentidad Federal</label>
         {{ form.entidad_federal }}
     </div>
-    <div class="flex-grow-1"> 
+    <div class="flex-grow-1 {% if form.periodo.errors %}form-error{% endif %}">
         <label for="periodo">Periodo</label>
         {{ form.periodo }}
     </div>

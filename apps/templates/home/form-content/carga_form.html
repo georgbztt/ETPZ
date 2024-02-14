@@ -1,0 +1,27 @@
+<div class="d-flex flex-wrap gap-3 p-4">
+
+    <div class="col-12 {% if form.titulo.errors %}form-error{% endif %}">
+        <label for="titulo">Título</label>
+        {{ form.titulo }}
+    </div>
+
+    <div class="col-12 {% if form.materias.errors %}form-error{% endif %}">
+        <label for="materias">Materias</label>
+        {{ form.materias }}
+    </div>
+    
+    <div class="d-flex justify-content-center col-12 pt-2">
+        <button class="btn btn-primary btm-sm m-0 me-2" type="submit">Guardar</button>
+        <button class="btn btn-danger btm-sm m-0" onClick="window.history.back();return false;">Cancelar</button> 
+    </div>
+</div>
+{% block inner_javascripts %}
+<script>
+    $(document).ready(function(){
+        $('#materias').select2({
+		    placeholder: '-',
+		    width: '100%',
+        });
+    });
+</script>
+{% endblock inner_javascripts %}
