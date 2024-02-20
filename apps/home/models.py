@@ -81,8 +81,11 @@ class Nota(models.Model):
     periodo = models.ForeignKey('home.Periodo', on_delete=models.RESTRICT, null=True)#Relación a periodo para agrupar notas las notas y mantener un registro histórico
     materia = models.ForeignKey('home.Materia', on_delete=models.RESTRICT, null=True)
     lapso_1 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
+    inasistencia_1 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, null=True)
     lapso_2 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
+    inasistencia_2 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, null=True)
     lapso_3 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
+    inasistencia_3 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, null=True)
     promedio = models.CharField(max_length=2, blank=True, null=True)
     reparacion = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], blank=True, null=True)
 
