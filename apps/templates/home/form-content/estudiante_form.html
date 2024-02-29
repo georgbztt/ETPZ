@@ -21,12 +21,20 @@
         {{ form.apellido }}
     </div>
     <div class="flex-grow-1 {% if form.entidad_federal.errors %}form-error{% endif %}">
-        <label for="entidad_federal">Eentidad Federal</label>
+        <label for="entidad_federal">Lugar de nacimiento</label>
+        {{ form.lugar_de_nacimiento }}
+    </div>
+    <div class="flex-grow-1 {% if form.entidad_federal.errors %}form-error{% endif %}">
+        <label for="entidad_federal">Entidad Federal</label>
         {{ form.entidad_federal }}
     </div>
     <div class="flex-grow-1 {% if form.periodo.errors %}form-error{% endif %}">
         <label for="periodo">Periodo</label>
         {{ form.periodo }}
+    </div>
+    <div class="flex-shrink-1 {% if form.seccion.errors %}form-error{% endif %}">
+        <label for="periodo">Sección</label>
+        {{ form.seccion }}
     </div>
     <div class="d-flex justify-content-center col-12 pt-2">
         <button class="btn btn-primary btm-sm m-0 me-2" type="submit">Guardar</button>

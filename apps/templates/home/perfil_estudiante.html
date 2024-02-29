@@ -5,13 +5,22 @@
 <div class="d-flex justify-content-center">
   <div class="card flex-shrink-1">
     <div class="card-body">
-      <i class="fas fa-times close-card-x fa-lg" onClick="window.history.back();return false;"></i>
+      <div class="card-actions">
+        {% if estudiante.periodo %}
+        <a href="{% url 'editar_notas' estudiante.id %}" title="Editar notas"><i class="fas fa-edit"></i></a>
+        <a href="{% url 'estudiante_inasistencias' estudiante.id %}" title="Cargar Inasistencias"><i class="fa fa-tasks"></i></a>
+        <a href="{% url 'imprimir_notas' estudiante.id %}" target="blank" title="Imprimir notas"><i class="fas fa-print"></i></a>
+        {% endif %}
+        <a href="{% url 'estudiante' %}" title="Atrás"><i class="fas fa-times fa-lg"></i></a>
+      </div>
       <h5 class="card-title">{{ estudiante.nombre }} {{ estudiante.apellido }}</h5>
       <h6 class="card-subtitle mb-2 text-muted">{{ estudiante.ci_tipo }}-{{ estudiante.ci|remove_dot }}</h6>
       <p class="card-text">
-          Entidad Federal: {{ estudiante.entidad_federal }}<br>
           Periodo: {{ estudiante.periodo|default_if_none:'No asignado' }}<br>
+          {% if estudiante.periodo %}
           Cursante de: {{ estudiante.periodo.carga|default_if_none:'No asignado' }}<br>
+          {% endif %}
+          Sección: {{ estudiante.seccion }}<br>
       </p>
       {% comment %}
       <a href="{% url 'estudiante_editar' estudiante.id %}" class="card-link"><i class="fas fa-edit"></i> Editar</a>
@@ -52,7 +61,7 @@
                   <td val="{{ nota.inasistencia_2|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-2">{{ nota.inasistencia_2|default_if_none:'0' }}</td>
                   <td val="{{ nota.lapso_3|default_if_none:'-' }}" class="text-center lap-3">{% if nota.materia.literales %}{{ nota.lapso_3|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_3|default_if_none:'-' }}{% endif %}</td>
                   <td val="{{ nota.inasistencia_3|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-3">{{ nota.inasistencia_3|default_if_none:'0' }}</td>
-                  <td val="{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}" class="text-center final">{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}</td>
+                  <td val="{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}" class="text-center final">{% if nota.materia.literales %}{% if nota.reparacion|literales %}{{ nota.reparacion|literales|default_if_none:'-' }}{% else %}{{ nota.promedio|literales }}{% endif %}{% else %}{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}{% endif %}</td>
                   <td class="text-center" id="ti-{{ forloop.counter0 }}"></td>
                 </tr>
                 {% endfor %}
@@ -130,4 +139,6 @@ $(document).ready(function() {
 
 </script>
 {% endblock content %}
-{% comment %}<td class="text-center">{% if nota.materia.literales %}{% if nota.reparacion %}{{ nota.reparacion|literales|default_if_none:'-' }}{% else %}{{ nota.promedio|literales|default_if_none:'-' }}{% endif %}{% else %}{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio|default_if_none:'-' }}{% endif %}{% endif %}</td>{% endcomment %}
+<!--
+  {% comment %}<td class="text-center">{% if nota.materia.literales %}{% if nota.reparacion %}{{ nota.reparacion|literales|default_if_none:'-' }}{% else %}{{ nota.promedio|literales|default_if_none:'-' }}{% endif %}{% else %}{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio|default_if_none:'-' }}{% endif %}{% endif %}</td>{% endcomment %}
+-->

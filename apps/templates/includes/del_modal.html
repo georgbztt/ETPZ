@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body text-start">
         <h6>¿Seguro que desea eliminar {{ objeto }}?</h6>
-        <p class="text-secondary">Esta acción no puede deshacerse</p>
+        <p class="text-secondary mb-0" style="text-wrap: pretty">{{ info }}</p>
       </div>
       <div class="modal-footer">
         <form method="POST" action="{% url url_name target %}">

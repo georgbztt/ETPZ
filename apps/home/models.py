@@ -15,9 +15,11 @@ class Estudiante(models.Model):
     ci_tipo = models.CharField(max_length=1, choices=CI_OPT, null=True)
     nombre = models.CharField(max_length=30, null=True)
     apellido = models.CharField(max_length=30, null=True)
+    lugar_de_nacimiento = models.CharField(max_length=30, null=True)
     entidad_federal = models.CharField(max_length=30, null=True)
     periodo = models.ForeignKey('home.Periodo', on_delete=models.SET_NULL, blank=True, null=True)#Relación a periodo para asignar carga y tomar en cuenta en carga de notas
     periodo_completo = models.BooleanField(default=False)#Filtro para excluir de la carga de notas una vez fue cargada la nota
+    seccion = models.CharField(max_length=1, null=True)
 
     class Meta:
         verbose_name = ("Estudiante")
@@ -77,18 +79,26 @@ class Periodo(models.Model):
 
 class Nota(models.Model):
 
-    estudiante = models.ForeignKey('home.Estudiante', on_delete=models.RESTRICT, null=True)
+    estudiante = models.ForeignKey('home.Estudiante', on_delete=models.CASCADE, null=True)
     periodo = models.ForeignKey('home.Periodo', on_delete=models.RESTRICT, null=True)#Relación a periodo para agrupar notas las notas y mantener un registro histórico
     materia = models.ForeignKey('home.Materia', on_delete=models.RESTRICT, null=True)
-    lapso_1 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
-    inasistencia_1 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, null=True)
-    lapso_2 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
-    inasistencia_2 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, null=True)
-    lapso_3 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], null=True)
-    inasistencia_3 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, null=True)
-    promedio = models.CharField(max_length=2, blank=True, null=True)
+    lapso_1 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], blank=True, null=True)
+    lapso_2 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], blank=True, null=True)
+    lapso_3 = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], blank=True, null=True)
+    inasistencia_1 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, blank=True, null=True)
+    inasistencia_2 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, blank=True, null=True)
+    inasistencia_3 = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0, blank=True, null=True)
     reparacion = models.CharField(max_length=2, validators=[MinLengthValidator(2), RegexValidator(r'^([0-1][0-9]|20|IN)$')], blank=True, null=True)
+    #promedio = models.CharField(max_length=2, blank=True, null=True)
 
+    @property
+    def promedio(self):
+        lapsos = [self.lapso_1, self.lapso_2, self.lapso_3]
+        lapsos_numericos = [int(lapso) for lapso in lapsos if lapso.isdigit()]
+        if lapsos_numericos:
+            promedio = sum(lapsos_numericos) / len(lapsos_numericos)
+            return '{:02d}'.format(int(promedio))
+        return None
     class Meta:
         verbose_name = ("Nota")
         verbose_name_plural = ("Notas")

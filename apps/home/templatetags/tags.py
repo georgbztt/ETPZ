@@ -13,14 +13,19 @@ def remove_dot(value):
 
 @register.filter
 def literales(value):
-    value = int(value)
-    if 19 <= value <= 20:
-        return 'A'
-    elif 16 <= value <= 18:
-        return 'B'
-    elif 12 <= value <= 15:
-        return 'C'
-    elif 1 <= value <= 11:
-        return 'D'
-    else:
+    if not value:
+        return ''
+    try:
+        value = int(value)
+        if 19 <= value <= 20:
+            return 'A'
+        elif 16 <= value <= 18:
+            return 'B'
+        elif 12 <= value <= 15:
+            return 'C'
+        elif 1 <= value <= 11:
+            return 'D'
+        else:
+            return value
+    except ValueError:
         return value

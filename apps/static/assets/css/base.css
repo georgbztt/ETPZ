@@ -39,15 +39,24 @@
   color: var(--bs-primary);
 }
 
-.close-card-x {
+.card-actions {
+  display: flex;
+  gap: 0.6em;
+  align-items: center;
   user-select: none;
   position: absolute;
   right: 0;
-  margin-right: 1.5em;
+  margin-right: 2em;
   margin-top: .3em;
-  cursor: pointer;
 }
 
+.card-actions *{
+  cursor: pointer;
+  transition: color ease-in-out 150ms;
+}
+.card-actions *:hover{
+  color: var(--bs-primary);
+}
 /* Select2 Styles Override  */
 
 .select2-selection__rendered {

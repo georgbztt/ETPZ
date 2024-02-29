@@ -57,6 +57,7 @@ class estudianteForm(ModelForm):
             'apellido',
             'entidad_federal',
             'periodo',
+            'seccion',
             )
         widgets ={
             'ci': TextInput(attrs={'class': 'form-control flex-grow-1 flat-left', 'id':'ci'}),
@@ -65,26 +66,42 @@ class estudianteForm(ModelForm):
             'apellido': TextInput(attrs={'class': 'form-control', 'id':'apellido'}),
             'entidad_federal': TextInput(attrs={'class': 'form-control', 'id':'entidad_federal'}),
             'periodo': Select(attrs={'class': 'form-control', 'id':'periodo'}),
+            'seccion': TextInput(attrs={'class': 'form-control text-capitalize', 'id':'seccion'}),
         }
 
-class NotasForm(ModelForm):#Actualmente esta clase no tiene niguna utilidad
-    class Meta:
-        model = Nota
-        fields = (
-            'lapso_1',
-            'lapso_2',
-            'lapso_3',
-            'reparacion',
-        )
-        widgets = {
-            'estudiante': HiddenInput(),
-            'materia': HiddenInput(),
-            'lapso_1': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 1'}),
-            'lapso_2': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 2'}),
-            'lapso_3': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 3'}),
-            'reparacion': TextInput(attrs={'class':'form-control', 'placeholder':'Reparación'}),
+NotasFormSet = modelformset_factory(
+    Nota,
+    fields = (
+        'id',
+        'lapso_1',
+        'lapso_2',
+        'lapso_3',
+        'reparacion',
+    ),
+    widgets = {
+        'id':HiddenInput(),
+        'lapso_1': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 1'}),
+        'lapso_2': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 2'}),
+        'lapso_3': TextInput(attrs={'class':'form-control', 'placeholder':'Lapso 3'}),
+        'reparacion': TextInput(attrs={'class':'form-control', 'placeholder':'Reparación'}),
+    }
+)
+InasistenciaFormSet = modelformset_factory(
+    Nota,
+    fields=(
+        'id',
+        'inasistencia_1',
+        'inasistencia_2',
+        'inasistencia_3',
+    ),
+    widgets = {
+            'id':HiddenInput(),
+            'inasistencia_1': TextInput(attrs={'class':'form-control text-center'}),
+            'inasistencia_2': TextInput(attrs={'class':'form-control text-center'}),
+            'inasistencia_3': TextInput(attrs={'class':'form-control text-center'}),
         }
-   
+    )
+
 
 '''Forms de ejemplo que saqué de otro proyecto
 class TestRequestForm(ModelForm):

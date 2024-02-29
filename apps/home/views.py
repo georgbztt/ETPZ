@@ -5,6 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 import datetime, decimal
 from email import message
 from itertools import count
+from multiprocessing import context
 from re import T
 from urllib import request
 from django import template
@@ -244,6 +245,13 @@ def estudianteVer(request, pk):
     notas = Nota.objects.filter(Q(estudiante_id=pk)|Q(periodo=estudiante.periodo))
     return render(request, 'home/perfil_estudiante.html', {'estudiante':estudiante, 'notas':notas, 'segment':'estudiante'})#Redireccionar normalmente
 
+@login_required(login_url="/login/")
+@permission_required('home.view_estudiante', raise_exception=True)#Validar permiso
+def imprimirNotas(request, pk):
+    estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante a eliminar
+    notas = Nota.objects.filter(Q(estudiante_id=pk)|Q(periodo=estudiante.periodo))
+    return render(request, 'layouts/imprimir_notas.html', {'estudiante':estudiante, 'notas':notas, 'segment':'estudiante'})#Redireccionar normalmente
+
 @login_required
 @permission_required('home.add_estudiante', raise_exception=True)#type:ignore
 def estudianteCrear(request):
@@ -257,9 +265,10 @@ def estudianteCrear(request):
     }
     if request.POST:
         if form.is_valid():
-            form.save(commit=False)
+            e = form.save(commit=False)
             #validación
-            form.save()
+            e.seccion = e.seccion.upper()
+            e.save()
             return redirect('estudiante')
         else:
             print(form.errors)
@@ -280,9 +289,10 @@ def estudianteEditar(request, pk):
     }
     if request.POST:
         if form.is_valid():
-            form.save(commit=False)
+            e = form.save(commit=False)
             #validación
-            form.save()
+            e.seccion = e.seccion.upper()
+            e.save()
             return redirect('estudiante')
         else:
             print(form.errors)
@@ -298,6 +308,68 @@ def estudianteEliminar(request, pk):
     if 'next' in request.GET:
         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
     return redirect('estudiante')#Redireccionar normalmente
+
+@login_required(login_url="/login/")
+@permission_required('home.change_estudiante', raise_exception=True)#Validar permiso
+def editarNotas(request, pk):
+    estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante
+    notas = Nota.objects.filter(Q(estudiante_id=pk)|Q(periodo=estudiante.periodo))
+
+    formset = NotasFormSet(request.POST or None, queryset=notas)
+
+    content = 'home/form-content/notas_form.html'
+    objects = zip(notas, formset)
+
+    context = {
+        'estudiante':estudiante,
+        'formset':formset,
+        'objects':objects,
+        'segment':'estudiante',
+        'title':'Editar Notas',
+        'content':content
+    }
+
+    if request.POST:
+        if formset.is_valid():
+            formset.save()
+            if 'next' in request.GET:
+                return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+            return redirect('estudiante_ver', pk)#Redireccionar normalmente
+        else:
+            print(formset.errors)
+
+    return render(request, 'layouts/form.html', context)
+
+@login_required(login_url="/login/")
+@permission_required('home.change_estudiante', raise_exception=True)#Validar permiso
+def estudianteInasistencias(request, pk):
+    estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante
+    notas = Nota.objects.filter(Q(estudiante_id=pk)|Q(periodo=estudiante.periodo))
+
+    formset = InasistenciaFormSet(request.POST or None, queryset=notas)
+
+    content = 'home/form-content/inacistencia_form.html'
+    objects = zip(notas, formset)
+
+    context = {
+        'estudiante':estudiante,
+        'formset':formset,
+        'objects':objects,
+        'segment':'estudiante',
+        'title':'Cargar Inasistencias',
+        'content':content
+    }
+
+    if request.POST:
+        if formset.is_valid():
+            formset.save()
+            if 'next' in request.GET:
+                return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+            return redirect('estudiante_ver', pk)#Redireccionar normalmente
+        else:
+            print(formset.errors)
+
+    return render(request, 'layouts/form.html', context)
 
 @login_required(login_url="/login/")
 def carga_notas(request, pd):
@@ -317,23 +389,8 @@ def carga_notas(request, pd):
     formset = NotasFormSet(request.POST or None)
     
     if request.POST:
-        notas = formset.save(commit=False)
-        print(notas)
-        for nota in notas:
-            lapsos = [] 
-
-            lapsos = [int(nota.lapso_1), int(nota.lapso_2), int(nota.lapso_3)]
-            lapsos = [lapso for lapso in lapsos if lapso != 'IN']
-
-            if lapsos:
-                suma = sum(lapsos) / len(lapsos)
-                promedio = "{:.1f}".format(suma)
-                nota.promedio = promedio.zfill(2)
-            nota.periodo = periodo
-            nota.save()
-            
-            print(f'{nota.estudiante.nombre} {nota.estudiante.apellido} {nota.materia.nombre} = {nota.promedio}')
-        
+        formset.save(commit=False)
+                
         for estudiante in estudiantes:
             estudiante.periodo_completo = True
             estudiante.save()

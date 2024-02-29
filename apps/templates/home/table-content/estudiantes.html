@@ -7,6 +7,7 @@
         <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Ver</th>
         <th class="text-xs font-weight-bolder opacity-7 text-center">Entidad Federal</th>
         <th class="text-xs font-weight-bolder opacity-7 text-center">Periodo actual</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Sección</th>
         <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Editar</th>
       </tr>
     </thead>
@@ -28,13 +29,16 @@
           <h6 class="text-sm m-0">{{ estudiante.entidad_federal|default_if_none:'Sin especificar' }}</h6>
         </td>
         <td class="font-weight-bold align-middle text-center">
-            <h6 class="text-sm m-0">{{ estudiante.periodo|default_if_none:'No asignado' }}</h6>
+          <h6 class="text-sm m-0">{{ estudiante.periodo|default_if_none:'No asignado' }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center">
+          <h6 class="text-sm m-0">{{ estudiante.seccion|default_if_none:'-' }}</h6>
         </td>
         <td class="font-weight-bold align-middle text-center user-select-none">
           <a href="{% url 'estudiante_editar' estudiante.id %}">
             <i class="fa fa-pencil" aria-hidden="true"></i>
           </a>
-          {% include 'includes/del_modal.html' with target=estudiante.id objeto='el Estudiante' url_name='estudiante_eliminar' %}
+          {% include 'includes/del_modal.html' with target=estudiante.id objeto='el Estudiante' info='Esto incluye todas las notas relacionadas al estudiante, esta acción no puede deshacerse' url_name='estudiante_eliminar' %}
         </td>
       </tr>
       {% endfor %}
