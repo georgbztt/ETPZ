@@ -56,6 +56,7 @@ class estudianteForm(ModelForm):
             'nombre',
             'apellido',
             'entidad_federal',
+            'lugar_de_nacimiento',
             'periodo',
             'seccion',
             )
@@ -64,6 +65,7 @@ class estudianteForm(ModelForm):
             'ci_tipo': Select(attrs={'class': 'form-control flex-shrink-1 flat-right', 'id':'ci_tipo'}),
             'nombre': TextInput(attrs={'class': 'form-control', 'id':'nombre'}),
             'apellido': TextInput(attrs={'class': 'form-control', 'id':'apellido'}),
+            'lugar_de_nacimiento': TextInput(attrs={'class': 'form-control', 'id':'lugar_de_nacimiento'}),
             'entidad_federal': TextInput(attrs={'class': 'form-control', 'id':'entidad_federal'}),
             'periodo': Select(attrs={'class': 'form-control', 'id':'periodo'}),
             'seccion': TextInput(attrs={'class': 'form-control text-capitalize', 'id':'seccion'}),
