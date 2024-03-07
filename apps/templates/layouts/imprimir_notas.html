@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notas {{ estudiante.apellido }} {{ estudiante.nombre }}</title>
-    <script src="https://code.jquery.com/jquery-3.6.2.min.js" integrity="sha256-2krYZKh//PcchRtd+H+VyyQoZ/e3EcrkxhM8ycwASPA=" crossorigin="anonymous"></script>
+    <script src="../../static/assets/lib/jquery-3.6.2/jquery-3.6.2.min.js"></script>
     <link id="pagestyle" href="{{ ASSETS_ROOT }}/css/soft-ui-dashboard.css?v=1.0.6" rel="stylesheet" />
     <link id="pagestyle_base" href="{{ ASSETS_ROOT }}/css/base.css" rel="stylesheet" />
     <style>  
@@ -43,7 +43,7 @@
     {% if estudiante.periodo %}
     <h5>Notas Periodo Actual</h5>
     <div class="table-responsive p-0">
-        <table class="table mb-0">
+        <table class="table table-striped mb-0">
           <thead>
             <tr class="text-xs">
               <th>Materia</th>
