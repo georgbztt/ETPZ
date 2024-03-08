@@ -2,166 +2,209 @@
 <html lang="en">
 {% load tags %}
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notas {{ estudiante.apellido }} {{ estudiante.nombre }}</title>
-    <script src="../../static/assets/lib/jquery-3.6.2/jquery-3.6.2.min.js"></script>
-    <link id="pagestyle" href="{{ ASSETS_ROOT }}/css/soft-ui-dashboard.css?v=1.0.6" rel="stylesheet" />
-    <link id="pagestyle_base" href="{{ ASSETS_ROOT }}/css/base.css" rel="stylesheet" />
-    <style>  
-      @media print {
-        .noScreens {display:none;}
-      }
-      .printcover {
-        z-index: 99999;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background:#36363a;
-      }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notas {{ estudiante.apellido }} {{ estudiante.nombre }}</title>
+  <script src="../../static/assets/lib/jquery-3.6.2/jquery-3.6.2.min.js"></script>
+  <link id="pagestyle_base" href="{{ ASSETS_ROOT }}/css/base.css" rel="stylesheet" />
+  <link id="pagestyle" href="{{ ASSETS_ROOT }}/css/soft-ui-dashboard.css?v=1.0.6" rel="stylesheet" />
+  <link rel="stylesheet" href="../../static/assets/css/print.css">
 </head>
+
 <body>
-  <div class="noScreens printcover"></div>
-    <div class="card-body">
-    <h5 class="card-title">{{ estudiante.apellido }} {{ estudiante.nombre }}</h5>
-    <h6 class="card-subtitle mb-2 text-muted">{{ estudiante.ci_tipo }}-{{ estudiante.ci|remove_dot }}</h6>
-    <p class="card-text">
-        Entidad Federal: {{ estudiante.entidad_federal }}<br>
-        Periodo: {{ estudiante.periodo|default_if_none:'No asignado' }}<br>
-        {% if estudiante.periodo %}
-          Cursante de: {{ estudiante.periodo.carga|default_if_none:'No asignado' }}<br>
-        {% endif %}
-        Sección: {{ estudiante.seccion }}<br>
-    </p>
-    {% comment %}
-    <a href="{% url 'estudiante_editar' estudiante.id %}" class="card-link"><i class="fas fa-edit"></i> Editar</a>
-    <a href="{% url 'estudiante_eliminar' estudiante.id %}" class="card-link"><i class="fas fa-trash"></i> Eliminar</a>
-    {% endcomment %}
-    {% if estudiante.periodo %}
-    <h5>Notas Periodo Actual</h5>
-    <div class="table-responsive p-0">
-        <table class="table table-striped mb-0">
-          <thead>
-            <tr class="text-xs">
-              <th>Materia</th>
-              <th colspan="2" class="text-center">Lapso 1</th>
-              <th colspan="2" class="text-center">Lapso 2</th>
-              <th colspan="2" class="text-center">Lapso 3</th>
-              <th class="text-center">Definitiva Lapsos I, II, III</th>
-              <th class="text-center">Total Inasist.</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="text-xs">
-              <td></td>
-              <td class="text-center">Calif.</td>
-              <td class="text-center">Inas.</td>
-              <td class="text-center">Calif.</td>
-              <td class="text-center">Inas.</td>
-              <td class="text-center">Calif.</td>
-              <td class="text-center">Inas.</td>
-              <td></td>
-              <td></td>
-            </tr>
-            {% for nota in notas %}
-              <tr id="row-{{ forloop.counter0 }}">
-                <td >{{ nota.materia|default_if_none:'-' }}</td>
-                <td val="{{ nota.lapso_1|default_if_none:'-' }}" class="text-center lap-1">{% if nota.materia.literales %}{{ nota.lapso_1|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_1|default_if_none:'-' }}{% endif %}</td>
-                <td val="{{ nota.inasistencia_1|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-1">{{ nota.inasistencia_1|default_if_none:'0' }}</td>
-                <td val="{{ nota.lapso_2|default_if_none:'-' }}" class="text-center lap-2">{% if nota.materia.literales %}{{ nota.lapso_2|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_2|default_if_none:'-' }}{% endif %}</td>
-                <td val="{{ nota.inasistencia_2|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-2">{{ nota.inasistencia_2|default_if_none:'0' }}</td>
-                <td val="{{ nota.lapso_3|default_if_none:'-' }}" class="text-center lap-3">{% if nota.materia.literales %}{{ nota.lapso_3|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_3|default_if_none:'-' }}{% endif %}</td>
-                <td val="{{ nota.inasistencia_3|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-3">{{ nota.inasistencia_3|default_if_none:'0' }}</td>
-                <td val="{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}" class="text-center final">{% if nota.materia.literales %}{% if nota.reparacion|literales %}{{ nota.reparacion|literales|default_if_none:'-' }}{% else %}{{ nota.promedio|literales }}{% endif %}{% else %}{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}{% endif %}</td>
-                <td class="text-center" id="ti-{{ forloop.counter0 }}"></td>
-              </tr>
-              {% endfor %}
-              <tr class="fw-bold">
-                <td>Promedio por lapso:</td>
-                <td class="text-center" id="prom-1"></td>
-                <td class="text-center" id="pi-1"></td>
-                <td class="text-center" id="prom-2"></td>
-                <td class="text-center" id="pi-2"></td>
-                <td class="text-center" id="prom-3"></td>
-                <td class="text-center" id="pi-3"></td>
-                <td class="text-center" id="prom-f"></td>
-                <td class="text-center" id="ti-f"></td>
-              </tr>
-          </tbody>
-        </table>
+  <div class="card text-dark border border-dark m-3 ">
+    <div class="d-flex flex-row justify-content-around align-items-cente text-center p-3">
+      <div class="d-flex flex-column justify-content-around">
+        <p>Republica Bolivariana de Venezuela</p>
+        <p>Ministerio del Poder Popular para la Educación</p>
+        <p>Escuela Tecnica Industrial Pedro Zaraza</p>
+        <p>San Juan de los Morros - Estado Guarico  </p>
       </div>
-      {% endif %}
+      <div class="d-flex flex-column justify-content-around">
+        <img src="../../static/assets/img/logo-alt.svg" width="128" height="128" class=""></img>
+      </div>
     </div>
+
+      <div class="container text-center pt-0 pb-3 ps-3 pe-3 text-dark">
+        <div class="row">
+          <p class="p-3 fw-bold">Boletín Informativo</p>
+        </div>
+
+        <div class="row">
+          <div class="col px-5">
+            <div class="d-flex justify-content-between">
+              <p class="fw-bold">
+                Estudiante:
+              </p> 
+              <p class="fw-normal">
+                {{estudiante.nombre}} {{estudiante.apellido}}
+              </p>
+            </div>
+          </div>
+
+          <div class="col px-5">
+            <div class="d-flex justify-content-between">
+              <p class="fw-bold">
+                C.I.:
+              </p> 
+              <p class="fw-normal">
+                {{ estudiante.ci_tipo }}-{{estudiante.ci}}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col px-5 ">
+
+            {% if estudiante.periodo %}
+            <div class="d-flex justify-content-between">
+              <p class="fw-bold">
+                Cursante del:
+              </p>
+              <p class="fw-normal">
+                {{ estudiante.periodo.carga|default_if_none:'No asignado' }}
+              </p>
+            </div>
+            {% endif %}
+
+          </div>
+
+          <div class="col px-5">
+            <div class="d-flex justify-content-between">
+              <p class="fw-bold">
+                Sección:
+              </p> 
+              <p class="fw-normal">
+                {{estudiante.seccion}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    {% if estudiante.periodo %}
+    <div class="table-responsive">
+      <table class="table m-0 text-center text-dark">
+        <thead>
+          <tr class="">
+            <th>Materia</th>
+            <th colspan="2" class="text-center">Lapso 1</th>
+            <th colspan="2" class="text-center">Lapso 2</th>
+            <th colspan="2" class="text-center">Lapso 3</th>
+            <th class="text-center">Definitiva de Lapsos I, II, III</th>
+            <th class="text-center">Total Inasist.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="text-xs">
+            <td></td>
+            <td class="text-center">Calif.</td>
+            <td class="text-center">Inas.</td>
+            <td class="text-center">Calif.</td>
+            <td class="text-center">Inas.</td>
+            <td class="text-center">Calif.</td>
+            <td class="text-center">Inas.</td>
+            <td></td>
+            <td></td>
+          </tr>
+          {% for nota in notas %}
+            <tr id="row-{{ forloop.counter0 }}">
+              <td >{{ nota.materia|default_if_none:'-' }}</td>
+              <td val="{{ nota.lapso_1|default_if_none:'-' }}" class="text-center lap-1">{% if nota.materia.literales %}{{ nota.lapso_1|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_1|default_if_none:'-' }}{% endif %}</td>
+              <td val="{{ nota.inasistencia_1|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-1">{{ nota.inasistencia_1|default_if_none:'0' }}</td>
+              <td val="{{ nota.lapso_2|default_if_none:'-' }}" class="text-center lap-2">{% if nota.materia.literales %}{{ nota.lapso_2|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_2|default_if_none:'-' }}{% endif %}</td>
+              <td val="{{ nota.inasistencia_2|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-2">{{ nota.inasistencia_2|default_if_none:'0' }}</td>
+              <td val="{{ nota.lapso_3|default_if_none:'-' }}" class="text-center lap-3">{% if nota.materia.literales %}{{ nota.lapso_3|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_3|default_if_none:'-' }}{% endif %}</td>
+              <td val="{{ nota.inasistencia_3|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-3">{{ nota.inasistencia_3|default_if_none:'0' }}</td>
+              <td val="{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}" class="text-center final">{% if nota.materia.literales %}{% if nota.reparacion|literales %}{{ nota.reparacion|literales|default_if_none:'-' }}{% else %}{{ nota.promedio|literales }}{% endif %}{% else %}{% if nota.reparacion %}{{ nota.reparacion|default_if_none:'-' }}{% else %}{{ nota.promedio }}{% endif %}{% endif %}</td>
+              <td class="text-center" id="ti-{{ forloop.counter0 }}"></td>
+            </tr>
+            {% endfor %}
+            <tr class="fw-bold">
+              <td>Promedio por lapso:</td>
+              <td class="text-center" id="prom-1"></td>
+              <td class="text-center" id="pi-1"></td>
+              <td class="text-center" id="prom-2"></td>
+              <td class="text-center" id="pi-2"></td>
+              <td class="text-center" id="prom-3"></td>
+              <td class="text-center" id="pi-3"></td>
+              <td class="text-center" id="prom-f"></td>
+              <td class="text-center" id="ti-f"></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+  </div>
 </body>
 </html>
-<script>
-  
-$(document).ready(function() {
-function calcularPromedio(claseColumna, idResultado) {
+
+<script>  
+  $(document).ready(function() {
+  function calcularPromedio(claseColumna, idResultado) {
+      var sum = 0;
+      var count = 0;
+      $(claseColumna).each(function() {
+          var value = parseFloat($(this).attr('val'));
+          if (!isNaN(value)) {
+              sum += value;
+              count++;
+          }
+      });
+      var promedio = (count > 0) ? (sum / count) : '-';
+      if (promedio !== '-') {
+          promedio = promedio.toFixed(2);
+          if (promedio.endsWith('.00')) {
+              promedio = promedio.substring(0, promedio.length - 3);
+          }
+          promedio = promedio.replace('.', ',');
+      }
+      $(idResultado).text(promedio);
+  }
+
+  calcularPromedio('.lap-1', '#prom-1');
+  calcularPromedio('.ina-1', '#pi-1');
+  calcularPromedio('.lap-2', '#prom-2');
+  calcularPromedio('.ina-2', '#pi-2');
+  calcularPromedio('.lap-3', '#prom-3');
+  calcularPromedio('.ina-3', '#pi-3');
+  calcularPromedio('.final', '#prom-f');
+
+  function calculateRowSum(rowId) {
     var sum = 0;
-    var count = 0;
-    $(claseColumna).each(function() {
+    $('.f-ina-' + rowId).each(function() {
         var value = parseFloat($(this).attr('val'));
         if (!isNaN(value)) {
             sum += value;
-            count++;
         }
     });
-    var promedio = (count > 0) ? (sum / count) : '-';
-    if (promedio !== '-') {
-        promedio = promedio.toFixed(2);
-        if (promedio.endsWith('.00')) {
-            promedio = promedio.substring(0, promedio.length - 3);
-        }
-        promedio = promedio.replace('.', ',');
-    }
-    $(idResultado).text(promedio);
-}
-calcularPromedio('.lap-1', '#prom-1');
-calcularPromedio('.ina-1', '#pi-1');
-calcularPromedio('.lap-2', '#prom-2');
-calcularPromedio('.ina-2', '#pi-2');
-calcularPromedio('.lap-3', '#prom-3');
-calcularPromedio('.ina-3', '#pi-3');
-calcularPromedio('.final', '#prom-f');
+    var displaySum = sum.toFixed(2).replace('.00', '').replace('.', ',');
+    $('#ti-' + rowId).text(displaySum);
+    return sum;
+  }
 
-function calculateRowSum(rowId) {
-  var sum = 0;
-  $('.f-ina-' + rowId).each(function() {
-      var value = parseFloat($(this).attr('val'));
-      if (!isNaN(value)) {
-          sum += value;
+  var totalSum = 0;
+  {% for nota in notas %}
+      var rowSum = calculateRowSum({{ forloop.counter0 }});
+      if (!isNaN(rowSum)) {
+          totalSum += rowSum;
       }
+  {% endfor %}
+  var displayTotalSum = totalSum.toFixed(2).replace('.00', '').replace('.', ',');
+  $('#ti-f').text(displayTotalSum);
   });
-  var displaySum = sum.toFixed(2).replace('.00', '').replace('.', ',');
-  $('#ti-' + rowId).text(displaySum);
-  return sum;
-}
-
-var totalSum = 0;
-{% for nota in notas %}
-    var rowSum = calculateRowSum({{ forloop.counter0 }});
-    if (!isNaN(rowSum)) {
-        totalSum += rowSum;
-    }
-{% endfor %}
-var displayTotalSum = totalSum.toFixed(2).replace('.00', '').replace('.', ',');
-$('#ti-f').text(displayTotalSum);
-});
-
-$(document).ready(function () {
-  window.print()      
-});
-window.onafterprint = function() {
-  window.close();
-  close();
-};
-window.addEventListener("afterprint", (event) => {
-  window.close();
-  close();
-});
-
+  
+  $(document).ready(function () {
+    window.print()      
+  });
+  window.onafterprint = function() {
+    window.close();
+    close();
+  };
+  window.addEventListener("afterprint", (event) => {
+    window.close();
+    close();
+  });
 </script>
