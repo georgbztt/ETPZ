@@ -21,7 +21,7 @@
           <h6 class="text-sm m-0">{{ estudiante.nombre }}&thinsp;{{ estudiante.apellido }}</h6>
         </td>
         <td class="font-weight-bold align-middle text-center user-select-none">
-          <a href="{% url 'estudiante_ver' estudiante.id %}">
+          <a href="{% url 'estudiante_ver' estudiante.id 'ver' 'None' %}">
           <i class="fa fa-eye info-icon" aria-hidden="true"></i>
           </a>
         </td>

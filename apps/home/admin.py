@@ -3,10 +3,10 @@ from django.template.loader import get_template
 from django.contrib.admin.options import TabularInline
 
 from .models import *
-
+"""
 class NotaInlineAdmin(admin.TabularInline):
     model = Nota
-
+"""
 
 @admin.register(Boleta)
 class BoletaAdmin(admin.ModelAdmin):

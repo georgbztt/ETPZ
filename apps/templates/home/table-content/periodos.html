@@ -5,6 +5,7 @@
       <th class="text-xs font-weight-bolder opacity-7 text-center">Carga</th>
       <th class="text-xs font-weight-bolder opacity-7 text-center">Estudiantes</th>
       <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Cargar Notas</th>
+      <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Mover Estudiantes</th>
       <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Editar</th>
     </tr>
   </thead>
@@ -31,6 +32,12 @@
       <td class="font-weight-bold align-middle text-center user-select-none">
         <a class="" href="{% url 'carga_notas' periodo.id %}">
           <i class="fas fa-file-signature"></i>
+        </a>
+      </td>
+
+      <td class="font-weight-bold align-middle text-center user-select-none">
+        <a class="" href="{% url 'cambiar_periodo' periodo.id %}">
+          <i class="fa fa-forward" aria-hidden="true"></i>
         </a>
       </td>
       <td class="font-weight-bold align-middle text-center user-select-none">

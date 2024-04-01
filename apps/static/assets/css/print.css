@@ -1,18 +1,46 @@
-@media print {
-}
-
 @page{
-  size: A4 landscape;
+  size: Letter;
+  margin: 5mm;
 }
 
 @page:footer {
   display: none
 }
 
-@page :header {
+@page:header {
   display: none
 }
 
 p{
   margin: 0;
+}
+body {
+  zoom: .8;
+}
+.item {
+  flex-grow: 1;
+  text-align: right;
+  display: flex;
+}
+.item::before {
+  content: '   ';
+  background: repeating-linear-gradient(to left, var(--bs-body-color), var(--bs-body-color) 2px, transparent 1px, transparent 6px);
+  height: 2px;
+  flex-grow: 1;
+  display: inline-block;
+  margin-top: 1em;
+  margin-right: 0.1em;
+}
+@media print {
+.noScreens {display:none;}    
+}
+
+.printcover {
+z-index: 99999;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-image: linear-gradient(185deg, #42424a 0%, #191919 92%);
 }

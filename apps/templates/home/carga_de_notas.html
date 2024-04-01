@@ -13,6 +13,8 @@
         <div class="col-12">
           <form method="post">
             {% csrf_token %}
+            {{formset.management_form}}
+            
             <div class="card mb-4">
               <div class="card-header">
                 <div class="m-0 d-flex flex-sm-row justify-content-between align-items-center">
@@ -30,7 +32,8 @@
                 <p class="text-center">{{ fail_message }}</p>
                 {% else %}
                 <div class="table-responsive p-0">
-                    {{ formset.management_form }}
+                  {{ formset.management_form }}
+
                   <table class="table table-striped mb-0 ">
                     <thead>
                       <tr>
@@ -64,6 +67,12 @@
                               name="form-{{ forloop.counter0|add:multiplicador_materias }}-estudiante" 
                               id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-estudiante"
                               value="{{ estudiante.id }}"
+                            >
+                            <input 
+                              type="hidden" 
+                              name="form-{{ forloop.counter0|add:multiplicador_materias }}-periodo" 
+                              id="id_form-{{ forloop.counter0|add:multiplicador_materias }}-periodo"
+                              value="{{ estudiante.periodo.id }}"
                             >
                             <input 
                               type="hidden" 

@@ -7,9 +7,11 @@
     <div class="card-body">
       <div class="card-actions">
         {% if estudiante.periodo %}
+        {% if not otro_p %}
         <a href="{% url 'editar_notas' estudiante.id %}" title="Editar notas"><i class="fas fa-edit"></i></a>
         <a href="{% url 'estudiante_inasistencias' estudiante.id %}" title="Cargar Inasistencias"><i class="fa fa-tasks"></i></a>
-        <a href="{% url 'imprimir_notas' estudiante.id %}" target="blank" title="Imprimir notas"><i class="fas fa-print"></i></a>
+        {% endif %} 
+        <a href="{% url 'estudiante_ver' estudiante.id 'imp' otro_p_id %}" target="blank" title="Imprimir notas"><i class="fas fa-print"></i></a>
         {% endif %}
         <a href="{% url 'estudiante' %}" title="Atrás"><i class="fas fa-times fa-lg"></i></a>
       </div>
@@ -20,14 +22,29 @@
           {% if estudiante.periodo %}
           Cursante de: {{ estudiante.periodo.carga|default_if_none:'No asignado' }}<br>
           {% endif %}
-          Sección: {{ estudiante.seccion }}<br>
+          Sección: {{ estudiante.seccion|default_if_none:"-" }}<br>
       </p>
       {% comment %}
       <a href="{% url 'estudiante_editar' estudiante.id %}" class="card-link"><i class="fas fa-edit"></i> Editar</a>
       <a href="{% url 'estudiante_eliminar' estudiante.id %}" class="card-link"><i class="fas fa-trash"></i> Eliminar</a>
       {% endcomment %}
       {% if estudiante.periodo %}
-      <h5>Notas Periodo Actual</h5>
+      <div class="d-flex justify-content-between">
+        <h5 class="align-self-end col-9">Notas Periodo{% if otro_p %}: {{ otro_p }}{% else %} Actual{% endif %}</h5>
+        <div class="col-3">
+        <label class="mb-0" for="otros_periodos">Otros periodos</label>
+        <select class="mb-1 form-control" name="" id="otros_periodos" onchange="location = this.options[this.selectedIndex].value;">
+          <option value="{% url 'estudiante_ver' estudiante.id 'ver' None %}">Actual</option>
+          {% for per in otros_periodos %}
+          {% if per.id == otro_p_id %}
+          <option selected value="{% url 'estudiante_ver' estudiante.id 'ver' per.id %}">{{ per.fecha }}</option>
+          {% else %}
+          <option value="{% url 'estudiante_ver' estudiante.id 'ver' per.id %}">{{ per.fecha }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+        </div>
+      </div>
       <div class="table-responsive p-0">
           <table class="table table-striped mb-0">
             <thead>

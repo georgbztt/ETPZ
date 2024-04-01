@@ -28,7 +28,9 @@ class Estudiante(models.Model):
     def __str__(self):
         return f'{self.nombre} {self.apellido}'
 
-
+    @property
+    def otros_periodos(self):
+        return Periodo.objects.filter(nota__estudiante=self).exclude(id=self.periodo_id).distinct()
 class Boleta(models.Model):
 
     estudiante = models.ForeignKey('home.Estudiante', on_delete=models.SET_NULL, null=True)
@@ -67,7 +69,7 @@ class Carga(models.Model):
 
 class Periodo(models.Model):
 
-    fecha = models.DateField(unique=True, null=True)
+    fecha = models.CharField(max_length=30, null=True)
     carga = models.ForeignKey('home.Carga', on_delete=models.RESTRICT, null=True)
 
     class Meta:
@@ -104,4 +106,4 @@ class Nota(models.Model):
         verbose_name_plural = ("Notas")
 
     def __str__(self):
-        return self.estudiante.ci
+        return str(self.estudiante)

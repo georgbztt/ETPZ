@@ -3,7 +3,7 @@ Copyright (c) 2023 - present, Daniel Escalona
 """
 from django import forms
 from django.core.validators import *
-from django.forms.models import inlineformset_factory, modelform_factory, modelformset_factory, formset_factory#, BaseFormSet
+from django.forms.models import inlineformset_factory, modelform_factory, modelformset_factory#, BaseFormSet
 
 from django.forms import *
 from .models import *
@@ -70,6 +70,21 @@ class estudianteForm(ModelForm):
             'periodo': Select(attrs={'class': 'form-control', 'id':'periodo'}),
             'seccion': TextInput(attrs={'class': 'form-control text-capitalize', 'id':'seccion'}),
         }
+
+class NotaForm(ModelForm):
+    class Meta:
+        model = Nota
+        fields = (
+            'estudiante',
+            'periodo',
+            'materia',
+            'lapso_1',
+            'lapso_2',
+            'lapso_3',
+            'reparacion',
+        )
+        
+
 
 NotasFormSet = modelformset_factory(
     Nota,

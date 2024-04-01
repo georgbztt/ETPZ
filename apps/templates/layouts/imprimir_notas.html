@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load tags %}
+{% load tz %}
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notas {{ estudiante.apellido }} {{ estudiante.nombre }}</title>
-  <script src="../../static/assets/lib/jquery-3.6.2/jquery-3.6.2.min.js"></script>
+  <script src="{{ ASSETS_ROOT }}/lib/jquery-3.6.2/jquery-3.6.2.min.js"></script>
   <link id="pagestyle_base" href="{{ ASSETS_ROOT }}/css/base.css" rel="stylesheet" />
   <link id="pagestyle" href="{{ ASSETS_ROOT }}/css/soft-ui-dashboard.css?v=1.0.6" rel="stylesheet" />
-  <link rel="stylesheet" href="../../static/assets/css/print.css">
+  <link rel="stylesheet" href="{{ ASSETS_ROOT }}/css/print.css">
 </head>
 
 <body>
-  <div class="card text-dark border border-dark m-3 ">
+  <div class="noScreens printcover"></div>
+  <div class="card text-dark border border-dark m-3" style="border-radius:0">
     <div class="d-flex flex-row justify-content-around align-items-cente text-center p-3">
       <div class="d-flex flex-column justify-content-around">
         <p>Republica Bolivariana de Venezuela</p>
@@ -21,33 +23,34 @@
         <p>San Juan de los Morros - Estado Guarico  </p>
       </div>
       <div class="d-flex flex-column justify-content-around">
-        <img src="../../static/assets/img/logo-alt.svg" width="128" height="128" class=""></img>
+        <img src="{{ ASSETS_ROOT }}/img/logo-alt.svg" width="110" height="110" class=""></img>
       </div>
     </div>
 
-      <div class="container text-center pt-0 pb-3 ps-3 pe-3 text-dark">
-        <div class="row">
-          <p class="p-3 fw-bold">Boletín Informativo</p>
+      <div class="container text-center pt-0 pb-3 px-1 text-dark">
+        <div class="p-3 fw-bold row">
+          <p class="">Boletín Informativo</p>
+          <p>{{ otro_p|default_if_none:estudiante.periodo }} </p>
         </div>
 
         <div class="row">
-          <div class="col px-5">
+          <div class="col-6">
             <div class="d-flex justify-content-between">
               <p class="fw-bold">
                 Estudiante:
               </p> 
-              <p class="fw-normal">
+              <p class="fw-normal item">
                 {{estudiante.nombre}} {{estudiante.apellido}}
               </p>
             </div>
           </div>
 
-          <div class="col px-5">
+          <div class="col-6">
             <div class="d-flex justify-content-between">
               <p class="fw-bold">
                 C.I.:
               </p> 
-              <p class="fw-normal">
+              <p class="fw-normal item">
                 {{ estudiante.ci_tipo }}-{{estudiante.ci}}
               </p>
             </div>
@@ -55,14 +58,14 @@
         </div>
 
         <div class="row">
-          <div class="col px-5 ">
+          <div class="col-6">
 
             {% if estudiante.periodo %}
             <div class="d-flex justify-content-between">
               <p class="fw-bold">
                 Cursante del:
               </p>
-              <p class="fw-normal">
+              <p class="fw-normal item">
                 {{ estudiante.periodo.carga|default_if_none:'No asignado' }}
               </p>
             </div>
@@ -70,13 +73,13 @@
 
           </div>
 
-          <div class="col px-5">
+          <div class="col-6">
             <div class="d-flex justify-content-between">
               <p class="fw-bold">
                 Sección:
               </p> 
-              <p class="fw-normal">
-                {{estudiante.seccion}}
+              <p class="fw-normal item">
+                {{estudiante.seccion|default_if_none:"-"}}
               </p>
             </div>
           </div>
@@ -85,7 +88,7 @@
 
     {% if estudiante.periodo %}
     <div class="table-responsive">
-      <table class="table m-0 text-center text-dark">
+      <table class="table m-0 text-dark">
         <thead>
           <tr class="">
             <th>Materia</th>
@@ -110,7 +113,7 @@
           </tr>
           {% for nota in notas %}
             <tr id="row-{{ forloop.counter0 }}">
-              <td >{{ nota.materia|default_if_none:'-' }}</td>
+              <td class="ps-3" >{{ nota.materia|default_if_none:'-' }}</td>
               <td val="{{ nota.lapso_1|default_if_none:'-' }}" class="text-center lap-1">{% if nota.materia.literales %}{{ nota.lapso_1|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_1|default_if_none:'-' }}{% endif %}</td>
               <td val="{{ nota.inasistencia_1|default_if_none:'0' }}" class="text-center f-ina-{{ forloop.counter0 }} ina-1">{{ nota.inasistencia_1|default_if_none:'0' }}</td>
               <td val="{{ nota.lapso_2|default_if_none:'-' }}" class="text-center lap-2">{% if nota.materia.literales %}{{ nota.lapso_2|literales|default_if_none:'-' }}{% else %}{{ nota.lapso_2|default_if_none:'-' }}{% endif %}</td>
@@ -122,7 +125,7 @@
             </tr>
             {% endfor %}
             <tr class="fw-bold">
-              <td>Promedio por lapso:</td>
+              <td class="ps-3">Promedio por lapso:</td>
               <td class="text-center" id="prom-1"></td>
               <td class="text-center" id="pi-1"></td>
               <td class="text-center" id="prom-2"></td>
@@ -137,6 +140,9 @@
     </div>
     {% endif %}
 
+    <div class="pt-3 text-xxs text-center">
+      Generado por el sistema: {% now "F j, Y" %}
+    </div>
   </div>
 </body>
 </html>
@@ -199,6 +205,7 @@
   $(document).ready(function () {
     window.print()      
   });
+  
   window.onafterprint = function() {
     window.close();
     close();

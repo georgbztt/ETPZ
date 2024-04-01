@@ -1,0 +1,27 @@
+<div class="d-flex flex-wrap gap-3 p-4">
+    <form method="post" action="{% url 'cambiar_periodo' periodo_actual %}">
+        {% csrf_token %}        
+        <label for="periodo_nuevo">Periodo Nuevo:</label>
+        <select class="form-control" name="periodo_nuevo" id="periodo_nuevo">
+            {% for periodo in periodos %}
+                <option value="{{ periodo.id }}">{{ periodo.fecha }}</option>
+            {% endfor %}
+        </select>
+        <input class="btn btn-primary btm-sm m-0" type="submit" value="Cambiar Periodo">
+    </form>
+</div>
+<script>
+    $(document).ready(function(){
+        $('#periodo_nuevo').select2({
+		    placeholder: 'Seleccione...',
+		    width: '100%',
+		    selectionCssClass: ':all:',
+		    dropdownCssClass: ':all:',
+            language: {
+                noResults: function() {
+                    return "No hay periodos libres disponibles"; 
+                }
+            }
+        });
+    });
+</script>
