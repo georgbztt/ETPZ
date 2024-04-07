@@ -1,12 +1,4 @@
-# -*- encoding: utf-8 -*-
-"""
-Copyright (c) 2019 - present AppSeed.us
-"""
-import datetime, decimal
-from email import message
-from itertools import count
-from multiprocessing import context
-from re import T
+#import datetime, decimal
 from urllib import request
 from django import template
 from django.db import transaction 
@@ -16,7 +8,7 @@ from django.forms import formset_factory
 from django.template import loader
 from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator
+#from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
 
@@ -257,7 +249,7 @@ def estudianteVer(request, pk, dir, periodo_sel):
             notas = Nota.objects.filter(Q(estudiante_id=pk), Q(periodo=otro_p))
             otro_p_id = otro_p.id 
         except:
-            print('f')
+            print('F')#Respuesta de respaldo
     context = {
         'estudiante':estudiante,
         'notas':notas,
@@ -390,28 +382,42 @@ def estudianteInasistencias(request, pk):
 @login_required(login_url="/login/")
 def carga_notas(request, pd):
     
+    # Obtenemos el objeto Periodo correspondiente al id proporcionado o lanzamos un error 404 si no existe
     periodo = get_object_or_404(Periodo, pk=pd)
+    # Obtenemos la carga asociada al periodo
     carga = periodo.carga
+    # Obtenemos los primeros 10 estudiantes asociados al periodo que aún no han completado el periodo
     estudiantes = Estudiante.objects.filter(periodo_id=pd).order_by("ci").exclude(periodo_completo=True)[:10]
+    # Si no hay estudiantes pendientes, renderizamos la plantilla con un mensaje de error
     if not estudiantes:
         return render(request, 'home/carga_de_notas.html', {'fail_message':'No hay estudiantes pendientes por cargas en este periodo'})
     
+    # Obtenemos todas las materias asociadas a la carga, ordenadas por nombre
     materias = carga.materias.all().order_by("nombre")
     
+    # Contamos el número de materias
     cantidad_materias = materias.count()
+    # Calculamos el número total de formularios que necesitamos, que es el número de estudiantes por el número de materias
     total_forms = cantidad_materias * estudiantes.count()
+    # Creamos un conjunto de formularios para el modelo Nota, con el número total de formularios que hemos calculado
     NotasFormSet = formset_factory(form=NotaForm, extra=total_forms)
+    # Inicializamos el conjunto de formularios con los datos POST si los hay, o vacío si no los hay
     formset = NotasFormSet(request.POST or None, )
     
+    # Si se ha enviado el formulario
     if request.POST:
+        # Si el conjunto de formularios es válido
         if formset.is_valid():
+            # Recorremos cada formulario en el conjunto
             for form in formset:
+                # Imprimimos los datos del estudiante y del periodo
                 print(form.cleaned_data['estudiante'])
                 print(form.cleaned_data['periodo'])
+                # Obtenemos el estudiante y el periodo del formulario
                 estudiante = form.cleaned_data['estudiante']
                 periodo = form.cleaned_data['periodo']
+                # Creamos un nuevo objeto Nota con los datos del formulario
                 Nota.objects.create(
-                    
                     estudiante = estudiante,
                     periodo = periodo,
                     materia = form.cleaned_data['materia'],
@@ -419,16 +425,19 @@ def carga_notas(request, pd):
                     lapso_2 = form.cleaned_data['lapso_2'],
                     lapso_3 = form.cleaned_data['lapso_3'],
                     reparacion = form.cleaned_data['reparacion'],
-                    
                 )
 
+            # Marcamos el periodo como completo para cada estudiante y guardamos el estudiante
             for estudiante in estudiantes:
                 estudiante.periodo_completo = True
                 estudiante.save()
+                # Redirigimos al usuario a la vista del periodo
                 return redirect('periodo')
         else:
+            # Si el conjunto de formularios no es válido, imprimimos los errores
             print(formset.errors)
 
+    # Preparamos el contexto para la plantilla
     context = {
         'periodo': periodo,
         'carga': carga,
@@ -440,7 +449,9 @@ def carga_notas(request, pd):
         'segment': 'periodo'
         }
 
+    # Renderizamos la plantilla con el contexto
     return render(request, 'home/carga_de_notas.html', context)
+
 
 @login_required(login_url="/login/")
 def periodos(request):
@@ -492,25 +503,37 @@ def periodoCrear(request):
 @login_required
 @permission_required('home.change_periodo', raise_exception=True)#type:ignore
 def periodoEditar(request, pk):
+    # Obtenemos el objeto Periodo correspondiente al id proporcionado o lanzamos un error 404 si no existe
     obj = get_object_or_404(Periodo, pk=pk)
+    # Creamos un formulario para el objeto Periodo, inicializado con los datos POST si los hay, o con los datos del objeto si no los hay
     form = periodoForm(request.POST or None, instance=obj)
+    # Definimos el contenido de la plantilla
     content = 'home/form-content/periodo_form.html'
+    # Preparamos el contexto para la plantilla
     context = {
-        'form':form,
-        'segment':'periodo',
-        'title':'Editar Periodo académico',
-        'content':content
+        'form': form,
+        'segment': 'periodo',
+        'title': 'Editar Periodo académico',
+        'content': content
     }
+    # Si se ha enviado el formulario
     if request.POST:
+        # Si el formulario es válido
         if form.is_valid():
+            # Guardamos el formulario pero no confirmamos los cambios en la base de datos todavía (commit=False)
             form.save(commit=False)
-            #validación
+            # Aquí es donde iría cualquier validación adicional
+            # Confirmamos los cambios en la base de datos
             form.save()
+            # Redirigimos al usuario a la vista del periodo
             return redirect('periodo')
         else:
+            # Si el formulario no es válido, imprimimos los errores
             print(form.errors)
     
+    # Renderizamos la plantilla con el contexto
     return render(request, 'layouts/form.html', context)
+
 
 @login_required(login_url="/login/")
 @permission_required('home.delete_periodo', raise_exception=True)#Validar permiso
@@ -523,10 +546,10 @@ def periodoEliminar(request, pk):
     return redirect('periodo')#Redireccionar normalmente
 
 @login_required(login_url="/login/")
-@permission_required('home.change_periodo', raise_exception=True)#Validar permiso
-@transaction.atomic
+@permission_required('home.change_periodo', raise_exception=True)  # Validar permiso
+@transaction.atomic  # Aseguramos que todas las operaciones en la base de datos se realicen de forma atómica // que todas las operaciones se ejecutan con éxito, si falla una, se revierten los cambios
 def cambiar_periodo(request, periodo_actual):
-    if request.method == 'POST':
+    if request.method == 'POST':  # Si el método de la petición es POST
         # Obtén el periodo al que se moverán los estudiantes
         nuevo_periodo = get_object_or_404(Periodo, pk=request.POST['periodo_nuevo'])
 
@@ -544,15 +567,19 @@ def cambiar_periodo(request, periodo_actual):
                 estudiante.periodo_completo = False
                 estudiante.save()
 
+            # Si todo ha ido bien, redirige al usuario a la página de periodos con un mensaje de éxito
             return HttpResponse('<script>alert("Cambio de periodo realizado con éxito."); window.location.href="/periodos";</script>')
 
         else:
+            # Si ha habido algún problema, redirige al usuario a la página de periodos con un mensaje de error
             return HttpResponse('<script>alert("Hubo un error, por favor contacte con soporte."); window.location.href="/periodos";</script>')
 
-    else:
-        # Si el método es GET, renderiza la plantilla con los periodos disponibles
+    else:  # Si el método de la petición es GET
+        # Obtenemos todos los periodos disponibles que no sean el actual y que no tengan estudiantes asignados
         periodos = Periodo.objects.exclude(id=periodo_actual).filter(estudiante__isnull=True)
+        # Definimos el contenido de la plantilla
         content = 'home/form-content/cambiar_periodo.html'
+        # Preparamos el contexto para la plantilla
         context = {
             'periodos': periodos,
             'segment':'periodo',
@@ -560,5 +587,5 @@ def cambiar_periodo(request, periodo_actual):
             'content':content,
             'periodo_actual':periodo_actual
             }
+        # Renderizamos la plantilla con el contexto
         return render(request, 'layouts/form.html', context)
-

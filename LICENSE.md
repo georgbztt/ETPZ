@@ -34,7 +34,6 @@ SOFTWARE.
 | Create multiple SaaS applications | **NO** |
 | End-product paying users | **NO** |
 | Product sale | **NO** |
-| Remove footer credits | **YES** |
 | --- | --- |
 | Remove copyright mentions from source code | NO |
 | Production deployment assistance | NO |
