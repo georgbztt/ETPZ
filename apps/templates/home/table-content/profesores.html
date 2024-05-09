@@ -1,0 +1,38 @@
+{% load tags %}
+<table class="table table-striped mb-0 ">
+    <thead>
+      <tr>
+        <th class="text-xs font-weight-bolder opacity-7 text-center">CI</th>
+        <th class="text-xs font-weight-bolder opacity-7">Nombre y Apellido</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Ver</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Materias</th>
+        <th class="text-xs font-weight-bolder opacity-7 text-center user-select-none">Editar</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for profesor in profesores %}
+      <tr class="text-primary">
+        <td class="font-weight-bold align-middle text-center">
+          <h6 class="text-sm m-0">{{ profesor.ci_tipo }}-{{ profesor.ci|remove_dot }}</h6>
+        </td>
+        <td class="font-weight-bold ps-4">
+          <h6 class="text-sm m-0">{{ profesor.nombre }}&thinsp;{{ profesor.apellido }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center user-select-none">
+          <a href="{% url 'profesor_ver' profesor.id 'ver' 'None' %}">
+          <i class="fa fa-eye info-icon" aria-hidden="true"></i>
+          </a>
+        </td>
+        <td class="font-weight-bold align-middle text-center">
+          <h6 class="text-sm m-0">{{ profesor.materia|default_if_none:'-' }}</h6>
+        </td>
+        <td class="font-weight-bold align-middle text-center user-select-none">
+          <a href="{% url 'profesor_editar' profesor.id %}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+          </a>
+          {% include 'includes/del_modal.html' with target=estudiante.id objeto='el Estudiante' info='Esto incluye todas las notas relacionadas al estudiante, esta acción no puede deshacerse' url_name='estudiante_eliminar' %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>

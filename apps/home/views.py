@@ -207,6 +207,20 @@ def cargaEliminar(request, pk):
     return redirect('carga')#Redireccionar normalmente
 
 @login_required(login_url="/login/")
+def profesores(request):
+    table = 'home/table-content/profesores.html'
+    context= {  
+        'profesores': profesores,
+        'segment':'profesores',
+        'title': 'Profesores',
+        'buscar': True,
+        'table': table,
+    }
+
+    return render(request, 'home/table.html', context)
+
+
+@login_required(login_url="/login/")
 def estudiantes(request):
     estudiantes = Estudiante.objects.all().order_by('ci')
 
