@@ -5,6 +5,8 @@ urlpatterns = [
 
     # The home page
     path('', views.index, name='home'),
+    
+    path('planillas', views.planillas, name='planilla'),
 
     path('materias', views.materias, name='materia'),
     path('materias/crear', views.materiaCrear, name='materia_crear'),
