@@ -34,6 +34,15 @@
       {% endcomment %}
 
       <li class="nav-item">
+        <a class="nav-link {% if 'profesores' in segment %} active text-white {% endif %}" href="{% url 'profesores' %}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fas fa-user-tie" aria-hidden="true"></i>
+          </div>
+          <span class="nav-link-text ms-1 text-dark">Profesores</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link {% if 'estudiante' in segment %} active text-white {% endif %}" href="{% url 'estudiante' %}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-users" aria-hidden="true"></i>
