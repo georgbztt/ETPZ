@@ -128,6 +128,21 @@ def materiaEliminar(request, pk):
     return redirect('materia')#Redireccionar normalmente
 
 @login_required(login_url="/login/")
+def planillas(request):
+
+    table = 'home/table-content/planillas.html'
+    context={
+        'planillas':planillas,
+        'segment':'planilla',
+        'title':'Planillas',
+        'buscar':True,
+        'table':table,
+        
+    }
+    
+    return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
 def cargas(request):
     cargas = Carga.objects.all()
 
