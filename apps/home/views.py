@@ -142,6 +142,60 @@ def planillas(request):
     
     return render(request, 'home/table.html', context)
 
+
+@login_required(login_url="/login/")
+def registroTitulos(request):
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'planillas':planillas,
+        'segment':'planilla',
+        'title':'Planilla Registro de Titulos',
+        'buscar':True,
+        'table':table,
+    }
+    
+    return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def finales(request):
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'planillas':planillas,
+        'segment':'planilla',
+        'title':'Planilla Finales',
+        'buscar':True,
+        'table':table,
+    }
+    
+    return render(request, 'home/table.html', context)
+
+def revision(request):
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'planillas':planillas,
+        'segment':'planilla',
+        'title':'Planilla Revisión',
+        'buscar':True,
+        'table':table,
+    }
+    
+    return render(request, 'home/table.html', context)
+
+def materiaPendientes(request):
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'planillas':planillas,
+        'segment':'planilla',
+        'title':'Planilla Materia Pendientes',
+        'buscar':True,
+        'table':table,
+    }
+    
+    return render(request, 'home/table.html', context)
 @login_required(login_url="/login/")
 def cargas(request):
     cargas = Carga.objects.all()
