@@ -169,7 +169,7 @@ def finales(request):
         'table':table,
     }
     
-    return render(request, 'home/table.html', context)
+    return render(request, 'home/planillas/finales.html', context)
 
 def revision(request):
 

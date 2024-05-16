@@ -1,0 +1,1146 @@
+{% extends 'layouts/base.html' %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="pagestyle_dark" href="{{ ASSETS_ROOT }}/css/table.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+{% block content %}
+{% load tags %}
+<div class="container-fluid py-4">
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div class="d-flex justify-content-between"> 
+            <h6>{{ title }}</h6>
+            <div>
+              <a class="btn btn-outline-secondary btn-sm" href="/planillas">
+                <span class="btn-inner--icon"><i class="fas fa-arrow-left"></i></span>
+                <span class="btn-inner--text">Atras</span>
+              </a>
+              <button class="btn btn-icon btn-3 btn-primary btn-sm" type="button" onclick="imprimirTabla()">
+                <span class="btn-inner--icon"><i class="fas fa-print"></i></span>
+                <span class="btn-inner--text">Imprimir</span>
+              </button>
+            </div>
+            {% if url_crear %}
+            <a href="{{ url_crear }}" title="Agregar {{ segment }}">
+              <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-body p-0 d-flex justify-content-center pb-5">
+          <table id="tabla-planilla" width="900">
+            <tr>
+              <td rowspan="5" colspan="5"><img src="{{ ASSETS_ROOT }}/img/gbv.png" alt="Logo del ministerio de poder popular para la Educacion"
+                  width="450"></td>
+              <th class="text-10" colspan="13">
+                Código del Formato: EMG
+              </th>
+            </tr>
+            <tr>
+              <th class="text-10 text-left" colspan="4">I. Año escolar:</th>
+              <td contenteditable="true" class="text-10 text-left b-solid-1" colspan="4">2022-2023</td>
+            </tr>
+            <tr>
+              <th class="text-10 text-left" colspan="5">Tipo de evaluación:</th>
+              <td class="text-10 b-solid-1" colspan="3">FINAL</td>
+              <th class="text-10 text-right" colspan="3">Mes y Año:</th>
+              <td class="text-10 b-solid-1 text-left" colspan="3" contenteditable="true">JULIO 2023</td>
+            </tr>
+            <tr height="10"></tr>
+            <tr height="10"></tr>
+            <tr>
+              <th class="text-10 text-left" colspan="20">II Datos del plantel:</th>
+            </tr>
+            <tr class="mt-3">
+              <th class="text-9 text-left" colspan="2">Codigo del plantel:</th>
+              <td contenteditable="true" class="b-solid-1 text-10"></td>
+              <th class="text-10 text-right">Nombre:</th>
+              <td contenteditable="true" class="b-solid-1 text-10 pl-3" colspan="17"></td>
+            </tr>
+            <tr class="mt-3">
+              <th class="text-10 text-left" colspan="2">Dirección:</th>
+              <td contenteditable="true" class="b-solid-1 text-10" colspan="6"></td>
+              <th class="text-10 text-right" colspan="2">Teléfono:</th>
+              <td contenteditable="true" class="b-solid-1 text-10" colspan="10"></td>
+            </tr>
+            <tr class="mt-3">
+              <th class="text-10 text-left" colspan="2">Municipio:</th>
+              <td contenteditable="true" class="b-solid-1 text-10" colspan="2"></td>
+              <th class="text-10 text-right">Entidad Federal:</th>
+              <td contenteditable="true" class="b-solid-1 text-10" colspan="4"></td>
+              <th class="text-10 text-right" colspan="4">Zona Educativa:</th>
+              <td contenteditable="true" class="b-solid-1 text-10" colspan="8"></td>
+            </tr>
+            <tr class="mt-3">
+              <th class="text-10 text-left" colspan="2">Director(a):</th>
+              <td contenteditable="true" class="b-solid-1 text-10" colspan="3"></td>
+              <th class="text-10 text-right" colspan="2">Cedula:</th>
+              <td contenteditable="true" class="b-solid-1 text-10" colspan="13"></td>
+            </tr>
+            <tr>
+              <th height="10" colspan="20"></th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="10">III IDENTIFICACION DEL ESTUDIANTE:</th>
+              <th class="solid-1_text-center" colspan="10">IV RESUMEN FINAL DEL RENDIMIENTO</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" rowspan="4">Nº</th>
+              <th class="solid-1_text-center" rowspan="4" width="70">CEDULA DE IDENTIDAD</th>
+              <th class="solid-1_text-center min-w-120" rowspan="4" width="126">APELLIDOS</th>
+              <th class="solid-1_text-center min-w-120" rowspan="4" width="120">NOMBRES</th>
+              <th class="solid-1_text-center" rowspan="4">LUGAR DE NACIMIENTO</th>
+              <th class="solid-1_text-center" rowspan="4">EF</th>
+              <th class="solid-1_text-center text-vertical" rowspan="4">SEXO</th>
+              <th class="solid-1_text-center" colspan="3" rowspan="1">FECHA DE NACIMIENTO</th>
+              <th class="solid-1_text-center" colspan="8">AREAS DE FORMACION</th>
+              <th class="solid-1_text-center" rowspan="2" colspan="2" class="text-left text-w-1 text-7" width="100">PARTICIPACIÓN EN GRUPOS DE CREACIÓN,
+                RECREACIÓN Y PRODUCCIÓN</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center text-vertical" rowspan="3">DIA</th>
+              <th class="solid-1_text-center text-vertical" rowspan="3">MES</th>
+              <th class="solid-1_text-center text-vertical" rowspan="3">AÑO</th>
+              <th class="solid-1_text-center" colspan="8">AREA COMUN</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">1</th>
+              <th class="solid-1_text-center">2</th>
+              <th class="solid-1_text-center">3</th>
+              <th class="solid-1_text-center">4</th>
+              <th class="solid-1_text-center">5</th>
+              <th class="solid-1_text-center">6</th>
+              <th class="solid-1_text-center">7</th>
+              <th class="solid-1_text-center">8</th>
+              <th class="solid-1_text-center">9</th>
+              <th class="solid-1_text-center" rowspan="2">GRUPO</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">CA</th>
+              <th class="solid-1_text-center">ILE</th>
+              <th class="solid-1_text-center">MA</th>
+              <th class="solid-1_text-center">EF</th>
+              <th class="solid-1_text-center">AP</th>
+              <th class="solid-1_text-center">CN</th>
+              <th class="solid-1_text-center">GHC</th>
+              <th class="solid-1_text-center">OC</th>
+              <th class="solid-1_text-center">PG</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">1</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">2</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">3</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">4</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">5</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">6</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">7</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">8</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">9</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">10</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">11</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">12</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">13</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">14</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">15</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">16</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">17</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">18</th>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+              <td contenteditable="true" class="solid-1_text-center"></td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">19</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">20</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">21</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">22</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">23</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">24</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">25</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">26</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">27</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">28</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">29</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th contenteditable="true" class="solid-1_text-center">30</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">31</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">32</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">33</th>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+              <td contenteditable="true" class="solid-1_text-center">*</td>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" rowspan="6" colspan="3">
+                Total de Areas de Formacion
+              </th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="7">
+                Inscritos
+              </th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">*</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="7">
+                Inasistentes
+              </th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">*</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="7">
+                Aprobados
+              </th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">*</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="7">
+                No Aprobados
+              </th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">*</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="7">
+                No Cursantes
+              </th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">0</th>
+              <th class="solid-1_text-center">*</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" rowspan="1" colspan="3">V. Profesores por Áreas</th>
+              <th class="solid-1_text-center" rowspan="2" colspan="4">Apellidos y Nombres del profesor</th>
+              <th class="solid-1_text-center" rowspan="2" colspan="4">Cédula de identidad</th>
+              <th class="solid-1_text-center" rowspan="2" colspan="5">Firma</th>
+              <th class="solid-1_text-center" rowspan="1" colspan="4">VI. Identificación del Curso:</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">N°</th>
+              <th class="solid-1_text-center" colspan="2">Áreas de Formación</th>
+              <th class="solid-1_text-center" colspan="4">PLAN DE ESTUDIO</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">1</th>
+              <th class="solid-1_text-center">CA</th>
+              <td class="solid-1_text-center">Castellano</th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">2</th>
+              <th class="solid-1_text-center">ILE</th>
+              <td class="solid-1_text-center">Inglés y otras Lenguas Extrajeras</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th class="solid-1_text-center" colspan="4">CÓDIGO</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">3</th>
+              <th class="solid-1_text-center">MA</th>
+              <td class="solid-1_text-center">Matemáticas</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">4</th>
+              <th class="solid-1_text-center">EF</th>
+              <td class="solid-1_text-center">Educación Física</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th class="solid-1_text-center" colspan="4">AÑO CURSADO</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">5</th>
+              <th class="solid-1_text-center">AP</th>
+              <td class="solid-1_text-center">Arte y Patrimonio</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">6</th>
+              <th class="solid-1_text-center">CN</th>
+              <td class="solid-1_text-center">Ciencias Naturales</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th class="solid-1_text-center" colspan="4">SECCIÓN</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">7</th>
+              <th class="solid-1_text-center">GHC</th>
+              <td class="solid-1_text-center">Geografía, Historia y Ciudadania</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">8</th>
+              <th class="solid-1_text-center">OC</th>
+              <td class="solid-1_text-center">Orientación y Convivencia</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th class="solid-1_text-center" colspan="3" width="100">N° DE ESTUDIANTES POR SECCIÓN</th>
+              <th class="solid-1_text-center" colspan="1" width="100">N° DE ESTUDIANTES EN ESTA PÁGINA</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center">9</th>
+              <th class="solid-1_text-center">PG</th>
+              <td contenteditable="true" class="solid-1_text-center">Participación en Grupos</td>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="4"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="5"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="3"></th>
+              <th contenteditable="true" class="solid-1_text-center" colspan="1"></th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="20">VII. Observaciones: SE IMPARTIERON LOS PROGRAMAS: Dibujo, Madera, Ajuste, Eletcricidad. En
+                Participacion en grupos de creacion, Recreacion y Produccion.</th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="20" height="10"></th>
+            </tr>
+            <tr>
+              <th class="solid-1_text-center" colspan="3">VIII. Fecha de Remision</th>
+              <td contenteditable="true" class="solid-1_text-center" colspan="4" rowspan="8">SELLO DE PLANTEL</td>
+              <th class="solid-1_text-center" colspan="9">IX. Fecha de recepción</th>
+              <td contenteditable="true" class="solid-1_text-center" colspan="4" rowspan="8">SELLO DE ZONA EDUCATIVA</td>
+            </tr>
+            <tr>
+              <td contenteditable="true" class="solid-1_text-center" colspan="3">Director(a)</td>
+              <td contenteditable="true" class="solid-1_text-center" colspan="9">Funcionario Receptor</td>
+            </tr>
+            <tr>
+              <td contenteditable="true" class="solid-1_text-center" colspan="3">Apellidos y Nombres:</td>
+              <td contenteditable="true" class="solid-1_text-center" colspan="9">Apellidos y Nombres:</td>
+            </tr>
+            <tr>
+              <td contenteditable="true" class="solid-1_text-center" colspan="3" height="10"></td>
+              <td contenteditable="true" class="solid-1_text-center" colspan="9"></td>
+            </tr>
+            <tr>
+              <td contenteditable="true" class="solid-1_text-center" colspan="3">Cédula de Identidad:</td>
+              <td contenteditable="true" class="solid-1_text-center" colspan="9">Cédula de Identidad:</td>
+            </tr>
+            <tr>
+              <td contenteditable="true" class="solid-1_text-center" colspan="3" height="10"></td>
+              <td contenteditable="true" class="solid-1_text-center" colspan="9"></td>
+            </tr>
+            <tr>
+              <td contenteditable="true" class="solid-1_text-center" colspan="3">Firma:</td>
+              <td contenteditable="true" class="solid-1_text-center" colspan="9">Firma:</td>
+            </tr>
+            <tr>
+              <td contenteditable="true" class="solid-1_text-center" colspan="3" height="10"></td>
+              <td contenteditable="true" class="solid-1_text-center" colspan="9"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script> 
+  
+  function imprimirTabla() {
+      // Guardar el contenido original del cuerpo
+      var cuerpoOriginal = document.body.innerHTML;
+
+      // Obtener el contenido de la tabla
+      var contenidoTabla = document.getElementById("tabla-planilla").outerHTML;
+
+      // Reemplazar el contenido del cuerpo por el contenido de la tabla
+      document.body.innerHTML = contenidoTabla;
+
+      // Imprimir el documento
+      window.print();
+
+      // Revertir los cambios en el cuerpo
+      document.body.innerHTML = cuerpoOriginal;
+  }
+
+  $('#buscar').keyup(function() {
+    var params = new URLSearchParams(window.location.search);
+    var data = {};
+    for (var pair of params.entries()) {
+      data[pair[0]] = pair[1];
+    }
+    data['buscar'] = $('#buscar').val();
+    $.ajax({
+        url: "{% url segment %}",
+        data: data,
+        dataType: 'json',
+        success: function(data) {
+            $('#contenedor-tabla').html(data.table_html);
+            //$('#contenedor-paginador').html(data.paginator_html);
+        }
+    });
+  })
+  /*
+  $(document).on('click', '.paginador', function(e) {
+    e.preventDefault();
+    var page = $(this).attr('href').split('page=')[1];
+    var params = new URLSearchParams(window.location.search);
+    var data = {};
+    for (var pair of params.entries()) {
+        data[pair[0]] = pair[1];
+    }
+    data['page'] = page;
+    $.ajax({
+        url: "{% url segment %}",
+        data: data,
+        dataType: 'json',
+        success: function(data) {
+            $('#contenedor-tabla').html(data.table_html);
+            //$('#contenedor-paginador').html(data.paginator_html);
+        }
+    });
+  });*/
+  
+</script>
+{% endblock javascripts %}
