@@ -8,10 +8,10 @@ from django.forms import formset_factory
 from django.template import loader
 from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
-#from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
 from .forms import PlantelForm
+from .models import DatosPlantel
 
 from .models import *
 from .forms import *
@@ -679,18 +679,40 @@ def configuracion(request):
     if request.method == 'POST':
         form = PlantelForm(request.POST)
         if form.is_valid():
-            print("")
-            print(form.cleaned_data)
-            print("")
+            datos_plantel = DatosPlantel.objects.first()
+
+            if datos_plantel:
+                DatosPlantel.objects.update(**form.cleaned_data)
+            else:
+                DatosPlantel.objects.create(**form.cleaned_data)
     else:
-        form = PlantelForm()
+
+        datos_plantel = DatosPlantel.objects.values().first()
+
+        if not datos_plantel:
+            datos_plantel= {
+                'codigo': '', 
+                'nombre': '', 
+                'direccion': '', 
+                'telefono': None, 
+                'municipio': '', 
+                'entidad_federal': '', 
+                'zona_educativa': '', 
+                'distrito_escolar': '', 
+                'director': '', 
+                'ci_tipo': '', 
+                'ci': None
+            }
+
+        form = PlantelForm(initial=datos_plantel)
 
     content = 'home/configuracion/index.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Configuración',
-        'table':content
+        'table':content,
+        'datos_plantel': datos_plantel
     }
 
     return render(request, 'home/table.html', context)
