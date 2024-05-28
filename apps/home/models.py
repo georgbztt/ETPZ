@@ -31,3 +31,34 @@ class DatosPlantel(models.Model):
 
     class Meta:
         verbose_name_plural = "Datos Plantel"  # Nombre en plural para el panel de administración
+
+class Anios(models.Model):
+    id = models.AutoField(primary_key=True)  # Llave primaria autoincremental
+    nombre = models.CharField(max_length=255, null=False)  # Cadena de texto no nula
+
+    def __str__(self):
+        return self.nombre  # Representación en cadena del objeto
+
+    class Meta:
+        verbose_name_plural = "Años"  # Nombre en plural para el panel de administración
+
+class Menciones(models.Model):
+    id = models.AutoField(primary_key=True)  # Llave primaria autoincremental
+    nombre = models.CharField(max_length=255, null=False)  # String de 255 de longitud
+    nombre_abrev = models.CharField(max_length=5, null=False)  # String de 255 de longitud
+
+    def __str__(self):
+        return self.nombre  # Representación en cadena del objeto
+
+    class Meta:
+        verbose_name_plural = "Menciones"  # Nombre en plural para el panel de administración
+
+class Secciones(models.Model):
+    id = models.AutoField(primary_key=True)  # Llave primaria autoincremental
+    nombre = models.CharField(max_length=3, null=False)  # String de 255 de longitud
+
+    def __str__(self):
+        return self.nombre  # Representación en cadena del objeto
+
+    class Meta:
+        verbose_name_plural = "Secciones"  # Nombre en plural para el panel de administración
