@@ -11,6 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 #from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
+from .forms import PlantelForm
 
 from .models import *
 from .forms import *
@@ -18,7 +19,6 @@ from .forms import *
 @login_required(login_url="/login/")
 def index(request):
     context = {'segment': 'index'}
-    return redirect('estudiante')
     return render(request, 'home/index.html', context)
 
 @login_required(login_url="/login/")
@@ -672,3 +672,25 @@ def cambiar_periodo(request, periodo_actual):
             }
         # Renderizamos la plantilla con el contexto
         return render(request, 'layouts/form.html', context)
+    
+@login_required(login_url="/login/")
+def datos_plantel(request):
+    
+    if request.method == 'POST':
+        form = PlantelForm(request.POST)
+        if form.is_valid():
+            print("")
+            print(form.cleaned_data)
+            print("")
+    else:
+        form = PlantelForm()
+
+    content = 'home/datos_plantel/index.html'
+    context = {
+        'form':form,
+        'segment':'datos-plantel',
+        'title':'Datos del plantel',
+        'table':content
+    }
+
+    return render(request, 'home/table.html', context)
