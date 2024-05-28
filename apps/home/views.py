@@ -674,7 +674,7 @@ def cambiar_periodo(request, periodo_actual):
         return render(request, 'layouts/form.html', context)
     
 @login_required(login_url="/login/")
-def datos_plantel(request):
+def configuracion(request):
     
     if request.method == 'POST':
         form = PlantelForm(request.POST)
@@ -685,11 +685,11 @@ def datos_plantel(request):
     else:
         form = PlantelForm()
 
-    content = 'home/datos_plantel/index.html'
+    content = 'home/configuracion/index.html'
     context = {
         'form':form,
-        'segment':'datos-plantel',
-        'title':'Datos del plantel',
+        'segment':'configuracion',
+        'title':'Configuración',
         'table':content
     }
 

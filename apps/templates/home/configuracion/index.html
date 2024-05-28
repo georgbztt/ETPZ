@@ -1,0 +1,94 @@
+
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+  <div class="width-min">
+    <h6>Crear:</h6>
+    <div class="d-flex gap-3">
+      <a class="btn btn-primary" href="#" role="button">Años</a>
+      <a class="btn btn-primary" href="#" role="button">Menciones</a>
+      <a class="btn btn-primary" href="#" role="button">Secciones</a>
+    </div>
+  </div>
+
+  <h6>Datos del plantel</h6>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="container">
+      <div class="row">
+  
+        <div class="col {% if form.codigo.errors %}form-error{% endif %}">
+          <label for="{{ form.codigo.id_for_label }}">{{ form.codigo.label }}</label>
+          {{ form.codigo }}
+        </div>
+        <div class="col {% if form.nombre.errors %}form-error{% endif %}">
+          <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label>
+          {{ form.nombre }}
+        </div>
+  
+        <div class="w-100"></div>
+  
+        <div class="col {% if form.direccion.errors %}form-error{% endif %}">
+          <label for="{{ form.direccion.id_for_label }}">{{ form.direccion.label }}</label>
+          {{ form.direccion }}
+        </div>
+        <div class="col {% if form.telefono.errors %}form-error{% endif %}">
+          <label for="{{ form.telefono.id_for_label }}">{{ form.telefono.label }}</label>
+          {{ form.telefono }}
+        </div>
+  
+        <div class="w-100"></div>
+  
+        <div class="col {% if form.municipio.errors %}form-error{% endif %}">
+          <label for="{{ form.municipio.id_for_label }}">{{ form.municipio.label }}</label>
+          {{ form.municipio }}
+        </div>
+        <div class="col {% if form.entidad_federal.errors %}form-error{% endif %}">
+          <label for="{{ form.entidad_federal.id_for_label }}">{{ form.entidad_federal.label }}</label>
+          {{ form.entidad_federal }}
+        </div>
+  
+        <div class="w-100"></div>
+  
+        <div class="col {% if form.zona_educativa.errors %}form-error{% endif %}">
+          <label for="{{ form.zona_educativa.id_for_label }}">{{ form.zona_educativa.label }}</label>
+          {{ form.zona_educativa }}
+        </div>
+        <div class="col {% if form.distrito_escolar.errors %}form-error{% endif %}">
+          <label for="{{ form.distrito_escolar.id_for_label }}">{{ form.distrito_escolar.label }}</label>
+          {{ form.distrito_escolar }}
+        </div>
+  
+        <div class="w-100"></div>
+  
+        <div class="col {% if form.director.errors %}form-error{% endif %}">
+          <label for="{{ form.director.id_for_label }}">{{ form.director.label }}</label>
+          {{ form.director }}
+        </div>
+        <div class="col {% if form.ci_tipo.errors %}form-error{% endif %}">
+          <label for="{{ form.ci_tipo.id_for_label }}">{{ form.ci.label }}</label>
+          <div class="input-group">
+            <div class="input-group-text p-0">
+              {{ form.ci_tipo }}
+            </div>
+            {{ form.ci }}
+          </div>
+        </div>
+  
+        <div class="w-100"></div>
+        
+        <div class="col pt-3">
+          <button class="btn btn-primary" type="submit">Guardar</button>
+        </div>
+        
+      </div>
+    </div>
+  </form>
+
+</div>
