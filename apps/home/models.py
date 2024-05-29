@@ -73,3 +73,6 @@ class AniosMencionSec(models.Model):
 
     class Meta:
         verbose_name_plural = "Años Menciones Secciones"
+        constraints = [
+            models.UniqueConstraint(fields=['anio', 'mencion', 'seccion'], name='unique_anio_mencion_seccion')
+        ]
