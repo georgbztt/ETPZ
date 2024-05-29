@@ -62,3 +62,14 @@ class Secciones(models.Model):
 
     class Meta:
         verbose_name_plural = "Secciones"  # Nombre en plural para el panel de administración
+
+class AniosMencionSec(models.Model):
+    anio = models.ForeignKey(Anios, on_delete=models.CASCADE)
+    mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE)
+    seccion= models.ForeignKey(Secciones, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{ self.anio.nombre } - { self.mencion.nombre } - { self.seccion.nombre }'  # Representación en cadena del objeto
+
+    class Meta:
+        verbose_name_plural = "Años Menciones Secciones"
