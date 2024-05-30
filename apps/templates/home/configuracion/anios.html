@@ -1,0 +1,30 @@
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+    <form method="post">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col {% if form.nombre.errors %}form-error{% endif %}">
+                <label for="{{ form.nombre.id_for_label }}">Crear Año</label> <br>
+            <div class="col-3">
+                {{ form.nombre }}
+            </div>
+        </div>
+
+        <div class="w-100"></div>
+
+        <div class="col pt-3">
+            <button class="btn btn-primary" type="submit">Guardar Año</button>
+        </div>
+
+        
+        </div>
+    </div>
+    </form>
+</div>

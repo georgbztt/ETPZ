@@ -1,0 +1,59 @@
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+    <form method="post">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col {% if form.nombre.errors %}form-error{% endif %}">
+                <label for="{{ form.nombre.id_for_label }}">Crear Periodo</label> <br>
+            <div class="col-3">
+                {{ form.nombre }}
+            </div>
+        </div>
+
+        <div class="w-100"></div>
+
+        <div class="col pt-3">
+            <button class="btn btn-primary" type="submit">Guardar Periodo</button>
+        </div>
+
+        
+        </div>
+    </div>
+    </form>
+
+    <div>
+        <table class="table table-striped mb-0 ">
+            <thead>
+                <tr>
+                    <th class="text-xs font-weight-bolder opacity-7">Periodos Academicos Registrados</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="font-weight-bold align-middle ps-4">Nombre de Periodo</th>
+                    <th class="font-weight-bold align-middle ps-4">Fecha de Creación</th>
+                </tr>
+                <tr>
+                    <td class="font-weight align-middle ps-4">Periodo 2022-23</td>              
+                    <td class="font-weight align-middle ps-4">13-05-2023</td>
+                </tr>
+                <tr>
+                    <td class="font-weight align-middle ps-4">Periodo 2021-22</td>              
+                    <td class="font-weight align-middle ps-4">15-02-2022</td>
+                </tr>
+                <tr>
+                    <td class="font-weight align-middle ps-4">Periodo 2020-21</td>              
+                    <td class="font-weight align-middle ps-4">07-03-2021</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="w-100"></div>
+</div>
