@@ -10,7 +10,7 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import PlantelForm
+from .forms import PlantelForm, SeccionesForm
 from .models import DatosPlantel
 
 from .models import *
@@ -704,7 +704,7 @@ def configuracion(request):
                 'ci': None
             }
 
-        form = PlantelForm(initial=datos_plantel)
+    form = PlantelForm(initial=datos_plantel)
 
     content = 'home/configuracion/index.html'
     context = {
@@ -713,6 +713,31 @@ def configuracion(request):
         'title':'Configuración',
         'table':content,
         'datos_plantel': datos_plantel
+    }
+
+    return render(request, 'home/table.html', context)
+
+
+@login_required(login_url="/login/")
+def secciones(request):
+
+    if request.method == 'POST':
+        form = SeccionesForm(request.POST)
+
+        if form.is_valid():
+
+            print('')
+            print(form.cleaned_data)
+            print('')
+
+    form = SeccionesForm()
+
+    content = 'home/configuracion/secciones.html'
+    context = {
+        'form':form,
+        'segment':'secciones',
+        'title':'Secciones',
+        'table':content,
     }
 
     return render(request, 'home/table.html', context)
