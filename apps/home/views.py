@@ -712,7 +712,42 @@ def configuracion(request):
         'segment':'configuracion',
         'title':'Configuración',
         'table':content,
-        'datos_plantel': datos_plantel
+        'datos_plantel': datos_plantel,
+    }
+
+    return render(request, 'home/table.html', context)
+
+
+@login_required(login_url="/login/")
+def crearPeriodoAcademico(request):
+    
+    if request.method == 'POST':
+        form = PlantelForm(request.POST)
+        if form.is_valid():
+            datos_plantel = DatosPlantel.objects.first()
+
+            if datos_plantel:
+                DatosPlantel.objects.update(**form.cleaned_data)
+            else:
+                DatosPlantel.objects.create(**form.cleaned_data)
+    else:
+
+        datos_plantel = DatosPlantel.objects.values().first()
+
+        if not datos_plantel:
+            datos_plantel= {
+                'crear_periodo': '', 
+            }
+
+        form = PlantelForm(initial=datos_plantel)
+
+    content = 'home/configuracion/periodos-academicos.html'
+    context = {
+        'form':form,
+        'segment':'configuracion',
+        'title':'Periodos Academicos',
+        'table':content,
+        'datos_plantel': datos_plantel,
     }
 
     return render(request, 'home/table.html', context)
