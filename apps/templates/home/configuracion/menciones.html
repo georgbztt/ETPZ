@@ -10,10 +10,13 @@
     {% csrf_token %}
     <div class="container">
         <div class="row">
-            <div class="col {% if form.nombre.errors %}form-error{% endif %}">
-                <label for="{{ form.nombre.id_for_label }}">Crear Mención</label> <br>
-            <div class="col-3">
+            <div class="col-6 {% if form.nombre.errors %}form-error{% endif %} mb-3">
+                <label for="{{ form.nombre.id_for_label }}">{{ form.nombre.label }}</label> <br>
                 {{ form.nombre }}
+            </div>
+            <label for="{{ form.nombre_abrev.id_for_label }}">{{ form.nombre_abrev.label }}</label> <br>
+            <div class="col-1 {% if form.nombre_abrev.errors %}form-error{% endif %}">
+                {{ form.nombre_abrev }}
             </div>
         </div>
 

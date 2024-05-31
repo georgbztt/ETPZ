@@ -1,7 +1,7 @@
 #import datetime, decimal
 from urllib import request
 from django import template
-from django.db import transaction 
+from django.db import IntegrityError, transaction 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.forms import formset_factory
@@ -10,8 +10,8 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import PlantelForm, SeccionesForm, PeriodosForm, AniosForm
-from .models import DatosPlantel, PeriodosAcademicos
+from .forms import PlantelForm, SeccionesForm, PeriodosForm, AniosForm, MencionesForm
+from .models import DatosPlantel, PeriodosAcademicos, Menciones
 
 from .models import *
 from .forms import *
@@ -792,32 +792,23 @@ def crearAnios(request):
 def crearMenciones(request):
     
     if request.method == 'POST':
-        form = PlantelForm(request.POST)
+        form = MencionesForm(request.POST)
         if form.is_valid():
-            datos_plantel = DatosPlantel.objects.first()
+            
+            try:
+                Menciones.objects.create(**form.cleaned_data)
+            except IntegrityError as e:
+                if 'unique constraint' in str(e.args):
+                    return HttpResponse("Esta mención ya existe. Inténtalo de nuevo.", status=400)
 
-            if datos_plantel:
-                DatosPlantel.objects.update(**form.cleaned_data)
-            else:
-                DatosPlantel.objects.create(**form.cleaned_data)
-    else:
-
-        datos_plantel = DatosPlantel.objects.values().first()
-
-        if not datos_plantel:
-            datos_plantel= {
-                'crear_mencion': '', 
-            }
-
-        form = PlantelForm(initial=datos_plantel)
+    form = MencionesForm()
 
     content = 'home/configuracion/menciones.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Menciones',
-        'table':content,
-        'datos_plantel': datos_plantel,
+        'table':content
     }
 
     return render(request, 'home/table.html', context)
