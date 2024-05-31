@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
 from .forms import PlantelForm, SeccionesForm, PeriodosForm
-from .models import DatosPlantel
+from .models import DatosPlantel, PeriodosAcademicos
 
 from .models import *
 from .forms import *
@@ -723,6 +723,8 @@ def crearPeriodoAcademico(request):
     if request.method == 'POST':
         form = PeriodosForm(request.POST)
         if form.is_valid():
+
+            PeriodosAcademicos.objects.create(**form.cleaned_data)
             
             print("")
             print(form.cleaned_data)
