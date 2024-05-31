@@ -760,7 +760,7 @@ def secciones(request):
     content = 'home/configuracion/secciones.html'
     context = {
         'form':form,
-        'segment':'secciones',
+        'segment':'configuracion',
         'title':'Secciones',
         'table':content
     }
