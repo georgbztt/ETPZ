@@ -23,3 +23,6 @@ class SeccionesForm(forms.Form):
 
 class PeriodosForm(forms.Form):
     nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+class AniosForm(forms.Form):
+    nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))

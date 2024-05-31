@@ -10,7 +10,7 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import PlantelForm, SeccionesForm, PeriodosForm
+from .forms import PlantelForm, SeccionesForm, PeriodosForm, AniosForm
 from .models import DatosPlantel, PeriodosAcademicos
 
 from .models import *
@@ -772,32 +772,19 @@ def secciones(request):
 def crearAnios(request):
     
     if request.method == 'POST':
-        form = PlantelForm(request.POST)
+        form = AniosForm(request.POST)
         if form.is_valid():
-            datos_plantel = DatosPlantel.objects.first()
+            
+            Anios.objects.create(**form.cleaned_data)
 
-            if datos_plantel:
-                DatosPlantel.objects.update(**form.cleaned_data)
-            else:
-                DatosPlantel.objects.create(**form.cleaned_data)
-    else:
-
-        datos_plantel = DatosPlantel.objects.values().first()
-
-        if not datos_plantel:
-            datos_plantel= {
-                'crear_anio': '', 
-            }
-
-        form = PlantelForm(initial=datos_plantel)
+    form = AniosForm()
 
     content = 'home/configuracion/anios.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Años',
-        'table':content,
-        'datos_plantel': datos_plantel
+        'table':content
     }
 
     return render(request, 'home/table.html', context)
