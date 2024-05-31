@@ -762,7 +762,42 @@ def secciones(request):
         'form':form,
         'segment':'secciones',
         'title':'Secciones',
+        'table':content
+    }
+
+    return render(request, 'home/table.html', context)
+
+
+@login_required(login_url="/login/")
+def crearAnios(request):
+    
+    if request.method == 'POST':
+        form = PlantelForm(request.POST)
+        if form.is_valid():
+            datos_plantel = DatosPlantel.objects.first()
+
+            if datos_plantel:
+                DatosPlantel.objects.update(**form.cleaned_data)
+            else:
+                DatosPlantel.objects.create(**form.cleaned_data)
+    else:
+
+        datos_plantel = DatosPlantel.objects.values().first()
+
+        if not datos_plantel:
+            datos_plantel= {
+                'crear_anio': '', 
+            }
+
+        form = PlantelForm(initial=datos_plantel)
+
+    content = 'home/configuracion/anios.html'
+    context = {
+        'form':form,
+        'segment':'configuracion',
+        'title':'Años',
         'table':content,
+        'datos_plantel': datos_plantel
     }
 
     return render(request, 'home/table.html', context)
