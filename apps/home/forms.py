@@ -20,3 +20,6 @@ class PlantelForm(forms.Form):
 
 class SeccionesForm(forms.Form):
     nombre = forms.CharField(label="Sección", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+class PeriodosForm(forms.Form):
+    nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))

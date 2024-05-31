@@ -10,7 +10,7 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import PlantelForm, SeccionesForm
+from .forms import PlantelForm, SeccionesForm, PeriodosForm
 from .models import DatosPlantel
 
 from .models import *
@@ -711,8 +711,7 @@ def configuracion(request):
         'form':form,
         'segment':'configuracion',
         'title':'Configuración',
-        'table':content,
-        'datos_plantel': datos_plantel,
+        'table':content
     }
 
     return render(request, 'home/table.html', context)
@@ -722,32 +721,21 @@ def configuracion(request):
 def crearPeriodoAcademico(request):
     
     if request.method == 'POST':
-        form = PlantelForm(request.POST)
+        form = PeriodosForm(request.POST)
         if form.is_valid():
-            datos_plantel = DatosPlantel.objects.first()
+            
+            print("")
+            print(form.cleaned_data)
+            print("")
 
-            if datos_plantel:
-                DatosPlantel.objects.update(**form.cleaned_data)
-            else:
-                DatosPlantel.objects.create(**form.cleaned_data)
-    else:
-
-        datos_plantel = DatosPlantel.objects.values().first()
-
-        if not datos_plantel:
-            datos_plantel= {
-                'crear_periodo': '', 
-            }
-
-        form = PlantelForm(initial=datos_plantel)
+    form = PeriodosForm()
 
     content = 'home/configuracion/periodos-academicos.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Periodos Academicos',
-        'table':content,
-        'datos_plantel': datos_plantel,
+        'table':content
     }
 
     return render(request, 'home/table.html', context)
