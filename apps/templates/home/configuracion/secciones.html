@@ -9,20 +9,17 @@
 
   <form method="post">
     {% csrf_token %}
+
     <div class="container">
       <div class="row">
-  
-        <div class="col-2 {% if form.codigo.errors %}form-error{% endif %}">
-          <label for="{{ form.codigo.id_for_label }}">{{ form.nombre.label }}</label>
-          {{ form.nombre }}
-        </div>
-  
+
+        {{ form|safe }}
+
         <div class="w-100"></div>
-        
+
         <div class="col pt-3">
-          <button class="btn btn-primary" type="submit">Guardar</button>
+            <button class="btn btn-primary" type="submit">Guardar Sección</button>
         </div>
-        
       </div>
     </div>
   </form>

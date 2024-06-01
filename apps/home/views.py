@@ -10,11 +10,13 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import PlantelForm, SeccionesForm, PeriodosForm, AniosForm, MencionesForm
-from .models import DatosPlantel, PeriodosAcademicos, Menciones
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm
+from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 
 from .models import *
 from .forms import *
+
+from .utils import getInputsMenciones
 
 @login_required(login_url="/login/")
 def index(request):
@@ -746,15 +748,61 @@ def crearPeriodoAcademico(request):
 def secciones(request):
 
     if request.method == 'POST':
-        form = SeccionesForm(request.POST)
 
-        if form.is_valid():
+        seccion = request.POST.get('seccion')
 
-            print('')
-            print(form.cleaned_data)
-            print('')
+        inst_seccion = Secciones.objects.create(nombre=seccion)
 
-    form = SeccionesForm()
+        datos = request.POST.copy()
+        datos.pop('seccion')
+        datos.pop('csrfmiddlewaretoken')
+
+        for id_anio in datos:
+
+            list_menciones = datos.getlist(str(id_anio))
+
+            inst_anio = Anios.objects.get(id=id_anio)
+
+            for id_mencion in list_menciones:
+
+                inst_mencion = Menciones.objects.get(id=id_mencion)
+
+                AniosMencionSec.objects.create(anio=inst_anio, mencion=inst_mencion, seccion=inst_seccion)
+
+    anios = list(Anios.objects.values('id', 'nombre'))
+    menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+
+    form = ''
+
+    form += f"""
+    <div class="col-1">
+        <div class="form-group">
+            <label for="seccion">Seccion</label>
+            <input type="text" name="seccion" class="form-control" id="seccion" required>
+        </div>
+    </div>
+    <div class="w-100"></div>
+    <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
+    """
+
+    for index, anio in enumerate(anios):
+        form += f"""
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h6>{anio['nombre']}</h6>
+                    <div class="px-4">
+                        <p>Menciones</p>
+                        {getInputsMenciones(anio['id'], menciones)}
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+        if index == 2:
+            form += """
+            <div class="w-100 pb-4"></div>
+            """
 
     content = 'home/configuracion/secciones.html'
     context = {
