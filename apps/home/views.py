@@ -748,6 +748,19 @@ def crearPeriodoAcademico(request):
 @login_required(login_url="/login/")
 def secciones(request):
 
+    content = 'home/configuracion/secciones.html'
+    context = {
+        'segment':'configuracion',
+        'title':'Secciones',
+        'table':content
+    }
+
+    return render(request, 'home/table.html', context)
+
+
+@login_required(login_url="/login/")
+def crear_seccion(request):
+
     if request.method == 'POST':
 
         seccion = request.POST.get('seccion')
@@ -805,11 +818,11 @@ def secciones(request):
             <div class="w-100 pb-4"></div>
             """
 
-    content = 'home/configuracion/secciones.html'
+    content = 'home/configuracion/crear-seccion.html'
     context = {
         'form':form,
         'segment':'configuracion',
-        'title':'Secciones',
+        'title':'Crear seccion',
         'table':content
     }
 
