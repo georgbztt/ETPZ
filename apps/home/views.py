@@ -687,6 +687,7 @@ def configuracion(request):
                 DatosPlantel.objects.update(**form.cleaned_data)
             else:
                 DatosPlantel.objects.create(**form.cleaned_data)
+                datos_plantel = form.cleaned_data
     else:
 
         datos_plantel = DatosPlantel.objects.values().first()
