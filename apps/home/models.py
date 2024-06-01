@@ -55,7 +55,7 @@ class Menciones(models.Model):
 
 class Secciones(models.Model):
     id = models.AutoField(primary_key=True)  # Llave primaria autoincremental
-    nombre = models.CharField(max_length=3, null=False)  # String de 255 de longitud
+    nombre = models.CharField(max_length=3, null=False, unique=True)  # String de 255 de longitud
 
     def __str__(self):
         return self.nombre  # Representación en cadena del objeto
