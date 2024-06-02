@@ -728,19 +728,18 @@ def crearPeriodoAcademico(request):
         if form.is_valid():
 
             PeriodosAcademicos.objects.create(**form.cleaned_data)
-            
-            print("")
-            print(form.cleaned_data)
-            print("")
 
     form = PeriodosForm()
+
+    data_table = list(PeriodosAcademicos.objects.values('nombre'))
 
     content = 'home/configuracion/periodos-academicos.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Periodos Academicos',
-        'table':content
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)
