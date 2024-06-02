@@ -6,24 +6,21 @@
 
 <div class="container-fluid">
     <form method="post">
-    {% csrf_token %}
-    <div class="container">
-        <div class="row">
-            <div class="col-3 {% if form.nombre.errors %}form-error{% endif %}">
-                <label for="{{ form.nombre.id_for_label }}">Crear Periodo</label> <br>
-                {{ form.nombre }}
+        {% csrf_token %}
+        <div class="container">
+            <div class="row">
+                <div class="col-3 {% if form.nombre.errors %}form-error{% endif %}">
+                    <label for="{{ form.nombre.id_for_label }}">Crear Periodo</label> <br>
+                    {{ form.nombre }}
+                </div>
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="col pt-3">
+                <button class="btn btn-primary" type="submit">Guardar Periodo</button>
             </div>
         </div>
-
-        <div class="w-100"></div>
-
-        <div class="col pt-3">
-            <button class="btn btn-primary" type="submit">Guardar Periodo</button>
-        </div>
-
-        
-        </div>
-    </div>
     </form>
 
     <div>

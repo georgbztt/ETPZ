@@ -7,50 +7,49 @@
 <div class="container-fluid">
 
     <form method="post">
-    {% csrf_token %}
-    <div class="container">
-        <div class="row">
-            <div class="col {% if form.nombre.errors %}form-error{% endif %}">
-                <label for="{{ form.nombre.id_for_label }}">Crear Año</label> <br>
-            <div class="col-3">
-                {{ form.nombre }}
+        {% csrf_token %}
+        <div class="container">
+            <div class="row">
+                <div class="col {% if form.nombre.errors %}form-error{% endif %}">
+                    <label for="{{ form.nombre.id_for_label }}">Crear Año</label>
+                    <div class="col-3">
+                        {{ form.nombre }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="col pt-3">
+                <button class="btn btn-primary" type="submit">Guardar Año</button>
             </div>
         </div>
-
-        <div class="w-100"></div>
-
-        <div class="col pt-3">
-            <button class="btn btn-primary" type="submit">Guardar Año</button>
-        </div>
-
-        
-        </div>
-    </div>
     </form>
+</div>
 
 
-    <div>
-        <table class="table table-striped mb-0 ">
-            <thead>
+<div>
+    <table class="table table-striped mb-0 ">
+        <thead>
+            <tr>
+                <th class="text-xs font-weight-bolder opacity-7">Años Registrados</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th class="font-weight-bold align-middle ps-4">Año</th>
+                <th class="font-weight-bold align-middle ps-4">Opciones</th>
+            </tr>
+            {% for i in data_table %}
                 <tr>
-                    <th class="text-xs font-weight-bolder opacity-7">Años Registrados</th>
+                    <td>{{ i.nombre }}</td>
+                    <td>
+                        <a href="{% url 'editar_seccion' %}">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th class="font-weight-bold align-middle ps-4">Nombre del Año</th>
-                    <th class="font-weight-bold align-middle ps-4">Fecha de registro</th>
-                </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">Primer Año</td>              
-                    <td class="font-weight align-middle ps-4">20-04-2020</td>
-                </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">Segundo Año</td>              
-                    <td class="font-weight align-middle ps-4">05-06-2020</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="w-100"></div>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>

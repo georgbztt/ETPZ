@@ -910,12 +910,15 @@ def crearAnios(request):
 
     form = AniosForm()
 
+    data_table = list(Anios.objects.values('id', 'nombre'))
+
     content = 'home/configuracion/anios.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Años',
-        'table':content
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)
