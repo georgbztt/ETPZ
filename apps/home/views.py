@@ -747,11 +747,18 @@ def crearPeriodoAcademico(request):
 @login_required(login_url="/login/")
 def secciones(request):
 
+    data_table = Secciones.objects.values('id', 'nombre')
+
+    print("")
+    print(data_table)
+    print("")
+
     content = 'home/configuracion/secciones.html'
     context = {
         'segment':'configuracion',
         'title':'Secciones',
-        'table':content
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)

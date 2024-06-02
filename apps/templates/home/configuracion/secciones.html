@@ -28,36 +28,20 @@
             <tbody>
                 <tr>
                     <th class="font-weight-bold align-middle ps-4">Nombre de Sección</th>
-                    <th class="font-weight-bold align-middle ps-4">Fecha de Creación</th>
-                    <th></th>
+                    <th class="font-weight-bold align-middle ps-4">Opcione</th>
                 </tr>
                 <tr>
-                    <td class="font-weight align-middle ps-4">A</td>              
-                    <td class="font-weight align-middle ps-4">26-02-2019</td>
-                    <th>
-                        <a href="{% url 'editar_seccion' %}">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </a>
-                    </th>
                 </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">B</td>              
-                    <td class="font-weight align-middle ps-4">27-02-2019</td>
-                    <th>
-                        <a href="{% url 'editar_seccion' %}">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </a>
-                    </th>
-                </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">C</td>              
-                    <td class="font-weight align-middle ps-4">28-02-2019</td>
-                    <th>
-                        <a href="{% url 'editar_seccion' %}">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </a>
-                    </th>
-                </tr>
+                {% for i in data_table %}
+                    <tr>
+                        <td>{{ i.nombre }}</td>
+                        <td>
+                            <a href="{% url 'editar_seccion' %}">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
