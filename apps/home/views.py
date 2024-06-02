@@ -940,12 +940,15 @@ def crearMenciones(request):
 
     form = MencionesForm()
 
+    data_table = Menciones.objects.values('nombre', 'nombre_abrev')
+
     content = 'home/configuracion/menciones.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Menciones',
-        'table':content
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)

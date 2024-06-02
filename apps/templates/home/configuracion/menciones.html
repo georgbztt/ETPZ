@@ -43,14 +43,12 @@
                     <th class="font-weight-bold align-middle ps-4">Nombre de mencion</th>
                     <th class="font-weight-bold align-middle ps-4">Abreviacion del nombre de mencion</th>
                 </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">Quimica</td>              
-                    <td class="font-weight align-middle ps-4">QI</td>
-                </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">Mantenimiento</td>              
-                    <td class="font-weight align-middle ps-4">MM</td>
-                </tr>
+                {% for i in data_table %}
+                    <tr>
+                        <td>{{ i.nombre }}</td>
+                        <td>{{ i.nombre_abrev }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
