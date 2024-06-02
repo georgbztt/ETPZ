@@ -6,7 +6,61 @@
 {% endblock stylesheets %}
 
 <div class="container-fluid">
-
-  
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+                <div class="w-100"></div>
+    
+                <div class="col pt-3">
+                    <a class="btn btn-primary" href="{% url 'crear_seccion' %}" role="button">Crear Sección</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <div>
+        <table class="table table-striped mb-0 ">
+            <thead>
+                <tr>
+                    <th class="text-xs font-weight-bolder opacity-7">Secciones Registradas</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="font-weight-bold align-middle ps-4">Nombre de Sección</th>
+                    <th class="font-weight-bold align-middle ps-4">Fecha de Creación</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td class="font-weight align-middle ps-4">A</td>              
+                    <td class="font-weight align-middle ps-4">26-02-2019</td>
+                    <th>
+                        <a href="{% url 'editar_seccion' %}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </th>
+                </tr>
+                <tr>
+                    <td class="font-weight align-middle ps-4">B</td>              
+                    <td class="font-weight align-middle ps-4">27-02-2019</td>
+                    <th>
+                        <a href="{% url 'editar_seccion' %}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </th>
+                </tr>
+                <tr>
+                    <td class="font-weight align-middle ps-4">C</td>              
+                    <td class="font-weight align-middle ps-4">28-02-2019</td>
+                    <th>
+                        <a href="{% url 'editar_seccion' %}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="w-100"></div>
 
 </div>
