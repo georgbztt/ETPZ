@@ -10,7 +10,7 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, ProfesorForm
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 
 from .models import *
@@ -48,7 +48,11 @@ def pages(request):
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
 
-#----------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------#
+
+
+
+### Seccion de Materias ###
 
 @login_required(login_url="/login/")
 def materias(request):
@@ -129,6 +133,9 @@ def materiaEliminar(request, pk):
         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
     return redirect('materia')#Redireccionar normalmente
 
+
+### Seccion de planillas ###
+
 @login_required(login_url="/login/")
 def planillas(request):
 
@@ -198,6 +205,10 @@ def materiaPendientes(request):
     }
     
     return render(request, 'home/table.html', context)
+
+
+### Seccion de Carga de Notas ###
+
 @login_required(login_url="/login/")
 def cargas(request):
     cargas = Carga.objects.all()
@@ -277,6 +288,11 @@ def cargaEliminar(request, pk):
         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
     return redirect('carga')#Redireccionar normalmente
 
+
+
+
+### Seccion de profesores ###
+
 @login_required(login_url="/login/")
 def profesores(request):
     table = 'home/table-content/profesores.html'
@@ -290,6 +306,33 @@ def profesores(request):
 
     return render(request, 'home/table.html', context)
 
+
+@login_required(login_url="/login/")
+def crearProfesores(request):
+    if request.method == 'POST':
+        form = ProfesorForm(request.POST)
+        if form.is_valid():
+
+            Profesores.objects.create(**form.cleaned_data)
+            
+            print("")
+            print(form.cleaned_data)
+            print("")
+
+    form = ProfesorForm()
+
+    content = 'home/form-content/crear_profesor_form.html'
+    context = {
+        'form':form,
+        'segment':'profesores',
+        'title':'Crear Profesor',
+        'table':content
+    }
+
+    return render(request, 'home/table.html', context)
+
+
+### Seccion de Estudiantes ###
 
 @login_required(login_url="/login/")
 def estudiantes(request):
@@ -537,6 +580,8 @@ def carga_notas(request, pd):
     # Renderizamos la plantilla con el contexto
     return render(request, 'home/carga_de_notas.html', context)
 
+
+### Seccion de Periodos ###
 
 @login_required(login_url="/login/")
 def periodos(request):
@@ -947,3 +992,7 @@ def crearMenciones(request):
     }
 
     return render(request, 'home/table.html', context)
+
+
+
+
