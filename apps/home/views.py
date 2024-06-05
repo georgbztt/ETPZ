@@ -737,7 +737,7 @@ def crearPeriodoAcademico(request):
     context = {
         'form':form,
         'segment':'configuracion',
-        'title':'Periodos Academicos',
+        'title':'Años Escolares',
         'table':content,
         'data_table':data_table
     }

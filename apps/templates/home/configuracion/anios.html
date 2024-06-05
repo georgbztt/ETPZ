@@ -6,12 +6,14 @@
 
 <div class="container-fluid">
 
+    <h6>Crear nuevo año</h6>
+
     <form method="post">
         {% csrf_token %}
         <div class="container">
             <div class="row">
                 <div class="col {% if form.nombre.errors %}form-error{% endif %}">
-                    <label for="{{ form.nombre.id_for_label }}">Crear Año</label>
+                    <label for="{{ form.nombre.id_for_label }}">Ingrese el año</label>
                     <div class="col-3">
                         {{ form.nombre }}
                     </div>
@@ -21,20 +23,16 @@
             <div class="w-100"></div>
 
             <div class="col pt-3">
-                <button class="btn btn-primary" type="submit">Guardar Año</button>
+                <button class="btn btn-primary" type="submit">Guardar</button>
             </div>
         </div>
     </form>
-</div>
 
+    <br/>
 
-<div>
-    <table class="table table-striped mb-0 ">
-        <thead>
-            <tr>
-                <th class="text-xs font-weight-bolder opacity-7">Años Registrados</th>
-            </tr>
-        </thead>
+    <h6>Años registrados</h6>
+
+    <table class="table table-striped">
         <tbody>
             <tr>
                 <th class="font-weight-bold align-middle ps-4">Año</th>

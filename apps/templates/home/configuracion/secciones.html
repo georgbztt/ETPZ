@@ -6,45 +6,38 @@
 {% endblock stylesheets %}
 
 <div class="container-fluid">
-    <form method="post">
-        {% csrf_token %}
-        <div class="container">
-                <div class="w-100"></div>
-    
-                <div class="col pt-3">
-                    <a class="btn btn-primary" href="{% url 'crear_seccion' %}" role="button">Crear Sección</a>
-                </div>
-            </div>
-        </div>
-    </form>
-    
-    <div>
-        <table class="table table-striped mb-0 ">
-            <thead>
-                <tr>
-                    <th class="text-xs font-weight-bolder opacity-7">Secciones Registradas</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th class="font-weight-bold align-middle ps-4">Nombre de Sección</th>
-                    <th class="font-weight-bold align-middle ps-4">Opcione</th>
-                </tr>
-                <tr>
-                </tr>
-                {% for i in data_table %}
-                    <tr>
-                        <td>{{ i.nombre }}</td>
-                        <td>
-                            <a href="{% url 'editar_seccion' %}">
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="w-100"></div>
 
+    <h6>Crear nueva sección</h6>
+
+    <div class="container">
+        <div class="w-100"></div>
+        <div class="col pt-3">
+            <a class="btn btn-primary" href="{% url 'crear_seccion' %}" role="button">Crear Sección</a>
+        </div>
+    </div>
+
+    <br/>
+
+    <h6>Secciones Registradas</h6>
+    
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th class="font-weight-bold align-middle ps-4">Nombre de Sección</th>
+                <th class="font-weight-bold align-middle ps-4">Opciones</th>
+            </tr>
+            <tr>
+            </tr>
+            {% for i in data_table %}
+                <tr>
+                    <td>{{ i.nombre }}</td>
+                    <td>
+                        <a href="{% url 'editar_seccion' %}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
