@@ -1050,3 +1050,15 @@ def Cargar_Notas(request):
     }
     
     return render(request, 'home/Cargar_Notas/notas.html', context)
+
+@login_required(login_url="/login/")
+def notas(request):
+    
+    content = 'home/Cargar_Notas/index.html'
+    context = {
+        'segment':'notas',
+        'title':'Notas',
+        'table':content
+    }
+    
+    return render(request, 'home/table.html', context)
