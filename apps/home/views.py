@@ -719,7 +719,8 @@ def crearPeriodoAcademico(request):
         'segment':'configuracion',
         'title':'Años Escolares',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)
@@ -738,7 +739,8 @@ def secciones(request):
         'segment':'configuracion',
         'title':'Secciones',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)
@@ -809,7 +811,8 @@ def crear_seccion(request):
         'form':form,
         'segment':'configuracion',
         'title':'Crear seccion',
-        'table':content
+        'table':content,
+        'url_back': '/configuracion/secciones'
     }
 
     return render(request, 'home/table.html', context)
@@ -880,7 +883,8 @@ def editar_seccion(request):
         'form':form,
         'segment':'configuracion',
         'title':'Editar seccion',
-        'table':content
+        'table':content,
+        'url_back': '/configuracion/secciones'
     }
 
     return render(request, 'home/table.html', context)
@@ -905,7 +909,8 @@ def crearAnios(request):
         'segment':'configuracion',
         'title':'Años',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)
@@ -935,7 +940,8 @@ def crearMenciones(request):
         'segment':'configuracion',
         'title':'Menciones',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)

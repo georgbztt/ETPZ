@@ -11,7 +11,12 @@
     <div class="col-12">
       <div class="card mb-4">
         <div class="card-header pb-0">
-          <div class="d-flex justify-content-between"> 
+          <div class="d-flex gap-2">
+            {% if url_back %}
+              <a href="{{ url_back }}" title="Volver">
+                <i class="fa fa-plus-arrow-left" aria-hidden="true"></i>
+              </a>
+            {% endif %}
             <h5>{{ title }}</h5>
             {% if url_crear %}
             <a href="{{ url_crear }}" title="Agregar {{ segment }}">
