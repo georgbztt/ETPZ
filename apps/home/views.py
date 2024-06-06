@@ -10,7 +10,7 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones
 
 from .utils import getInputsMenciones
@@ -944,8 +944,9 @@ def materias(request):
         'title':'Materias',
         'table':content,
         'data_table': data_table
+    }
       
-     return render(request, 'home/table.html', context)
+    return render(request, 'home/table.html', context)
 
 @login_required(login_url="/login/")
 def Estudiante(request):
