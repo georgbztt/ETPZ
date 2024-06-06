@@ -83,6 +83,14 @@
         </div>
   
         <div class="w-100"></div>
+
+        <div class="col {% if form.periodo_id.errors %}form-error{% endif %}">
+          <label for="{{ form.periodo_id.id_for_label }}">{{ form.periodo_id.label }}</label>
+          {{ form.periodo_id }}
+        </div>
+        <div class="col"></div>
+  
+        <div class="w-100"></div>
         
         <div class="col pt-3">
           <button class="btn btn-primary" type="submit">Guardar</button>

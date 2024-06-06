@@ -656,10 +656,16 @@ def configuracion(request):
         if form.is_valid():
             datos_plantel = DatosPlantel.objects.first()
 
+            save_data = form.cleaned_data
+
+            periodo = PeriodosAcademicos.objects.get(id=save_data['periodo_id'])
+
+            save_data['periodo'] = periodo
+
             if datos_plantel:
-                DatosPlantel.objects.update(**form.cleaned_data)
+                DatosPlantel.objects.update(**save_data)
             else:
-                DatosPlantel.objects.create(**form.cleaned_data)
+                DatosPlantel.objects.create(**save_data)
                 datos_plantel = form.cleaned_data
     else:
 
@@ -677,7 +683,8 @@ def configuracion(request):
                 'distrito_escolar': '', 
                 'director': '', 
                 'ci_tipo': '', 
-                'ci': None
+                'ci': None,
+                'periodo_id': ''
             }
 
     form = PlantelForm(initial=datos_plantel)

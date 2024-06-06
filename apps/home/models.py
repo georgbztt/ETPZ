@@ -25,6 +25,7 @@ class DatosPlantel(models.Model):
     ci_tipo = models.CharField(max_length=1, null=False)  # String de un solo carácter no nulo
     ci = models.PositiveIntegerField(null=False)  # Número no nulo
     director = models.CharField(max_length=255)
+    periodo = models.ForeignKey(PeriodosAcademicos, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.nombre  # Representación en cadena del objeto
