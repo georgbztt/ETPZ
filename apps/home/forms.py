@@ -28,8 +28,8 @@ class AniosForm(forms.Form):
     nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 class MencionesForm(forms.Form):
-    nombre = forms.CharField(label="Nombre mención", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    nombre_abrev = forms.CharField(label="Nombre mención abreviado", max_length=5, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    nombre = forms.CharField(label="Ingrese el nombre mención", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    nombre_abrev = forms.CharField(label="Ingrese la abreviatura de la mención", max_length=5, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     
 class EstudiantesForm(forms.Form):
     ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
