@@ -944,6 +944,20 @@ def materias(request):
         'title':'Materias',
         'table':content,
         'data_table': data_table
+      
+     return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def Estudiante(request):
+    
+    form = EstudiantesForm()
+
+    content = 'home/estudiantes/estudiante_crear.html'
+    context = {
+        'form':form,
+        'segment':'Estudiantes',
+        'title':'Crear Estudiante',
+        'table':content,
     }
 
     return render(request, 'home/table.html', context)
@@ -1021,3 +1035,17 @@ def materiaCrear(request):
     }
     
     return render(request, 'home/table.html', context)
+      
+@login_required(login_url="/login/")
+def Cargar_Notas(request):
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'Cargar_Notas':Cargar_Notas,
+        'segment':'Cargar_Notas',
+        'title':'',
+        'buscar':True,
+        'table':table,
+    }
+    
+    return render(request, 'home/Cargar_Notas/notas.html', context)

@@ -1,0 +1,84 @@
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="container">
+      <div class="row p-2">
+
+        <div class="col-6 pb-1 pe-3 {% if form.ci_tipo.errors %}form-error{% endif %}">
+            <label for="{{ form.ci_tipo.id_for_label }}">{{ form.ci.label }}</label>
+            <div class="input-group">
+              <div class="input-group-text p-0">
+                {{ form.ci_tipo }}
+              </div>
+              {{ form.ci }}
+            </div>
+          </div>
+  
+        <div class="col-6 pb-1 pe-3 {% if form.nombres.errors %}form-error{% endif %}">
+          <label for="{{ form.nombres.id_for_label }}">{{ form.nombres.label }}</label>
+          {{ form.nombres }}
+        </div>
+
+        <div class="col-6 pb-1 pe-3 {% if form.apellidos.errors %}form-error{% endif %}">
+          <label for="{{ form.apellidos.id_for_label }}">{{ form.apellidos.label }}</label>
+          {{ form.apellidos }}
+        </div>
+  
+        <div class="col-md-1 pb-1 pe-3 {% if form.sexo.errors %}form-error{% endif %}">
+          <label for="{{ form.sexo.id_for_label }}">{{ form.sexo.label }}</label>
+          {{ form.sexo }}
+        </div>
+
+        <div class="w-100"></div>
+
+        <div class="col-6 pb-1 pe-3 {% if form.fecha_de_nacimiento.errors %}form-error{% endif %}">
+          <label for="{{ form.fecha_de_nacimiento.id_for_label }}">{{ form.fecha_de_nacimiento.label }}</label>
+          <input type="date" class="form-control">
+        </div>
+
+        <div class="col-md-1 pb-1 pe-3 {% if form.anio.errors %}form-error{% endif %}">
+            <label for="{{ form.anio.id_for_label }}">{{ form.anio.label }}</label>
+            {{ form.anio }}
+          </div>
+  
+        <div class="w-100"></div>
+
+        <div class="col-md-2 me-10 pb-1 pe-3 {% if form.mencion.errors %}form-error{% endif %}">
+          <label for="{{ form.mencion.id_for_label }}">{{ form.mencion.label }}</label>
+          {{ form.mencion }}
+        </div>
+  
+        <div class="col-md-1 ms-8 pb-1 pe-3 {% if form.seccion.errors %}form-error{% endif %}">
+          <label for="{{ form.seccion.id_for_label }}">{{ form.seccion.label }}</label>
+          {{ form.seccion }}
+        </div>
+
+        <div class="w-100"></div>
+
+        <div class="col-6 pb-1 pe-3 {% if form.entidad_federal.errors %}form-error{% endif %}">
+          <label for="{{ form.entidad_federal.id_for_label }}">{{ form.entidad_federal.label }}</label>
+          {{ form.entidad_federal }}
+        </div>
+  
+        <div class="col-6 pb-1 pe-3 {% if form.lugar_de_nacimiento.errors %}form-error{% endif %}">
+          <label for="{{ form.lugar_de_nacimiento.id_for_label }}">{{ form.lugar_de_nacimiento.label }}</label>
+          {{ form.lugar_de_nacimiento }}
+        </div>
+  
+        <div class="w-100"></div>
+        
+        <div class="col mt-4 pt-3">
+          <button class="btn btn-primary" type="submit">Guardar</button>
+        </div>
+        
+      </div>
+    </div>
+  </form>
+
+</div>
