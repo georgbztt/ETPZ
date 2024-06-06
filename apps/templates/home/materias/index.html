@@ -1,0 +1,42 @@
+
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+    <h6>Crear nueva materia</h6>
+
+    <div class="container">
+        <div class="col pt-3">
+            <a class="btn btn-primary" href="{% url 'materia_crear' %}" role="button">Crear Materia</a>
+        </div>
+    </div>
+
+    <br/>
+
+    <h6>Materias registradas</h6>
+
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th class="font-weight-bold align-middle ps-4">Materia</th>
+                <th class="font-weight-bold align-middle ps-4">Abreviatura de la materia</th>
+                <th class="font-weight-bold align-middle ps-4">Opciones</th>
+            </tr>
+            {% for i in data_table %}
+                <tr>
+                    <td>{{ i.nombre }}</td>
+                    <td>{{ i.nombre_abrev }}</td>
+                    <td>
+                        <a href="{% url 'editar_seccion' %}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
