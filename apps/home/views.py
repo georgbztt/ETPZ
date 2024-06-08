@@ -664,6 +664,7 @@ def configuracion(request):
 
             if datos_plantel:
                 DatosPlantel.objects.update(**save_data)
+                datos_plantel = form.cleaned_data
             else:
                 DatosPlantel.objects.create(**save_data)
                 datos_plantel = form.cleaned_data
