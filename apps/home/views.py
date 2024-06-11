@@ -12,9 +12,10 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, ProfesorForm
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
-
 from .models import *
 from .forms import *
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
+from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones
 
 from .utils import getInputsMenciones
 
@@ -53,30 +54,6 @@ def pages(request):
 
 
 ### Seccion de Materias ###
-
-@login_required(login_url="/login/")
-def materias(request):
-    materias = Materia.objects.all()
-
-    buscar = request.GET.get('buscar')#Tomar texto del buscador
-    if buscar:#Si exste, filtrar
-        materias = materias.filter(Q(nombre__icontains=buscar))
-
-    table = 'home/table-content/materias.html'
-    context={
-        'materias':materias,
-        'segment':'materia',
-        'title':'Materias',
-        'buscar':True,
-        'table':table,
-        'url_crear':'/materias/crear'
-    }
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
-        table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
-        return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
-
-    return render(request, 'home/table.html', context)
 
 @login_required
 @permission_required('home.add_estudiante', raise_exception=True)#type:ignore
@@ -773,19 +750,18 @@ def crearPeriodoAcademico(request):
         if form.is_valid():
 
             PeriodosAcademicos.objects.create(**form.cleaned_data)
-            
-            print("")
-            print(form.cleaned_data)
-            print("")
 
     form = PeriodosForm()
+
+    data_table = list(PeriodosAcademicos.objects.values('nombre'))
 
     content = 'home/configuracion/periodos-academicos.html'
     context = {
         'form':form,
         'segment':'configuracion',
-        'title':'Periodos Academicos',
-        'table':content
+        'title':'Años Escolares',
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)
@@ -793,11 +769,18 @@ def crearPeriodoAcademico(request):
 @login_required(login_url="/login/")
 def secciones(request):
 
+    data_table = Secciones.objects.values('id', 'nombre')
+
+    print("")
+    print(data_table)
+    print("")
+
     content = 'home/configuracion/secciones.html'
     context = {
         'segment':'configuracion',
         'title':'Secciones',
-        'table':content
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)
@@ -956,12 +939,15 @@ def crearAnios(request):
 
     form = AniosForm()
 
+    data_table = list(Anios.objects.values('id', 'nombre'))
+
     content = 'home/configuracion/anios.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Años',
-        'table':content
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)
@@ -983,16 +969,145 @@ def crearMenciones(request):
 
     form = MencionesForm()
 
+    data_table = Menciones.objects.values('nombre', 'nombre_abrev')
+
     content = 'home/configuracion/menciones.html'
     context = {
         'form':form,
         'segment':'configuracion',
         'title':'Menciones',
-        'table':content
+        'table':content,
+        'data_table':data_table
     }
 
     return render(request, 'home/table.html', context)
 
+@login_required(login_url="/login/")
+def materias(request):
 
+    data_table = Materias.objects.values('id', 'nombre', 'nombre_abrev')
 
+    content = 'home/materias/index.html'
+    context={
+        'segment':'materia',
+        'title':'Materias',
+        'table':content,
+        'data_table': data_table
+    }
+      
+    return render(request, 'home/table.html', context)
 
+@login_required(login_url="/login/")
+def Estudiante(request):
+    
+    form = EstudiantesForm()
+
+    content = 'home/estudiantes/estudiante_crear.html'
+    context = {
+        'form':form,
+        'segment':'Estudiantes',
+        'title':'Crear Estudiante',
+        'table':content,
+    }
+
+    return render(request, 'home/table.html', context)
+
+@login_required
+def materiaCrear(request):
+
+    if request.method == 'POST':
+
+        materia = request.POST.get('materia')
+        abrev = request.POST.get('abrev')
+
+        inst_materia = Materias.objects.create(nombre=materia, nombre_abrev=abrev)
+
+        datos = request.POST.copy()
+        datos.pop('materia')
+        datos.pop('abrev')
+        datos.pop('csrfmiddlewaretoken')
+
+        for id_anio in datos:
+
+            list_menciones = datos.getlist(str(id_anio))
+
+            inst_anio = Anios.objects.get(id=id_anio)
+
+            for id_mencion in list_menciones:
+
+                inst_mencion = Menciones.objects.get(id=id_mencion)
+
+                MateriasAniosMenciones.objects.create(anio=inst_anio, mencion=inst_mencion, materia=inst_materia)
+
+    anios = list(Anios.objects.values('id', 'nombre'))
+    menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+
+    form = ''
+
+    form += f"""
+    <div class="col-4">
+        <div class="form-group">
+            <label for="seccion">Ingrese el nombre de la materia</label>
+            <input type="text" name="materia" class="form-control" id="materia" required>
+            <label for="seccion">Ingrese la abreviatura de la materia</label>
+            <input type="text" name="abrev" class="form-control w-15" id="abrev" required>
+        </div>
+    </div>
+    <div class="w-100"></div>
+    <p>Seleccione las menciones a las cuales pertenece la materia a crear</p>
+    """
+
+    for index, anio in enumerate(anios):
+        form += f"""
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h6>{anio['nombre']}</h6>
+                    <div class="px-4">
+                        <p>Menciones</p>
+                        {getInputsMenciones(anio['id'], menciones)}
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+        if index == 2:
+            form += """
+            <div class="w-100 pb-4"></div>
+            """
+
+    content = 'home/materias/crear.html'
+    context = {
+        'form': form,
+        'segment':'materia',
+        'title':'Crear Materia',
+        'table':content
+    }
+    
+    return render(request, 'home/table.html', context)
+      
+@login_required(login_url="/login/")
+def Cargar_Notas(request):
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'Cargar_Notas':Cargar_Notas,
+        'segment':'Cargar_Notas',
+        'title':'',
+        'buscar':True,
+        'table':table,
+    }
+    
+    return render(request, 'home/Cargar_Notas/notas.html', context)
+
+@login_required(login_url="/login/")
+def notas(request):
+    
+    content = 'home/Cargar_Notas/index.html'
+    context = {
+        'segment':'notas',
+        'title':'Notas',
+        'table':content
+    }
+    
+    return render(request, 'home/table.html', context)

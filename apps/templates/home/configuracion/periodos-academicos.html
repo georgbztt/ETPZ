@@ -5,53 +5,41 @@
 {% endblock stylesheets %}
 
 <div class="container-fluid">
+
+    <h6>Crear nuevo año escolar</h6>
+    
     <form method="post">
-    {% csrf_token %}
-    <div class="container">
-        <div class="row">
-            <div class="col-3 {% if form.nombre.errors %}form-error{% endif %}">
-                <label for="{{ form.nombre.id_for_label }}">Crear Periodo</label> <br>
-                {{ form.nombre }}
+        {% csrf_token %}
+        <div class="container">
+            <div class="row">
+                <div class="col-3 {% if form.nombre.errors %}form-error{% endif %}">
+                    <label for="{{ form.nombre.id_for_label }}">Ingrese el año escolar</label> <br>
+                    {{ form.nombre }}
+                </div>
+            </div>
+
+            <div class="w-100"></div>
+
+            <div class="col pt-3">
+                <button class="btn btn-primary" type="submit">Guardar</button>
             </div>
         </div>
-
-        <div class="w-100"></div>
-
-        <div class="col pt-3">
-            <button class="btn btn-primary" type="submit">Guardar Periodo</button>
-        </div>
-
-        
-        </div>
-    </div>
     </form>
 
-    <div>
-        <table class="table table-striped mb-0 ">
-            <thead>
+    <br/>
+
+    <h6>Años escolares registrados</h6>
+
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th class="font-weight-bold align-middle ps-4">Año escolar</th>
+            </tr>
+            {% for i in data_table %}
                 <tr>
-                    <th class="text-xs font-weight-bolder opacity-7">Periodos Academicos Registrados</th>
+                    <td class="font-weight-bold px-4">{{ i.nombre }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th class="font-weight-bold align-middle ps-4">Nombre de Periodo</th>
-                    <th class="font-weight-bold align-middle ps-4">Fecha de Creación</th>
-                </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">Periodo 2022-23</td>              
-                    <td class="font-weight align-middle ps-4">13-05-2023</td>
-                </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">Periodo 2021-22</td>              
-                    <td class="font-weight align-middle ps-4">15-02-2022</td>
-                </tr>
-                <tr>
-                    <td class="font-weight align-middle ps-4">Periodo 2020-21</td>              
-                    <td class="font-weight align-middle ps-4">07-03-2021</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="w-100"></div>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>

@@ -43,11 +43,20 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link {% if 'estudiante' in segment %} active text-white {% endif %}" href="{% url 'estudiante' %}">
+        <a class="nav-link {% if 'Estudiantes' in segment %} active text-white {% endif %}" href="{% url 'Estudiantes' %}">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="fas fa-users" aria-hidden="true"></i>
           </div>
           <span class="nav-link-text ms-1 text-dark">Estudiantes</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link {% if 'notas' in segment %} active text-white {% endif %}" href="{% url 'notas' %}">
+          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fas fa-address-book" aria-hidden="true"></i>
+          </div>
+          <span class="nav-link-text ms-1 text-dark">Cargar Notas</span>
         </a>
       </li>
       
