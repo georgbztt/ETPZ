@@ -117,7 +117,7 @@ class Estudiantes(models.Model):
     lugar_de_nacimiento = models.CharField(max_length=255)  # Cadena de texto no nula
     
     def __str__(self):
-        return f'{ self.ci.nombre } - { self.ci_tipo.nombre } - { self.nombres.nombre } - { self.apellidos.nombre } - { self.sexo.nombre } - { self.fecha_de_nacimiento.nombre } - { self.anio.nombre } - { self.mencion.nombre } - { self.seccion.nombre } - { self.entidad_federal.nombre } - { self.lugar_de_nacimiento.nombre }'  # Representación en cadena del objeto
+        return f'{ self.nombres }'  # Representación en cadena del objeto
     
     class Meta:
         verbose_name_plural = "Estudiantes"  # Nombre en plural para el panel de administración

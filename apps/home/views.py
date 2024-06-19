@@ -825,75 +825,99 @@ def crear_seccion(request):
 
 ### Editar Secciones ###
 @login_required(login_url="/login/")
-def editar_seccion(request):
+def editar_seccion(request, pk):
 
-    if request.method == 'POST':
+    try:
+        inst_seccion = Secciones.objects.get(id=pk)
 
-        seccion = request.POST.get('seccion')
+        if request.method == 'POST':
 
-        inst_seccion = Secciones.objects.create(nombre=seccion)
+            seccion = request.POST.get('seccion')
 
-        datos = request.POST.copy()
-        datos.pop('seccion')
-        datos.pop('csrfmiddlewaretoken')
+            setattr(inst_seccion, 'nombre', seccion)
 
-        for id_anio in datos:
+            inst_seccion.save()
 
-            list_menciones = datos.getlist(str(id_anio))
+            datos = request.POST.copy()
+            datos.pop('seccion')
+            datos.pop('csrfmiddlewaretoken')
 
-            inst_anio = Anios.objects.get(id=id_anio)
+            datos = dict(datos)
 
-            for id_mencion in list_menciones:
+            for anio, menciones in datos.items():
 
-                inst_mencion = Menciones.objects.get(id=id_mencion)
+                for mencion in menciones:
 
-                AniosMencionSec.objects.create(anio=inst_anio, mencion=inst_mencion, seccion=inst_seccion)
+                    inst_anios_men_sec = AniosMencionSec.objects.filter(seccion=pk, anio=anio, mencion=mencion)
 
-    anios = list(Anios.objects.values('id', 'nombre'))
-    menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+                    if not inst_anios_men_sec:
 
-    form = ''
+                        inst_anio = Anios.objects.get(id=anio)
+                        inst_mencion = Menciones.objects.get(id=mencion)
+                        inst_anios_men_sec = Secciones.objects.get(id=pk)
 
-    form += f"""
-    <div class="col-1">
-        <div class="form-group">
-            <label for="seccion">Seccion</label>
-            <input type="text" name="seccion" class="form-control" id="seccion" required>
-        </div>
-    </div>
-    <div class="w-100"></div>
-    <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
-    """
+                        AniosMencionSec.objects.create(anio=inst_anio, mencion=inst_mencion, seccion=inst_anios_men_sec)
 
-    for index, anio in enumerate(anios):
+            inst_secciones = AniosMencionSec.objects.values("id", "anio", "mencion").filter(seccion=pk)
+
+            for i in inst_secciones:
+
+                if str(i['anio']) in datos:
+                    
+                    if not str(i['mencion']) in datos[str(i['anio'])]:
+
+                        AniosMencionSec.objects.get(id=i['id']).delete()
+
+        anios = list(Anios.objects.values('id', 'nombre'))
+        menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+
+        data = AniosMencionSec.objects.filter(seccion=pk)
+
+        form = ''
+
         form += f"""
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h6>{anio['nombre']}</h6>
-                    <div class="px-4">
-                        <p>Menciones</p>
-                        {getInputsMenciones(anio['id'], menciones)}
+        <div class="col-1">
+            <div class="form-group">
+                <label for="seccion">Seccion</label>
+                <input type="text" name="seccion" class="form-control" id="seccion" value="{inst_seccion.nombre}" required>
+            </div>
+        </div>
+        <div class="w-100"></div>
+        <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
+        """
+
+        for index, anio in enumerate(anios):
+            form += f"""
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>{anio['nombre']}</h6>
+                        <div class="px-4">
+                            <p>Menciones</p>
+                            {getInputsMenciones(anio['id'], menciones, data)}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        """
-        if index == 2:
-            form += """
-            <div class="w-100 pb-4"></div>
             """
+            if index == 2:
+                form += """
+                <div class="w-100 pb-4"></div>
+                """
 
-    content = 'home/configuracion/editar-seccion.html'
-    context = {
-        'form':form,
-        'segment':'configuracion',
-        'title':'Editar seccion',
-        'table':content,
-        'url_back': '/configuracion/secciones'
-    }
+        content = 'home/configuracion/editar-seccion.html'
+        context = {
+            'form':form,
+            'segment':'configuracion',
+            'title':'Editar seccion',
+            'table':content,
+            'url_back': '/configuracion/secciones'
+        }
 
-    return render(request, 'home/table.html', context)
+        return render(request, 'home/table.html', context)
+    except ObjectDoesNotExist:
+        print("El objeto con el ID dado no existe en la base de datos.")
+        return render(request, 'home/page-404.html')
 
 ### Crear Años ###
 @login_required(login_url="/login/")
