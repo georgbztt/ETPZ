@@ -10,6 +10,7 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import ObjectDoesNotExist
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones
 
@@ -46,51 +47,6 @@ def pages(request):
         return HttpResponse(html_template.render(context, request))
 
 #----------------------------------------------------------------------------------
-
-@login_required
-@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
-def materiaCrear(request):
-    form = materiaForm(request.POST or None)
-    content = 'home/form-content/materia_form.html'
-    context = {
-        'form':form,
-        'segment':'materia',
-        'title':'Registrar Materia',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            form.save(commit=False)
-            #validación
-            form.save()
-            return redirect('materia')
-        else:
-            print(form.errors)
-    
-    return render(request, 'layouts/form.html', context)
-
-@login_required
-@permission_required('home.change_materia', raise_exception=True)#type:ignore
-def materiaEditar(request, pk):
-    obj = get_object_or_404(Materia, pk=pk)
-    form = materiaForm(request.POST or None, instance=obj)
-    content = 'home/form-content/materia_form.html'
-    context = {
-        'form':form,
-        'segment':'materia',
-        'title':'Editar Materia',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            form.save(commit=False)
-            #validación
-            form.save()
-            return redirect('materia')
-        else:
-            print(form.errors)
-    
-    return render(request, 'layouts/form.html', context)
 
 @login_required(login_url="/login/")
 @permission_required('home.delete_materia', raise_exception=True)#Validar permiso
@@ -1076,3 +1032,106 @@ def notas(request):
     }
     
     return render(request, 'home/table.html', context)
+
+
+@login_required(login_url="/login/")
+def materiaEditar(request, pk):
+
+    try:
+
+        materia = Materias.objects.get(id=pk)
+
+        if request.method == 'POST':
+
+            nombre_materia = request.POST.get('materia')
+            abrev = request.POST.get('abrev')
+
+            setattr(materia, "nombre", nombre_materia)
+            setattr(materia, "nombre_abrev", abrev)
+
+            materia.save()
+
+            datos = request.POST.copy()
+            datos.pop('materia')
+            datos.pop('abrev')
+            datos.pop('csrfmiddlewaretoken')
+
+            datos = dict(datos)
+
+            for anio, menciones in datos.items():
+
+                for mencion in menciones:
+
+                    inst_materia = MateriasAniosMenciones.objects.filter(materia=pk, anio=anio, mencion=mencion)
+
+                    if not inst_materia:
+
+                        inst_anio = Anios.objects.get(id=anio)
+                        inst_mencion = Menciones.objects.get(id=mencion)
+                        inst_materia = Materias.objects.get(id=pk)
+
+                        MateriasAniosMenciones.objects.create(anio=inst_anio, mencion=inst_mencion, materia=inst_materia)
+
+            inst_materias = MateriasAniosMenciones.objects.values("id", "anio", "mencion").filter(materia=pk)
+
+            for i in inst_materias:
+
+                if str(i['anio']) in datos:
+                    
+                    if not str(i['mencion']) in datos[str(i['anio'])]:
+
+                        MateriasAniosMenciones.objects.get(id=i['id']).delete()
+
+        anios = list(Anios.objects.values('id', 'nombre'))
+        menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+
+        data = MateriasAniosMenciones.objects.filter(materia=materia)
+
+        form = ''
+
+        form += f"""
+        <div class="col-4">
+            <div class="form-group">
+                <label for="seccion">Ingrese el nombre de la materia</label>
+                <input type="text" name="materia" class="form-control" id="materia" value="{materia.nombre}" required>
+                <label for="seccion">Ingrese la abreviatura de la materia</label>
+                <input type="text" name="abrev" class="form-control w-15" id="abrev" value="{materia.nombre_abrev}" required>
+            </div>
+        </div>
+        <div class="w-100"></div>
+        <p>Seleccione las menciones a las cuales pertenece la materia a crear</p>
+        """
+
+        for index, anio in enumerate(anios):
+            form += f"""
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>{anio['nombre']}</h6>
+                        <div class="px-4">
+                            <p>Menciones</p>
+                            {getInputsMenciones(anio['id'], menciones, data)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
+            if index == 2:
+                form += """
+                <div class="w-100 pb-4"></div>
+                """
+
+        content = 'home/materias/crear.html'
+        context = {
+            'form': form,
+            'segment':'materia',
+            'title':'Crear Materia',
+            'table':content
+        }
+        
+        return render(request, 'home/table.html', context)
+    except ObjectDoesNotExist:
+        print("El objeto con el ID dado no existe en la base de datos.")
+        return render(request, 'home/page-404.html')
+
+    
