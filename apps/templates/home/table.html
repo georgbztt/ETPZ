@@ -11,10 +11,10 @@
     <div class="col-12">
       <div class="card mb-4">
         <div class="card-header pb-0">
-          <div class="d-flex gap-2">
+          <div class="d-flex gap-3">
             {% if url_back %}
               <a href="{{ url_back }}" title="Volver">
-                <i class="fa fa-plus-arrow-left" aria-hidden="true"></i>
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
               </a>
             {% endif %}
             <h5>{{ title }}</h5>
@@ -54,30 +54,9 @@
         dataType: 'json',
         success: function(data) {
             $('#contenedor-tabla').html(data.table_html);
-            //$('#contenedor-paginador').html(data.paginator_html);
         }
     });
   })
-  /*
-  $(document).on('click', '.paginador', function(e) {
-    e.preventDefault();
-    var page = $(this).attr('href').split('page=')[1];
-    var params = new URLSearchParams(window.location.search);
-    var data = {};
-    for (var pair of params.entries()) {
-        data[pair[0]] = pair[1];
-    }
-    data['page'] = page;
-    $.ajax({
-        url: "{% url segment %}",
-        data: data,
-        dataType: 'json',
-        success: function(data) {
-            $('#contenedor-tabla').html(data.table_html);
-            //$('#contenedor-paginador').html(data.paginator_html);
-        }
-    });
-  });*/
   
 </script>
 {% endblock javascripts %}
