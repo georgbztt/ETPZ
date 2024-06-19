@@ -16,7 +16,7 @@ from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, Anio
 from .models import *
 from .forms import *
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones
+from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes
 
 from .utils import getInputsMenciones
 
@@ -991,21 +991,6 @@ def materias(request):
       
     return render(request, 'home/table.html', context)
 
-@login_required(login_url="/login/")
-def Estudiante(request):
-    
-    form = EstudiantesForm()
-
-    content = 'home/estudiantes/estudiante_crear.html'
-    context = {
-        'form':form,
-        'segment':'Estudiantes',
-        'title':'Crear Estudiante',
-        'table':content,
-    }
-
-    return render(request, 'home/table.html', context)
-
 @login_required
 def materiaCrear(request):
 
@@ -1107,6 +1092,99 @@ def notas(request):
     return render(request, 'home/table.html', context)
 
 
+### Estudiantes ###
+@login_required(login_url="/login/")
+def estudiantes(request):
+    busqueda = request.POST.get('buscar')
+    data_table = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos', 'sexo', 'fecha_de_nacimiento', 'anio', 'mencion', 'seccion', 'entidad_federal', 'lugar_de_nacimiento')
+    data_table = Estudiantes.objects.all().order_by('ci')
+    if busqueda:
+        data_table = Estudiantes.objects.filter(
+            Q(ci_tipo__icontains = busqueda) |
+            Q(ci__icontains = busqueda) |
+            Q(nombres__icontains = busqueda) |
+            Q(apellidos__icontains = busqueda) |
+            Q(anio__nombre__icontains = busqueda) |
+            Q(mencion__nombre__icontains = busqueda) |
+            Q(seccion__nombre__icontains = busqueda)
+        ).distinct()
+
+    content = 'home/estudiantes/estudiantes.html'
+    context = {
+        'segment':'estudiantes',
+        'title':'Estudiantes',
+        'table':content,
+        'data_table':data_table
+    }
+
+    return render(request, 'home/table.html', context)
+
+### Crear Estudiantes ###
+@login_required(login_url="/login/")
+def estudianteCrear(request):
+
+    if request.method == 'POST':
+
+        ci = request.POST.get('ci')
+        ci_tipo = request.POST.get('ci_tipo')
+        nombres = request.POST.get('nombres')
+        apellidos = request.POST.get('apellidos')
+        sexo = request.POST.get('sexo')
+        fecha_de_nacimiento = request.POST.get('fecha_de_nacimiento')
+        anio = request.POST.get('anio_id')
+        anio = Anios.objects.get(id = anio)
+        mencion = request.POST.get('mencion_id')
+        mencion = Menciones.objects.get (id = mencion)
+        seccion = request.POST.get('seccion_id')
+        seccion = Secciones.objects.get(id = seccion )
+        entidad_federal = request.POST.get('entidad_federal')
+        lugar_de_nacimiento = request.POST.get('lugar_de_nacimiento')
+
+        Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento)
+        return redirect('estudiantes')
+    form = EstudiantesForm()
+
+    content = 'home/estudiantes/estudiantes_crear.html'
+    context = {
+        'form':form,
+        'segment':'estudiantes',
+        'title':'Crear estudiantes',
+        'table':content
+    }
+    
+    return render(request, 'home/table.html', context)
+
+### Editar Estudiantes ###
+@login_required(login_url="/login/")
+def estudianteEditar(request, id):
+   
+    if request.POST:
+        estudiante = EstudiantesForm(request.POST)
+        if estudiante.is_valid():
+            estudiante = estudiante.cleaned_data
+            estudiante['anio']  = Anios.objects.get(id = estudiante['anio_id'])
+            estudiante['mencion']  = Menciones.objects.get(id = estudiante['mencion_id'])
+            estudiante['seccion']  = Secciones.objects.get(id = estudiante['seccion_id'])
+            Estudiantes.objects.filter(id=id).update(**estudiante)
+            return redirect('estudiantes')
+        else:
+            print(estudiante.errors)
+
+    else:
+        estudiante = Estudiantes.objects.values().get(id=id)
+        form = EstudiantesForm(initial=estudiante)
+        estudiante['fecha_de_nacimiento'] = estudiante['fecha_de_nacimiento'].strftime("%Y-%m-%d")
+        
+    content = 'home/estudiantes/estudiantes_editar.html'
+    context = {
+    'form':form,
+    'segment':'estudiantes',
+    'title':'Editar estudiantes',
+    'table':content
+    }
+    
+    return render(request, 'home/table.html', context)
+
 @login_required(login_url="/login/")
 def materiaEditar(request, pk):
 
@@ -1206,5 +1284,3 @@ def materiaEditar(request, pk):
     except ObjectDoesNotExist:
         print("El objeto con el ID dado no existe en la base de datos.")
         return render(request, 'home/page-404.html')
-
-    
