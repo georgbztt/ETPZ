@@ -108,15 +108,15 @@ class Estudiantes(models.Model):
     nombres = models.CharField(max_length=255)  # Cadena de texto no nula
     apellidos = models.CharField(max_length=255)  # Cadena de texto no nula
     sexo = models.CharField(max_length=255)
-    fecha_de_nacimiento = models.DateField(auto_now=True, auto_now_add=False)
+    fecha_de_nacimiento = models.DateField()
     anio = models.ForeignKey(Anios, on_delete=models.CASCADE)
     mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE)
-    seccion = models.ForeignKey(Secciones, on_delete=models.CASCADE)  # String de un solo carácter no nulo
-    entidad_federal = models.CharField(max_length=255)  # Cadena de texto no nula
+    seccion = models.ForeignKey(Secciones, on_delete=models.CASCADE)  
+    entidad_federal = models.CharField(max_length=3)  # Cadena de texto no nula
     lugar_de_nacimiento = models.CharField(max_length=255)  # Cadena de texto no nula
     
     def __str__(self):
-        return self.nombres  # Representación en cadena del objeto
+        return f'{ self.ci.nombre } - { self.ci_tipo.nombre } - { self.nombres.nombre } - { self.apellidos.nombre } - { self.sexo.nombre } - { self.fecha_de_nacimiento.nombre } - { self.anio.nombre } - { self.mencion.nombre } - { self.seccion.nombre } - { self.entidad_federal.nombre } - { self.lugar_de_nacimiento.nombre }'  # Representación en cadena del objeto
     
     class Meta:
         verbose_name_plural = "Estudiantes"  # Nombre en plural para el panel de administración
