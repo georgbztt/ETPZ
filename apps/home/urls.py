@@ -13,6 +13,7 @@ urlpatterns = [
     path('planillas/revision',views.revision, name='revision'),
 
     path('profesores', views.profesores, name='profesores'),
+    path('profesores/crear', views.crearProfesores, name='crear_profesores'),
     
     path('materias', views.materias, name='materia'),
     path('materias/crear', views.materiaCrear, name='materia_crear'),
@@ -43,7 +44,7 @@ urlpatterns = [
     path('configuracion', views.configuracion, name='configuracion'),
     path('configuracion/secciones', views.secciones, name='secciones'),
     path('configuracion/secciones/crear', views.crear_seccion, name='crear_seccion'),
-    path('configuracion/secciones/editar', views.editar_seccion, name='editar_seccion'),
+    path('configuracion/secciones/<str:pk>/editar', views.editar_seccion, name='editar_seccion'),
     path('configuracion/periodos-academicos', views.crearPeriodoAcademico, name='crear_periodo'),
     path('configuracion/años', views.crearAnios, name='crear_anios'),
     path('configuracion/menciones', views.crearMenciones, name='crear_menciones'),

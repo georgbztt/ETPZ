@@ -22,16 +22,16 @@
     <table class="table table-striped">
         <tbody>
             <tr>
-                <th class="font-weight-bold align-middle ps-4">Materia</th>
-                <th class="font-weight-bold align-middle ps-4">Abreviatura de la materia</th>
-                <th class="font-weight-bold align-middle ps-4">Opciones</th>
+                <th>Materia</th>
+                <th>Abreviatura de la materia</th>
+                <th>Opciones</th>
             </tr>
             {% for i in data_table %}
                 <tr>
                     <td>{{ i.nombre }}</td>
                     <td>{{ i.nombre_abrev }}</td>
                     <td>
-                        <a href="{% url 'editar_seccion' %}">
+                        <a href="{% url 'materia_editar' i.id %}">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>
                     </td>

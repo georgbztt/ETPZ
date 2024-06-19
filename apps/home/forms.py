@@ -3,9 +3,10 @@ Copyright (c) 2023 - present, Daniel Escalona
 """
 from django import forms
 from django.core.validators import *
-from .models import *
+from .models import PeriodosAcademicos
 
 class PlantelForm(forms.Form):
+
     codigo = forms.CharField(label="Código del plantel", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     direccion = forms.CharField(label="Dirección", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -15,6 +16,18 @@ class PlantelForm(forms.Form):
     zona_educativa = forms.CharField(label="Zona educativa", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     distrito_escolar = forms.CharField(label="Distrito escolar", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     director = forms.CharField(label="Director", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
+    ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
+    periodo_id = forms.ChoiceField(label="Periodo", required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super(PlantelForm, self).__init__(*args, **kwargs)
+        self.fields['periodo_id'].choices = [('', '')] + [(periodo.id, periodo.nombre) for periodo in PeriodosAcademicos.objects.all()]
+
+
+class ProfesorForm(forms.Form):
+    nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    apellido = forms.CharField(label="Apellido", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
     ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
 

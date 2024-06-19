@@ -25,6 +25,7 @@ class DatosPlantel(models.Model):
     ci_tipo = models.CharField(max_length=1, null=False)  # String de un solo carácter no nulo
     ci = models.PositiveIntegerField(null=False)  # Número no nulo
     director = models.CharField(max_length=255)
+    periodo = models.ForeignKey(PeriodosAcademicos, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.nombre  # Representación en cadena del objeto
@@ -116,7 +117,7 @@ class Estudiantes(models.Model):
     lugar_de_nacimiento = models.CharField(max_length=255)  # Cadena de texto no nula
     
     def __str__(self):
-        return f'{ self.ci.nombre } - { self.ci_tipo.nombre } - { self.nombres.nombre } - { self.apellidos.nombre } - { self.sexo.nombre } - { self.fecha_de_nacimiento.nombre } - { self.anio.nombre } - { self.mencion.nombre } - { self.seccion.nombre } - { self.entidad_federal.nombre } - { self.lugar_de_nacimiento.nombre }'  # Representación en cadena del objeto
+        return f'{ self.nombres }'  # Representación en cadena del objeto
     
     class Meta:
         verbose_name_plural = "Estudiantes"  # Nombre en plural para el panel de administración

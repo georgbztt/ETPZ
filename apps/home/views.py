@@ -10,6 +10,11 @@ from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import ObjectDoesNotExist
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, ProfesorForm
+from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
+from .models import *
+from .forms import *
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes
 
@@ -45,52 +50,11 @@ def pages(request):
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
 
-#----------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------#
 
-@login_required
-@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
-def materiaCrear(request):
-    form = materiaForm(request.POST or None)
-    content = 'home/form-content/materia_form.html'
-    context = {
-        'form':form,
-        'segment':'materia',
-        'title':'Registrar Materia',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            form.save(commit=False)
-            #validación
-            form.save()
-            return redirect('materia')
-        else:
-            print(form.errors)
-    
-    return render(request, 'layouts/form.html', context)
 
-@login_required
-@permission_required('home.change_materia', raise_exception=True)#type:ignore
-def materiaEditar(request, pk):
-    obj = get_object_or_404(Materia, pk=pk)
-    form = materiaForm(request.POST or None, instance=obj)
-    content = 'home/form-content/materia_form.html'
-    context = {
-        'form':form,
-        'segment':'materia',
-        'title':'Editar Materia',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            form.save(commit=False)
-            #validación
-            form.save()
-            return redirect('materia')
-        else:
-            print(form.errors)
-    
-    return render(request, 'layouts/form.html', context)
+
+### Seccion de Materias ###
 
 @login_required(login_url="/login/")
 @permission_required('home.delete_materia', raise_exception=True)#Validar permiso
@@ -101,6 +65,9 @@ def materiaEliminar(request, pk):
     if 'next' in request.GET:
         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
     return redirect('materia')#Redireccionar normalmente
+
+
+### Seccion de planillas ###
 
 @login_required(login_url="/login/")
 def planillas(request):
@@ -171,6 +138,10 @@ def materiaPendientes(request):
     }
     
     return render(request, 'home/table.html', context)
+
+
+### Seccion de Carga de Notas ###
+
 @login_required(login_url="/login/")
 def cargas(request):
     cargas = Carga.objects.all()
@@ -250,6 +221,11 @@ def cargaEliminar(request, pk):
         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
     return redirect('carga')#Redireccionar normalmente
 
+
+
+
+### Seccion de profesores ###
+
 @login_required(login_url="/login/")
 def profesores(request):
     table = 'home/table-content/profesores.html'
@@ -263,6 +239,33 @@ def profesores(request):
 
     return render(request, 'home/table.html', context)
 
+
+@login_required(login_url="/login/")
+def crearProfesores(request):
+    if request.method == 'POST':
+        form = ProfesorForm(request.POST)
+        if form.is_valid():
+
+            Profesores.objects.create(**form.cleaned_data)
+            
+            print("")
+            print(form.cleaned_data)
+            print("")
+
+    form = ProfesorForm()
+
+    content = 'home/form-content/crear_profesor_form.html'
+    context = {
+        'form':form,
+        'segment':'profesores',
+        'title':'Crear Profesor',
+        'table':content
+    }
+
+    return render(request, 'home/table.html', context)
+
+
+### Seccion de Estudiantes ###
 
 @login_required(login_url="/login/")
 def estudiantes(request):
@@ -511,6 +514,8 @@ def carga_notas(request, pd):
     return render(request, 'home/carga_de_notas.html', context)
 
 
+### Seccion de Periodos ###
+
 @login_required(login_url="/login/")
 def periodos(request):
     periodos = Periodo.objects.all().annotate(num_estudiantes=Count('estudiante'))
@@ -656,10 +661,17 @@ def configuracion(request):
         if form.is_valid():
             datos_plantel = DatosPlantel.objects.first()
 
+            save_data = form.cleaned_data
+
+            periodo = PeriodosAcademicos.objects.get(id=save_data['periodo_id'])
+
+            save_data['periodo'] = periodo
+
             if datos_plantel:
-                DatosPlantel.objects.update(**form.cleaned_data)
+                DatosPlantel.objects.update(**save_data)
+                datos_plantel = form.cleaned_data
             else:
-                DatosPlantel.objects.create(**form.cleaned_data)
+                DatosPlantel.objects.create(**save_data)
                 datos_plantel = form.cleaned_data
     else:
 
@@ -677,7 +689,8 @@ def configuracion(request):
                 'distrito_escolar': '', 
                 'director': '', 
                 'ci_tipo': '', 
-                'ci': None
+                'ci': None,
+                'periodo_id': ''
             }
 
     form = PlantelForm(initial=datos_plantel)
@@ -712,7 +725,8 @@ def crearPeriodoAcademico(request):
         'segment':'configuracion',
         'title':'Años Escolares',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)
@@ -731,7 +745,8 @@ def secciones(request):
         'segment':'configuracion',
         'title':'Secciones',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)
@@ -802,81 +817,107 @@ def crear_seccion(request):
         'form':form,
         'segment':'configuracion',
         'title':'Crear seccion',
-        'table':content
+        'table':content,
+        'url_back': '/configuracion/secciones'
     }
 
     return render(request, 'home/table.html', context)
 
 ### Editar Secciones ###
 @login_required(login_url="/login/")
-def editar_seccion(request):
+def editar_seccion(request, pk):
 
-    if request.method == 'POST':
+    try:
+        inst_seccion = Secciones.objects.get(id=pk)
 
-        seccion = request.POST.get('seccion')
+        if request.method == 'POST':
 
-        inst_seccion = Secciones.objects.create(nombre=seccion)
+            seccion = request.POST.get('seccion')
 
-        datos = request.POST.copy()
-        datos.pop('seccion')
-        datos.pop('csrfmiddlewaretoken')
+            setattr(inst_seccion, 'nombre', seccion)
 
-        for id_anio in datos:
+            inst_seccion.save()
 
-            list_menciones = datos.getlist(str(id_anio))
+            datos = request.POST.copy()
+            datos.pop('seccion')
+            datos.pop('csrfmiddlewaretoken')
 
-            inst_anio = Anios.objects.get(id=id_anio)
+            datos = dict(datos)
 
-            for id_mencion in list_menciones:
+            for anio, menciones in datos.items():
 
-                inst_mencion = Menciones.objects.get(id=id_mencion)
+                for mencion in menciones:
 
-                AniosMencionSec.objects.create(anio=inst_anio, mencion=inst_mencion, seccion=inst_seccion)
+                    inst_anios_men_sec = AniosMencionSec.objects.filter(seccion=pk, anio=anio, mencion=mencion)
 
-    anios = list(Anios.objects.values('id', 'nombre'))
-    menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+                    if not inst_anios_men_sec:
 
-    form = ''
+                        inst_anio = Anios.objects.get(id=anio)
+                        inst_mencion = Menciones.objects.get(id=mencion)
+                        inst_anios_men_sec = Secciones.objects.get(id=pk)
 
-    form += f"""
-    <div class="col-1">
-        <div class="form-group">
-            <label for="seccion">Seccion</label>
-            <input type="text" name="seccion" class="form-control" id="seccion" required>
-        </div>
-    </div>
-    <div class="w-100"></div>
-    <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
-    """
+                        AniosMencionSec.objects.create(anio=inst_anio, mencion=inst_mencion, seccion=inst_anios_men_sec)
 
-    for index, anio in enumerate(anios):
+            inst_secciones = AniosMencionSec.objects.values("id", "anio", "mencion").filter(seccion=pk)
+
+            for i in inst_secciones:
+
+                if str(i['anio']) in datos:
+                    
+                    if not str(i['mencion']) in datos[str(i['anio'])]:
+
+                        AniosMencionSec.objects.get(id=i['id']).delete()
+
+        anios = list(Anios.objects.values('id', 'nombre'))
+        menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+
+        data = AniosMencionSec.objects.filter(seccion=pk)
+
+        form = ''
+
         form += f"""
-        <div class="col">
-            <div class="card">
-                <div class="card-body">
-                    <h6>{anio['nombre']}</h6>
-                    <div class="px-4">
-                        <p>Menciones</p>
-                        {getInputsMenciones(anio['id'], menciones)}
+        <div class="col-1">
+            <div class="form-group">
+                <label for="seccion">Seccion</label>
+                <input type="text" name="seccion" class="form-control" id="seccion" value="{inst_seccion.nombre}" required>
+            </div>
+        </div>
+        <div class="w-100"></div>
+        <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
+        """
+
+        for index, anio in enumerate(anios):
+            form += f"""
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>{anio['nombre']}</h6>
+                        <div class="px-4">
+                            <p>Menciones</p>
+                            {getInputsMenciones(anio['id'], menciones, data)}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        """
-        if index == 2:
-            form += """
-            <div class="w-100 pb-4"></div>
             """
+            if index == 2:
+                form += """
+                <div class="w-100 pb-4"></div>
+                """
 
-    content = 'home/configuracion/editar-seccion.html'
-    context = {
-        'form':form,
-        'segment':'configuracion',
-        'title':'Editar seccion',
-        'table':content
-    }
+        content = 'home/configuracion/editar-seccion.html'
+        context = {
+            'form':form,
+            'segment':'configuracion',
+            'title':'Editar seccion',
+            'table':content,
+            'url_back': '/configuracion/secciones'
+        }
 
-    return render(request, 'home/table.html', context)
+        return render(request, 'home/table.html', context)
+    except ObjectDoesNotExist:
+        print("El objeto con el ID dado no existe en la base de datos.")
+        return render(request, 'home/page-404.html')
 
 ### Crear Años ###
 @login_required(login_url="/login/")
@@ -898,7 +939,8 @@ def crearAnios(request):
         'segment':'configuracion',
         'title':'Años',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)
@@ -928,7 +970,8 @@ def crearMenciones(request):
         'segment':'configuracion',
         'title':'Menciones',
         'table':content,
-        'data_table':data_table
+        'data_table':data_table,
+        'url_back': '/configuracion'
     }
 
     return render(request, 'home/table.html', context)
@@ -1048,6 +1091,7 @@ def notas(request):
     
     return render(request, 'home/table.html', context)
 
+
 ### Estudiantes ###
 @login_required(login_url="/login/")
 def estudiantes(request):
@@ -1141,3 +1185,102 @@ def estudianteEditar(request, id):
     
     return render(request, 'home/table.html', context)
 
+@login_required(login_url="/login/")
+def materiaEditar(request, pk):
+
+    try:
+
+        materia = Materias.objects.get(id=pk)
+
+        if request.method == 'POST':
+
+            nombre_materia = request.POST.get('materia')
+            abrev = request.POST.get('abrev')
+
+            setattr(materia, "nombre", nombre_materia)
+            setattr(materia, "nombre_abrev", abrev)
+
+            materia.save()
+
+            datos = request.POST.copy()
+            datos.pop('materia')
+            datos.pop('abrev')
+            datos.pop('csrfmiddlewaretoken')
+
+            datos = dict(datos)
+
+            for anio, menciones in datos.items():
+
+                for mencion in menciones:
+
+                    inst_materia = MateriasAniosMenciones.objects.filter(materia=pk, anio=anio, mencion=mencion)
+
+                    if not inst_materia:
+
+                        inst_anio = Anios.objects.get(id=anio)
+                        inst_mencion = Menciones.objects.get(id=mencion)
+                        inst_materia = Materias.objects.get(id=pk)
+
+                        MateriasAniosMenciones.objects.create(anio=inst_anio, mencion=inst_mencion, materia=inst_materia)
+
+            inst_materias = MateriasAniosMenciones.objects.values("id", "anio", "mencion").filter(materia=pk)
+
+            for i in inst_materias:
+
+                if str(i['anio']) in datos:
+                    
+                    if not str(i['mencion']) in datos[str(i['anio'])]:
+
+                        MateriasAniosMenciones.objects.get(id=i['id']).delete()
+
+        anios = list(Anios.objects.values('id', 'nombre'))
+        menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+
+        data = MateriasAniosMenciones.objects.filter(materia=materia)
+
+        form = ''
+
+        form += f"""
+        <div class="col-4">
+            <div class="form-group">
+                <label for="seccion">Ingrese el nombre de la materia</label>
+                <input type="text" name="materia" class="form-control" id="materia" value="{materia.nombre}" required>
+                <label for="seccion">Ingrese la abreviatura de la materia</label>
+                <input type="text" name="abrev" class="form-control w-15" id="abrev" value="{materia.nombre_abrev}" required>
+            </div>
+        </div>
+        <div class="w-100"></div>
+        <p>Seleccione las menciones a las cuales pertenece la materia a crear</p>
+        """
+
+        for index, anio in enumerate(anios):
+            form += f"""
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>{anio['nombre']}</h6>
+                        <div class="px-4">
+                            <p>Menciones</p>
+                            {getInputsMenciones(anio['id'], menciones, data)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
+            if index == 2:
+                form += """
+                <div class="w-100 pb-4"></div>
+                """
+
+        content = 'home/materias/crear.html'
+        context = {
+            'form': form,
+            'segment':'materia',
+            'title':'Crear Materia',
+            'table':content
+        }
+        
+        return render(request, 'home/table.html', context)
+    except ObjectDoesNotExist:
+        print("El objeto con el ID dado no existe en la base de datos.")
+        return render(request, 'home/page-404.html')
