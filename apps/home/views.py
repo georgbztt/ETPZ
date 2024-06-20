@@ -11,12 +11,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.http import require_POST
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, ProfesorForm
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 from .models import *
 from .forms import *
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones
+import json
 
 from .utils import getInputsMenciones
 
@@ -962,7 +964,7 @@ def crearMenciones(request):
 
     form = MencionesForm()
 
-    data_table = Menciones.objects.values('nombre', 'nombre_abrev')
+    data_table = Menciones.objects.values('id', 'nombre', 'nombre_abrev')
 
     content = 'home/configuracion/menciones.html'
     context = {
@@ -1207,4 +1209,31 @@ def materiaEditar(request, pk):
         print("El objeto con el ID dado no existe en la base de datos.")
         return render(request, 'home/page-404.html')
 
+
+@require_POST
+def mencion_editar(request, pk):
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    mencion = Menciones.objects.filter(id=pk).first()
     
+    if mencion:
+
+        nombre = data.get('nombre')
+        abrev = data.get('abrev')
+
+        if nombre:
+            setattr(mencion, 'nombre', nombre)
+
+        if abrev:
+            setattr(mencion, 'nombre_abrev', abrev)
+        
+        # Guarda los cambios en la base de datos
+        mencion.save()
+
+        return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
+    else:
+        return JsonResponse({"error": "Mención no encontrada."}, status=404)

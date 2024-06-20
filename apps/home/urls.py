@@ -48,6 +48,7 @@ urlpatterns = [
     path('configuracion/periodos-academicos', views.crearPeriodoAcademico, name='crear_periodo'),
     path('configuracion/años', views.crearAnios, name='crear_anios'),
     path('configuracion/menciones', views.crearMenciones, name='crear_menciones'),
+    path('configuracion/menciones/<str:pk>/editar', views.mencion_editar, name='editar_menciones'),
     
     path('notas', views.notas, name='notas'),
     path('notas/cargar', views.Cargar_Notas, name='Cargar_Notas'),
