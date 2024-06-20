@@ -324,62 +324,62 @@ def estudianteVer(request, pk, dir, periodo_sel):
         }
     return render(request, plantilla, context)#Redireccionar normalmente
 
-@login_required
-@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
-def estudianteCrear(request):
-    form = estudianteForm(request.POST or None)
-    content = 'home/form-content/estudiante_form.html'
-    context = {
-        'form':form,
-        'segment':'estudiante',
-        'title':'Registrar Estudiante',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            e = form.save(commit=False)
-            #validación
-            e.seccion = e.seccion.upper()
-            e.save()
-            return redirect('estudiante')
-        else:
-            print(form.errors)
+# @login_required
+# @permission_required('home.add_estudiante', raise_exception=True)#type:ignore
+# def estudianteCrear(request):
+#     form = estudianteForm(request.POST or None)
+#     content = 'home/form-content/estudiante_form.html'
+#     context = {
+#         'form':form,
+#         'segment':'estudiante',
+#         'title':'Registrar Estudiante',
+#         'content':content
+#     }
+#     if request.POST:
+#         if form.is_valid():
+#             e = form.save(commit=False)
+#             #validación
+#             e.seccion = e.seccion.upper()
+#             e.save()
+#             return redirect('estudiante')
+#         else:
+#             print(form.errors)
     
-    return render(request, 'layouts/form.html', context)
+#     return render(request, 'layouts/form.html', context)
 
-@login_required
-@permission_required('home.change_estudiante', raise_exception=True)#type:ignore
-def estudianteEditar(request, pk):
-    obj = get_object_or_404(Estudiante, pk=pk)
-    form = estudianteForm(request.POST or None, instance=obj)
-    content = 'home/form-content/estudiante_form.html'
-    context = {
-        'form':form,
-        'segment':'estudiante',
-        'title':'Editar Estudiante',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            e = form.save(commit=False)
-            #validación
-            e.seccion = e.seccion.upper()
-            e.save()
-            return redirect('estudiante')
-        else:
-            print(form.errors)
+# @login_required
+# @permission_required('home.change_estudiante', raise_exception=True)#type:ignore
+# def estudianteEditar(request, pk):
+#     obj = get_object_or_404(Estudiante, pk=pk)
+#     form = estudianteForm(request.POST or None, instance=obj)
+#     content = 'home/form-content/estudiante_form.html'
+#     context = {
+#         'form':form,
+#         'segment':'estudiante',
+#         'title':'Editar Estudiante',
+#         'content':content
+#     }
+#     if request.POST:
+#         if form.is_valid():
+#             e = form.save(commit=False)
+#             #validación
+#             e.seccion = e.seccion.upper()
+#             e.save()
+#             return redirect('estudiante')
+#         else:
+#             print(form.errors)
     
-    return render(request, 'layouts/form.html', context)
+#     return render(request, 'layouts/form.html', context)
 
-@login_required(login_url="/login/")
-@permission_required('home.delete_estudiante', raise_exception=True)#Validar permiso
-def estudianteEliminar(request, pk):
-    estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante a eliminar
-    estudiante.delete()#Eliminar
+# @login_required(login_url="/login/")
+# @permission_required('home.delete_estudiante', raise_exception=True)#Validar permiso
+# def estudianteEliminar(request, pk):
+#     estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante a eliminar
+#     estudiante.delete()#Eliminar
 
-    if 'next' in request.GET:
-        return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
-    return redirect('estudiante')#Redireccionar normalmente
+#     if 'next' in request.GET:
+#         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+#     return redirect('estudiante')#Redireccionar normalmente
 
 @login_required(login_url="/login/")
 @permission_required('home.change_estudiante', raise_exception=True)#Validar permiso
