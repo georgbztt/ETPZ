@@ -3,7 +3,7 @@ Copyright (c) 2023 - present, Daniel Escalona
 """
 from django import forms
 from django.core.validators import *
-from .models import PeriodosAcademicos
+from .models import PeriodosAcademicos, Anios, Secciones, Menciones
 
 class PlantelForm(forms.Form):
 
