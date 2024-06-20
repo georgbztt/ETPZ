@@ -243,29 +243,29 @@ def profesores(request):
     return render(request, 'home/table.html', context)
 
 
-@login_required(login_url="/login/")
-def crearProfesores(request):
-    if request.method == 'POST':
-        form = ProfesorForm(request.POST)
-        if form.is_valid():
+# @login_required(login_url="/login/")
+# def crearProfesores(request):
+#     if request.method == 'POST':
+#         form = ProfesorForm(request.POST)
+#         if form.is_valid():
 
-            Profesores.objects.create(**form.cleaned_data)
+#             Profesores.objects.create(**form.cleaned_data)
             
-            print("")
-            print(form.cleaned_data)
-            print("")
+#             print("")
+#             print(form.cleaned_data)
+#             print("")
 
-    form = ProfesorForm()
+#     form = ProfesorForm()
 
-    content = 'home/form-content/crear_profesor_form.html'
-    context = {
-        'form':form,
-        'segment':'profesores',
-        'title':'Crear Profesor',
-        'table':content
-    }
+#     content = 'home/form-content/crear_profesor_form.html'
+#     context = {
+#         'form':form,
+#         'segment':'profesores',
+#         'title':'Crear Profesor',
+#         'table':content
+#     }
 
-    return render(request, 'home/table.html', context)
+#     return render(request, 'home/table.html', context)
 
 
 ### Seccion de Estudiantes ###
@@ -1316,3 +1316,28 @@ def mencion_editar(request, pk):
         return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
     else:
         return JsonResponse({"error": "Mención no encontrada."}, status=404)
+    
+
+@login_required(login_url="/login/")
+def crearProfesores(request):
+    if request.method == 'POST':
+        form = ProfesorForm(request.POST)
+        if form.is_valid():
+
+            Profesor.objects.create(**form.cleaned_data)
+
+            print("")
+            print(form.cleaned_data)
+            print("")
+
+    form = ProfesorForm()
+
+    content = 'home/form-content/crear_profesor_form.html'
+    context = {
+        'form':form,
+        'segment':'profesores',
+        'title':'Crear Profesor',
+        'table':content
+    }
+
+    return render(request, 'home/table.html', context)
