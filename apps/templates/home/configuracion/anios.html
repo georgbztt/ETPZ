@@ -36,16 +36,10 @@
         <tbody>
             <tr>
                 <th class="font-weight-bold align-middle ps-4">Año</th>
-                <th class="font-weight-bold align-middle ps-4">Opciones</th>
             </tr>
             {% for i in data_table %}
                 <tr>
                     <td>{{ i.nombre }}</td>
-                    <td>
-                        <a href="{% url 'editar_seccion' %}">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </a>
-                    </td>
                 </tr>
             {% endfor %}
         </tbody>
