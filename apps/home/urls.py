@@ -20,7 +20,6 @@ urlpatterns = [
     path('materias/<str:pk>/editar', views.materiaEditar, name='materia_editar'),
     path('materias/<str:pk>/eliminar', views.materiaEliminar, name='materia_eliminar'),
 
-    path('cargas', views.cargas, name='carga'),
     path('cargas/crear', views.cargaCrear, name='carga_crear'),
     path('cargas/<str:pk>/editar', views.cargaEditar, name='carga_editar'),
     path('cargas/<str:pk>/eliminar', views.cargaEliminar, name='carga_eliminar'),
@@ -30,6 +29,8 @@ urlpatterns = [
     path('estudiantes/<int:id>/editar', views.estudianteEditar, name='estudiantes_editar'),
     path('estudiantes/<str:pk>/inasistencias', views.estudianteInasistencias, name='estudiante_inasistencias'),
     path('estudiantes/<str:pk>/<str:dir>/<str:periodo_sel>', views.estudianteVer, name='estudiante_ver'),
+
+    path('notas', views.Cargar_Notas, name='cargar_notas'),
 
     path('notas/<str:pk>/editar', views.editarNotas, name='editar_notas'),
     path('notas/<str:pd>/carga', views.carga_notas, name='carga_notas'),
