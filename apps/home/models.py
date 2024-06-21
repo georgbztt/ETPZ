@@ -67,10 +67,7 @@ class Secciones(models.Model):
 class AniosMencionSec(models.Model):
     anio = models.ForeignKey(Anios, on_delete=models.CASCADE)
     mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE)
-    seccion= models.ForeignKey(Secciones, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{ self.anio.nombre } - { self.mencion.nombre } - { self.seccion.nombre }'  # Representación en cadena del objeto
+    seccion= models.ForeignKey(Secciones, on_delete=models.CASCADE) # Representación en cadena del objeto
 
     class Meta:
         verbose_name_plural = "Años Menciones Secciones"
@@ -92,9 +89,6 @@ class MateriasAniosMenciones(models.Model):
     materia = models.ForeignKey(Materias, on_delete=models.CASCADE)
     anio = models.ForeignKey(Anios, on_delete=models.CASCADE)
     mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{ self.materia.nombre } - { self.anio.nombre } - { self.mencion.nombre }'
 
     class Meta:
         verbose_name_plural = "Materias Años Menciones"
@@ -133,3 +127,11 @@ class Profesor(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+
+class EstudiantesMaterias(models.Model):
+    materia = models.ForeignKey(MateriasAniosMenciones, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.materia.materia.nombre

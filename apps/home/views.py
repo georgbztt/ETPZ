@@ -17,9 +17,8 @@ from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, Anio
 from .models import *
 from .forms import *
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones
 import json
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes
+from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, EstudiantesMaterias
 
 from .utils import getInputsMenciones
 
@@ -1144,8 +1143,16 @@ def estudianteCrear(request):
         lugar_de_nacimiento = request.POST.get('lugar_de_nacimiento')
         estado = request.POST.get('estado')
 
-        Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento, estado=estado)
+        estudiante = Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento, estado=estado)
+
+        materias = MateriasAniosMenciones.objects.filter(anio=anio, mencion=mencion).all()
+
+        for materia in materias:
+
+            EstudiantesMaterias.objects.create(materia=materia, estudiante=estudiante)
+        
         return redirect('estudiantes')
+    
     form = EstudiantesForm()
 
     content = 'home/estudiantes/estudiantes_crear.html'
