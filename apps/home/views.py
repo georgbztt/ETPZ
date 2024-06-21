@@ -144,29 +144,29 @@ def materiaPendientes(request):
 
 ### Seccion de Carga de Notas ###
 
-@login_required(login_url="/login/")
-def cargas(request):
-    cargas = Carga.objects.all()
+# @login_required(login_url="/login/")
+# def cargas(request):
+#     cargas = Carga.objects.all()
 
-    buscar = request.GET.get('buscar')#Tomar texto del buscador
-    if buscar:#Si exste, filtrar
-        cargas = cargas.filter(Q(titulo__icontains=buscar))
+#     buscar = request.GET.get('buscar')#Tomar texto del buscador
+#     if buscar:#Si exste, filtrar
+#         cargas = cargas.filter(Q(titulo__icontains=buscar))
 
-    table = 'home/table-content/cargas.html'
-    context={
-        'cargas':cargas,
-        'segment':'carga',
-        'title':'Cargas académicas',
-        'buscar':True,
-        'table':table,
-        'url_crear':'/cargas/crear'
-    }
+#     table = 'home/table-content/cargas.html'
+#     context={
+#         'cargas':cargas,
+#         'segment':'carga',
+#         'title':'Cargas académicas',
+#         'buscar':True,
+#         'table':table,
+#         'url_crear':'/cargas/crear'
+#     }
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
-        table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
-        return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
+#     if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
+#         table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
+#         return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
 
-    return render(request, 'home/table.html', context)
+#     return render(request, 'home/table.html', context)
 
 @login_required
 @permission_required('home.add_carga', raise_exception=True)#type:ignore
