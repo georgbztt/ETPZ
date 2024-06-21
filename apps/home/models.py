@@ -115,6 +115,7 @@ class Estudiantes(models.Model):
     seccion = models.ForeignKey(Secciones, on_delete=models.CASCADE)  
     entidad_federal = models.CharField(max_length=3)  # Cadena de texto no nula
     lugar_de_nacimiento = models.CharField(max_length=255)  # Cadena de texto no nula
+    estado = models.PositiveIntegerField(null=True)
     
     def __str__(self):
         return f'{ self.nombres }'  # Representación en cadena del objeto

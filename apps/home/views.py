@@ -1099,7 +1099,7 @@ def notas(request):
 @login_required(login_url="/login/")
 def estudiantes(request):
     busqueda = request.POST.get('buscar')
-    data_table = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos', 'sexo', 'fecha_de_nacimiento', 'anio', 'mencion', 'seccion', 'entidad_federal', 'lugar_de_nacimiento')
+    data_table = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos', 'sexo', 'anio', 'mencion', 'seccion',  'lugar_de_nacimiento', 'estado')
     data_table = Estudiantes.objects.all().order_by('ci')
     if busqueda:
         data_table = Estudiantes.objects.filter(
@@ -1142,8 +1142,9 @@ def estudianteCrear(request):
         seccion = Secciones.objects.get(id = seccion )
         entidad_federal = request.POST.get('entidad_federal')
         lugar_de_nacimiento = request.POST.get('lugar_de_nacimiento')
+        estado = request.POST.get('estado')
 
-        Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento)
+        Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento, estado=estado)
         return redirect('estudiantes')
     form = EstudiantesForm()
 

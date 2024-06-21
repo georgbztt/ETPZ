@@ -39,12 +39,11 @@
             <tr>
                 <th class="font-weight-bold p-2">Cédula</th>
                 <th class="font-weight-bold p-2">Nombres y Apellidos</th>
+                <th class="font-weight-bold p-2">Estado</th>
                 <th class="font-weight-bold p-2">Sexo</th>
-                <th class="font-weight-bold p-2">Fecha de nacimiento</th>
                 <th class="font-weight-bold p-2">Año</th>
                 <th class="font-weight-bold p-2">Mención</th>
                 <th class="font-weight-bold p-2">Sección</th>
-                <th class="font-weight-bold p-2">Entidad federal</th>
                 <th class="font-weight-bold p-2">Lugar de nacimiento</th>
                 <th class="font-weight-bold p-2">Editar</th>
             </tr>
@@ -52,12 +51,11 @@
                 <tr>
                     <td class="text-left p-2">{{ i.ci_tipo }}-{{ i.ci }}</td>
                     <td class="text-left p-2">{{ i.nombres}}&thinsp;{{i.apellidos }}</td>
+                    <td class="text-left p-2">{% if i.estado == 1 %} Normal {% endif %} {% if i.estado == 2 %} Materias Pendientes {% endif %} {% if i.estado == 3 %} Repitiente {% endif %}</td>
                     <td class="text-center p-2">{{ i.sexo }}</td>
-                    <td class="text-left p-2">{{ i.fecha_de_nacimiento }}</td>
                     <td class="text-left p-2">{{ i.anio }}</td>
                     <td class="text-left p-2">{{ i.mencion }}</td>
                     <td class="text-center p-2">{{ i.seccion }}</td>
-                    <td class="text-center p-2">{{ i.entidad_federal }}</td>
                     <td class="text-left p-2">{{ i.lugar_de_nacimiento }}</td>
                     <td class="text-center p-2">
                         <a class=" m-1 p-1" href="{% url 'estudiantes_editar' i.id|safe%}">
