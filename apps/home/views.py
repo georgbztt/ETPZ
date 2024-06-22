@@ -16,7 +16,7 @@ from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, Profesor
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 from .models import *
 from .forms import *
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas
 import json
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, EstudiantesMaterias
 
@@ -1070,6 +1070,16 @@ def materiaCrear(request):
 @login_required(login_url="/login/")
 def Cargar_Notas(request):
 
+    anio = request.GET.get('anio')
+    mencion = request.GET.get('mencion')
+    seccion = request.GET.get('seccion')
+
+    estudiantes = Estudiantes.objects.values('ci_tipo', 'ci', 'nombres', 'apellidos').filter(anio=anio, mencion=mencion, seccion=seccion).filter(Q(estado=1) | Q(estado=2)).all()
+
+    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).all()
+
+    col_span = (len(materias) - 3)
+
     table = 'home/form-content/planillas_form.html'
     context={
         'Cargar_Notas':Cargar_Notas,
@@ -1077,6 +1087,9 @@ def Cargar_Notas(request):
         'title':'',
         'buscar':True,
         'table':table,
+        'estudiantes': estudiantes,
+        'materias': materias,
+        'col_span': col_span
     }
     
     return render(request, 'home/Cargar_Notas/notas.html', context)

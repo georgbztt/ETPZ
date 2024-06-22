@@ -15,7 +15,11 @@ td {
 }
 
 .text-vertical {
-  writing-mode: vertical-lr
+  writing-mode: vertical-rl
+}
+
+.uppercase {
+  text-transform: uppercase;
 }
 
 .text-left {
@@ -62,6 +66,14 @@ td {
 
 .break-word {
   word-wrap: break-word;
+}
+
+.bg-red {
+  background-color: rgba(255, 0, 0, 0.3);
+}
+
+.bg-blue {
+  background-color: rgba(0, 0, 255, 0.3);
 }
 
 @page {
