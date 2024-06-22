@@ -1083,12 +1083,23 @@ def Cargar_Notas(request):
 
 @login_required(login_url="/login/")
 def notas(request):
+
+    if request.method == 'POST':
+
+        anio = request.POST.get('anio')
+        mencion = request.POST.get('mencion')
+        seccion = request.POST.get('seccion')
+        
+        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}')
+
+    form = CargarNotas()
     
     content = 'home/Cargar_Notas/index.html'
     context = {
         'segment':'notas',
         'title':'Notas',
-        'table':content
+        'table':content,
+        'form':form
     }
     
     return render(request, 'home/table.html', context)
