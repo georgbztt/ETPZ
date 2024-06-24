@@ -18,7 +18,7 @@ from .models import *
 from .forms import *
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas
 import json
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, EstudiantesMaterias
+from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas
 
 from .utils import getInputsMenciones
 
@@ -1169,11 +1169,14 @@ def estudianteCrear(request):
 
         estudiante = Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento, estado=estado)
 
-        materias = MateriasAniosMenciones.objects.filter(anio=anio, mencion=mencion).all()
+        if estado == "1" or estado == "2":
+            materias = MateriasAniosMenciones.objects.filter(anio=anio, mencion=mencion).all()
 
-        for materia in materias:
+            datos = DatosPlantel.objects.all().first()
+            periodo = PeriodosAcademicos.objects.get(id=datos.periodo.id)
 
-            EstudiantesMaterias.objects.create(materia=materia, estudiante=estudiante)
+            for materia in materias:
+                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo)
         
         return redirect('estudiantes')
     
