@@ -1074,7 +1074,7 @@ def Cargar_Notas(request):
     mencion = request.GET.get('mencion')
     seccion = request.GET.get('seccion')
 
-    estudiantes = Estudiantes.objects.values('ci_tipo', 'ci', 'nombres', 'apellidos').filter(anio=anio, mencion=mencion, seccion=seccion).filter(Q(estado=1) | Q(estado=2)).all()
+    estudiantes = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos').filter(anio=anio, mencion=mencion, seccion=seccion).filter(Q(estado=1) | Q(estado=2)).all()
 
     materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).all()
 
