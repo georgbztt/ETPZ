@@ -1,0 +1,71 @@
+
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+    <div class="container">
+        <div class="w-100"></div>
+        <div class="col pt-3">
+            <a class="btn btn-primary" href="{% url 'estudiantes_crear' %}" role="button">Crear Estudiante</a>
+        </div>
+    </div>
+    <h6 class="text-xs font-weight-bolder opacity-7 mt-4 ms-4">Buscar Estudiante</h6>
+    <div class="container-fluid">
+        <div class="row-1">
+            <div class="col-8">
+                <form class="form-inline my-2 my-lg-0" method="post">
+                    {% csrf_token %}
+                    <div class="ms-md-auto pe-md-3 d-flex">
+                       
+                        <div class="input-group me-4">
+                          <button class="btn btn-primary my-0 my-sm-0" type="submit"><i class="fas fa-search" aria-hidden="true"></i></button>
+                          <input type="text" id="buscar" class="form-control p-1" placeholder="Buscar..." value="{{request.POST.buscar}}" name="buscar">
+                        </div>
+                        
+                      </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <h6 class="text-xs font-weight-bolder opacity-7 mt-5">Estudiantes Registrados</h6>
+    
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th class="font-weight-bold p-2">Cédula</th>
+                <th class="font-weight-bold p-2">Nombres y Apellidos</th>
+                <th class="font-weight-bold p-2">Sexo</th>
+                <th class="font-weight-bold p-2">Fecha de nacimiento</th>
+                <th class="font-weight-bold p-2">Año</th>
+                <th class="font-weight-bold p-2">Mención</th>
+                <th class="font-weight-bold p-2">Sección</th>
+                <th class="font-weight-bold p-2">Entidad federal</th>
+                <th class="font-weight-bold p-2">Lugar de nacimiento</th>
+                <th class="font-weight-bold p-2">Editar</th>
+            </tr>
+            {% for i in data_table %}
+                <tr>
+                    <td class="text-left p-2">{{ i.ci_tipo }}-{{ i.ci }}</td>
+                    <td class="text-left p-2">{{ i.nombres}}&thinsp;{{i.apellidos }}</td>
+                    <td class="text-center p-2">{{ i.sexo }}</td>
+                    <td class="text-left p-2">{{ i.fecha_de_nacimiento }}</td>
+                    <td class="text-left p-2">{{ i.anio }}</td>
+                    <td class="text-left p-2">{{ i.mencion }}</td>
+                    <td class="text-center p-2">{{ i.seccion }}</td>
+                    <td class="text-center p-2">{{ i.entidad_federal }}</td>
+                    <td class="text-left p-2">{{ i.lugar_de_nacimiento }}</td>
+                    <td class="text-center p-2">
+                        <a class=" m-1 p-1" href="{% url 'estudiantes_editar' i.id|safe%}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -30,7 +30,7 @@
                 <tr>
                     <td>{{ i.nombre }}</td>
                     <td>
-                        <a href="{% url 'editar_seccion' %}">
+                        <a href="{% url 'editar_seccion' i.id%}">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>
                     </td>

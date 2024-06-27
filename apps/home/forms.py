@@ -3,9 +3,10 @@ Copyright (c) 2023 - present, Daniel Escalona
 """
 from django import forms
 from django.core.validators import *
-from .models import *
+from .models import PeriodosAcademicos, Anios, Secciones, Menciones
 
 class PlantelForm(forms.Form):
+
     codigo = forms.CharField(label="Código del plantel", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     direccion = forms.CharField(label="Dirección", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -15,6 +16,18 @@ class PlantelForm(forms.Form):
     zona_educativa = forms.CharField(label="Zona educativa", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     distrito_escolar = forms.CharField(label="Distrito escolar", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     director = forms.CharField(label="Director", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
+    ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
+    periodo_id = forms.ChoiceField(label="Periodo", required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super(PlantelForm, self).__init__(*args, **kwargs)
+        self.fields['periodo_id'].choices = [('', '')] + [(periodo.id, periodo.nombre) for periodo in PeriodosAcademicos.objects.all()]
+
+
+class ProfesorForm(forms.Form):
+    nombre = forms.CharField(label="Nombre", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    apellido = forms.CharField(label="Apellido", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
     ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
 
@@ -37,9 +50,21 @@ class EstudiantesForm(forms.Form):
     nombres = forms.CharField(label="Nombres", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     apellidos = forms.CharField(label="Apellidos", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     sexo = forms.ChoiceField(choices=[("M", "M"), ("F", "F")], required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
-    fecha_de_nacimiento = forms.DateField(label="Fecha de nacimiento", required=True, widget=forms.DateInput(attrs={'class': 'form-control'}))
-    anio = forms.ChoiceField(label="Año", choices=[("1RO", "1RO"), ("2DO", "2DO"), ("3RO", "3RO"), ("4TO", "4TO"), ("5TO", "5TO"), ("6TO", "6TO"),], required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
-    mencion = forms.ChoiceField(label="Mención", choices=[("MM", "MM"), ("QI", "QI"), ("CC", "CC")], required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
-    seccion = forms.ChoiceField(label="Sección", choices=[("A", "A"), ("B", "B"), ("C", "C")], required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
-    entidad_federal = forms.CharField(label="Entidad federal", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    fecha_de_nacimiento = forms.DateField(label="Fecha de nacimiento", required=True, widget=forms.DateInput(attrs={'class': 'form-control', 'type':'date', 'id':'fecha'}))
+    anio_id = forms.ChoiceField(label="Año", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    mencion_id = forms.ChoiceField(label="Mención", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    seccion_id = forms.ChoiceField(label="Sección", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    entidad_federal = forms.CharField(label="Entidad federal", max_length=3, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     lugar_de_nacimiento =  forms.CharField(label="Lugar de nacimiento", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+        
+    def __init__(self, *args, **kwargs):
+        super(EstudiantesForm, self).__init__(*args, **kwargs)
+        self.fields['anio_id'].choices = [('', '')] + [(anio.id, anio.nombre) for anio in Anios.objects.all()]
+        self.fields['mencion_id'].choices = [('', '')] + [(mencion.id, mencion.nombre_abrev) for mencion in Menciones.objects.all()]
+        self.fields['seccion_id'].choices = [('', '')] + [(seccion.id, seccion.nombre) for seccion in Secciones.objects.all()]
+
+        
+
+        
+
+

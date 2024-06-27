@@ -13,6 +13,7 @@ urlpatterns = [
     path('planillas/revision',views.revision, name='revision'),
 
     path('profesores', views.profesores, name='profesores'),
+    path('profesores/crear', views.crearProfesores, name='crear_profesores'),
     
     path('materias', views.materias, name='materia'),
     path('materias/crear', views.materiaCrear, name='materia_crear'),
@@ -24,10 +25,9 @@ urlpatterns = [
     path('cargas/<str:pk>/editar', views.cargaEditar, name='carga_editar'),
     path('cargas/<str:pk>/eliminar', views.cargaEliminar, name='carga_eliminar'),
 
-    path('estudiantes', views.estudiantes, name='estudiante'),
-    path('estudiantes/crear', views.estudianteCrear, name='estudiante_crear'),
-    path('estudiantes/<str:pk>/editar', views.estudianteEditar, name='estudiante_editar'),
-    path('estudiantes/<str:pk>/eliminar', views.estudianteEliminar, name='estudiante_eliminar'),
+    path('estudiantes', views.estudiantes, name='estudiantes'),
+    path('estudiantes/crear', views.estudianteCrear, name='estudiantes_crear'),
+    path('estudiantes/<int:id>/editar', views.estudianteEditar, name='estudiantes_editar'),
     path('estudiantes/<str:pk>/inasistencias', views.estudianteInasistencias, name='estudiante_inasistencias'),
     path('estudiantes/<str:pk>/<str:dir>/<str:periodo_sel>', views.estudianteVer, name='estudiante_ver'),
 
@@ -44,12 +44,11 @@ urlpatterns = [
     path('configuracion', views.configuracion, name='configuracion'),
     path('configuracion/secciones', views.secciones, name='secciones'),
     path('configuracion/secciones/crear', views.crear_seccion, name='crear_seccion'),
-    path('configuracion/secciones/editar', views.editar_seccion, name='editar_seccion'),
+    path('configuracion/secciones/<str:pk>/editar', views.editar_seccion, name='editar_seccion'),
     path('configuracion/periodos-academicos', views.crearPeriodoAcademico, name='crear_periodo'),
     path('configuracion/años', views.crearAnios, name='crear_anios'),
     path('configuracion/menciones', views.crearMenciones, name='crear_menciones'),
-    
-    path('Estudiantes', views.Estudiante, name='Estudiantes'),
+    path('configuracion/menciones/<str:pk>/editar', views.mencion_editar, name='editar_menciones'),
     
     path('notas', views.notas, name='notas'),
     path('notas/cargar', views.Cargar_Notas, name='Cargar_Notas'),
