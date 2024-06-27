@@ -67,10 +67,7 @@ class Secciones(models.Model):
 class AniosMencionSec(models.Model):
     anio = models.ForeignKey(Anios, on_delete=models.CASCADE)
     mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE)
-    seccion= models.ForeignKey(Secciones, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{ self.anio.nombre } - { self.mencion.nombre } - { self.seccion.nombre }'  # Representación en cadena del objeto
+    seccion= models.ForeignKey(Secciones, on_delete=models.CASCADE) # Representación en cadena del objeto
 
     class Meta:
         verbose_name_plural = "Años Menciones Secciones"
@@ -93,9 +90,6 @@ class MateriasAniosMenciones(models.Model):
     anio = models.ForeignKey(Anios, on_delete=models.CASCADE)
     mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'{ self.materia.nombre } - { self.anio.nombre } - { self.mencion.nombre }'
-
     class Meta:
         verbose_name_plural = "Materias Años Menciones"
         constraints = [
@@ -115,9 +109,40 @@ class Estudiantes(models.Model):
     seccion = models.ForeignKey(Secciones, on_delete=models.CASCADE)  
     entidad_federal = models.CharField(max_length=3)  # Cadena de texto no nula
     lugar_de_nacimiento = models.CharField(max_length=255)  # Cadena de texto no nula
+    estado = models.PositiveIntegerField(null=True)
     
     def __str__(self):
         return f'{ self.nombres }'  # Representación en cadena del objeto
     
     class Meta:
         verbose_name_plural = "Estudiantes"  # Nombre en plural para el panel de administración
+
+
+class Profesor(models.Model):
+    id = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=255)
+    apellido = models.CharField(max_length=255)
+    ci_tipo = models.CharField(max_length=1, null=False)
+    ci = models.PositiveIntegerField(null=False)
+
+    def __str__(self):
+        return self.nombre
+    
+
+class EstudiantesMaterias(models.Model):
+    materia = models.ForeignKey(MateriasAniosMenciones, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.materia.materia.nombre
+    
+
+class Notas(models.Model):
+    estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
+    materia = models.ForeignKey(MateriasAniosMenciones, on_delete=models.CASCADE)
+    lapso1 = models.PositiveIntegerField(default=0, null=True)
+    lapso2 = models.PositiveIntegerField(default=0, null=True)
+    lapso3 = models.PositiveIntegerField(default=0, null=True)
+    definitiva = models.PositiveIntegerField(default=0, null=True)
+    revision = models.PositiveIntegerField(default=0, null=True)
+    periodo = models.ForeignKey(PeriodosAcademicos, on_delete=models.CASCADE, null=True)

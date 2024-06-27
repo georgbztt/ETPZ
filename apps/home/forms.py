@@ -63,6 +63,17 @@ class EstudiantesForm(forms.Form):
         self.fields['mencion_id'].choices = [('', '')] + [(mencion.id, mencion.nombre_abrev) for mencion in Menciones.objects.all()]
         self.fields['seccion_id'].choices = [('', '')] + [(seccion.id, seccion.nombre) for seccion in Secciones.objects.all()]
 
+class CargarNotas(forms.Form):
+    anio = forms.ChoiceField(label="Año", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    mencion = forms.ChoiceField(label="Mención", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    seccion = forms.ChoiceField(label="Sección", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+
+    def __init__(self, *args, **kwargs):
+        super(CargarNotas, self).__init__(*args, **kwargs)
+        self.fields['anio'].choices = [('', '')] + [(anio.id, anio.nombre) for anio in Anios.objects.all()]
+        self.fields['mencion'].choices = [('', '')] + [(mencion.id, mencion.nombre_abrev) for mencion in Menciones.objects.all()]
+        self.fields['seccion'].choices = [('', '')] + [(seccion.id, seccion.nombre) for seccion in Secciones.objects.all()]
+
         
 
         

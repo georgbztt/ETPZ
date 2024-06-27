@@ -1,12 +1,12 @@
 #import datetime, decimal
 from urllib import request
 from django import template
-from django.db import IntegrityError, transaction 
+from django.db import IntegrityError, transaction
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.forms import formset_factory
 from django.template import loader
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
@@ -16,10 +16,9 @@ from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, Profesor
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 from .models import *
 from .forms import *
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas
 import json
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes
+from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas
 
 from .utils import getInputsMenciones
 
@@ -147,29 +146,29 @@ def materiaPendientes(request):
 
 ### Seccion de Carga de Notas ###
 
-@login_required(login_url="/login/")
-def cargas(request):
-    cargas = Carga.objects.all()
+# @login_required(login_url="/login/")
+# def cargas(request):
+#     cargas = Carga.objects.all()
 
-    buscar = request.GET.get('buscar')#Tomar texto del buscador
-    if buscar:#Si exste, filtrar
-        cargas = cargas.filter(Q(titulo__icontains=buscar))
+#     buscar = request.GET.get('buscar')#Tomar texto del buscador
+#     if buscar:#Si exste, filtrar
+#         cargas = cargas.filter(Q(titulo__icontains=buscar))
 
-    table = 'home/table-content/cargas.html'
-    context={
-        'cargas':cargas,
-        'segment':'carga',
-        'title':'Cargas académicas',
-        'buscar':True,
-        'table':table,
-        'url_crear':'/cargas/crear'
-    }
+#     table = 'home/table-content/cargas.html'
+#     context={
+#         'cargas':cargas,
+#         'segment':'carga',
+#         'title':'Cargas académicas',
+#         'buscar':True,
+#         'table':table,
+#         'url_crear':'/cargas/crear'
+#     }
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
-        table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
-        return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
+#     if request.headers.get('x-requested-with') == 'XMLHttpRequest':#Evaluar si es una petición AJAX
+#         table_html = render_to_string(table, context, request)#Rendereziar los datos en una plantilla de tabla reducida
+#         return JsonResponse({'table_html': table_html, })#JsonResponse para manejar con JavaScript y recargar un segmento de la página
 
-    return render(request, 'home/table.html', context)
+#     return render(request, 'home/table.html', context)
 
 @login_required
 @permission_required('home.add_carga', raise_exception=True)#type:ignore
@@ -245,29 +244,29 @@ def profesores(request):
     return render(request, 'home/table.html', context)
 
 
-@login_required(login_url="/login/")
-def crearProfesores(request):
-    if request.method == 'POST':
-        form = ProfesorForm(request.POST)
-        if form.is_valid():
+# @login_required(login_url="/login/")
+# def crearProfesores(request):
+#     if request.method == 'POST':
+#         form = ProfesorForm(request.POST)
+#         if form.is_valid():
 
-            Profesores.objects.create(**form.cleaned_data)
+#             Profesores.objects.create(**form.cleaned_data)
             
-            print("")
-            print(form.cleaned_data)
-            print("")
+#             print("")
+#             print(form.cleaned_data)
+#             print("")
 
-    form = ProfesorForm()
+#     form = ProfesorForm()
 
-    content = 'home/form-content/crear_profesor_form.html'
-    context = {
-        'form':form,
-        'segment':'profesores',
-        'title':'Crear Profesor',
-        'table':content
-    }
+#     content = 'home/form-content/crear_profesor_form.html'
+#     context = {
+#         'form':form,
+#         'segment':'profesores',
+#         'title':'Crear Profesor',
+#         'table':content
+#     }
 
-    return render(request, 'home/table.html', context)
+#     return render(request, 'home/table.html', context)
 
 
 ### Seccion de Estudiantes ###
@@ -326,62 +325,62 @@ def estudianteVer(request, pk, dir, periodo_sel):
         }
     return render(request, plantilla, context)#Redireccionar normalmente
 
-@login_required
-@permission_required('home.add_estudiante', raise_exception=True)#type:ignore
-def estudianteCrear(request):
-    form = estudianteForm(request.POST or None)
-    content = 'home/form-content/estudiante_form.html'
-    context = {
-        'form':form,
-        'segment':'estudiante',
-        'title':'Registrar Estudiante',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            e = form.save(commit=False)
-            #validación
-            e.seccion = e.seccion.upper()
-            e.save()
-            return redirect('estudiante')
-        else:
-            print(form.errors)
+# @login_required
+# @permission_required('home.add_estudiante', raise_exception=True)#type:ignore
+# def estudianteCrear(request):
+#     form = estudianteForm(request.POST or None)
+#     content = 'home/form-content/estudiante_form.html'
+#     context = {
+#         'form':form,
+#         'segment':'estudiante',
+#         'title':'Registrar Estudiante',
+#         'content':content
+#     }
+#     if request.POST:
+#         if form.is_valid():
+#             e = form.save(commit=False)
+#             #validación
+#             e.seccion = e.seccion.upper()
+#             e.save()
+#             return redirect('estudiante')
+#         else:
+#             print(form.errors)
     
-    return render(request, 'layouts/form.html', context)
+#     return render(request, 'layouts/form.html', context)
 
-@login_required
-@permission_required('home.change_estudiante', raise_exception=True)#type:ignore
-def estudianteEditar(request, pk):
-    obj = get_object_or_404(Estudiante, pk=pk)
-    form = estudianteForm(request.POST or None, instance=obj)
-    content = 'home/form-content/estudiante_form.html'
-    context = {
-        'form':form,
-        'segment':'estudiante',
-        'title':'Editar Estudiante',
-        'content':content
-    }
-    if request.POST:
-        if form.is_valid():
-            e = form.save(commit=False)
-            #validación
-            e.seccion = e.seccion.upper()
-            e.save()
-            return redirect('estudiante')
-        else:
-            print(form.errors)
+# @login_required
+# @permission_required('home.change_estudiante', raise_exception=True)#type:ignore
+# def estudianteEditar(request, pk):
+#     obj = get_object_or_404(Estudiante, pk=pk)
+#     form = estudianteForm(request.POST or None, instance=obj)
+#     content = 'home/form-content/estudiante_form.html'
+#     context = {
+#         'form':form,
+#         'segment':'estudiante',
+#         'title':'Editar Estudiante',
+#         'content':content
+#     }
+#     if request.POST:
+#         if form.is_valid():
+#             e = form.save(commit=False)
+#             #validación
+#             e.seccion = e.seccion.upper()
+#             e.save()
+#             return redirect('estudiante')
+#         else:
+#             print(form.errors)
     
-    return render(request, 'layouts/form.html', context)
+#     return render(request, 'layouts/form.html', context)
 
-@login_required(login_url="/login/")
-@permission_required('home.delete_estudiante', raise_exception=True)#Validar permiso
-def estudianteEliminar(request, pk):
-    estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante a eliminar
-    estudiante.delete()#Eliminar
+# @login_required(login_url="/login/")
+# @permission_required('home.delete_estudiante', raise_exception=True)#Validar permiso
+# def estudianteEliminar(request, pk):
+#     estudiante = get_object_or_404(Estudiante, pk=pk)#Obtener el estudiante a eliminar
+#     estudiante.delete()#Eliminar
 
-    if 'next' in request.GET:
-        return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
-    return redirect('estudiante')#Redireccionar normalmente
+#     if 'next' in request.GET:
+#         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
+#     return redirect('estudiante')#Redireccionar normalmente
 
 @login_required(login_url="/login/")
 @permission_required('home.change_estudiante', raise_exception=True)#Validar permiso
@@ -1069,9 +1068,44 @@ def materiaCrear(request):
     }
     
     return render(request, 'home/table.html', context)
-      
+
+def obtener_estudiantes_notas(anio, mencion, seccion):
+    estudiantes = Estudiantes.objects.filter(
+        anio=anio, 
+        mencion=mencion, 
+        seccion=seccion
+    ).filter(
+        Q(estado=1) | Q(estado=2)
+    ).values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos')
+
+    # Crear una lista para almacenar el resultado final
+    resultado = []
+
+    # Iterar sobre la lista de estudiantes
+    for estudiante in estudiantes:
+        # Obtener las notas del estudiante
+        notas = list(Notas.objects.filter(estudiante_id=estudiante['id']).values(
+            'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia'
+        ))
+
+        estudiante['notas'] = notas
+
+        resultado.append(estudiante)
+
+    return resultado
+
 @login_required(login_url="/login/")
 def Cargar_Notas(request):
+
+    anio = request.GET.get('anio')
+    mencion = request.GET.get('mencion')
+    seccion = request.GET.get('seccion')
+
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
+
+    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).order_by('id').all()
+
+    col_span = (len(materias) - 3)
 
     table = 'home/form-content/planillas_form.html'
     context={
@@ -1080,20 +1114,34 @@ def Cargar_Notas(request):
         'title':'',
         'buscar':True,
         'table':table,
+        'estudiantes': estudiantes,
+        'materias': materias,
+        'col_span': col_span
     }
-    
+
     return render(request, 'home/Cargar_Notas/notas.html', context)
 
 @login_required(login_url="/login/")
 def notas(request):
-    
+
+    if request.method == 'POST':
+
+        anio = request.POST.get('anio')
+        mencion = request.POST.get('mencion')
+        seccion = request.POST.get('seccion')
+
+        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}')
+
+    form = CargarNotas()
+
     content = 'home/Cargar_Notas/index.html'
     context = {
         'segment':'notas',
         'title':'Notas',
-        'table':content
+        'table':content,
+        'form':form
     }
-    
+
     return render(request, 'home/table.html', context)
 
 
@@ -1101,7 +1149,7 @@ def notas(request):
 @login_required(login_url="/login/")
 def estudiantes(request):
     busqueda = request.POST.get('buscar')
-    data_table = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos', 'sexo', 'fecha_de_nacimiento', 'anio', 'mencion', 'seccion', 'entidad_federal', 'lugar_de_nacimiento')
+    data_table = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos', 'sexo', 'anio', 'mencion', 'seccion',  'lugar_de_nacimiento', 'estado')
     data_table = Estudiantes.objects.all().order_by('ci')
     if busqueda:
         data_table = Estudiantes.objects.filter(
@@ -1144,9 +1192,21 @@ def estudianteCrear(request):
         seccion = Secciones.objects.get(id = seccion )
         entidad_federal = request.POST.get('entidad_federal')
         lugar_de_nacimiento = request.POST.get('lugar_de_nacimiento')
+        estado = request.POST.get('estado')
 
-        Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento)
+        estudiante = Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento, estado=estado)
+
+        if estado == "1" or estado == "2":
+            materias = MateriasAniosMenciones.objects.filter(anio=anio, mencion=mencion).all()
+
+            datos = DatosPlantel.objects.all().first()
+            periodo = PeriodosAcademicos.objects.get(id=datos.periodo.id)
+
+            for materia in materias:
+                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo)
+
         return redirect('estudiantes')
+
     form = EstudiantesForm()
 
     content = 'home/estudiantes/estudiantes_crear.html'
@@ -1156,13 +1216,13 @@ def estudianteCrear(request):
         'title':'Crear estudiantes',
         'table':content
     }
-    
+
     return render(request, 'home/table.html', context)
 
 ### Editar Estudiantes ###
 @login_required(login_url="/login/")
 def estudianteEditar(request, id):
-   
+
     if request.POST:
         estudiante = EstudiantesForm(request.POST)
         if estudiante.is_valid():
@@ -1179,7 +1239,7 @@ def estudianteEditar(request, id):
         estudiante = Estudiantes.objects.values().get(id=id)
         form = EstudiantesForm(initial=estudiante)
         estudiante['fecha_de_nacimiento'] = estudiante['fecha_de_nacimiento'].strftime("%Y-%m-%d")
-        
+
     content = 'home/estudiantes/estudiantes_editar.html'
     context = {
     'form':form,
@@ -1187,7 +1247,7 @@ def estudianteEditar(request, id):
     'title':'Editar estudiantes',
     'table':content
     }
-    
+
     return render(request, 'home/table.html', context)
 
 @login_required(login_url="/login/")
@@ -1233,7 +1293,7 @@ def materiaEditar(request, pk):
             for i in inst_materias:
 
                 if str(i['anio']) in datos:
-                    
+
                     if not str(i['mencion']) in datos[str(i['anio'])]:
 
                         MateriasAniosMenciones.objects.get(id=i['id']).delete()
@@ -1284,7 +1344,7 @@ def materiaEditar(request, pk):
             'title':'Crear Materia',
             'table':content
         }
-        
+
         return render(request, 'home/table.html', context)
     except ObjectDoesNotExist:
         print("El objeto con el ID dado no existe en la base de datos.")
@@ -1300,7 +1360,7 @@ def mencion_editar(request, pk):
         return JsonResponse({"error": "JSON inválido"}, status=400)
 
     mencion = Menciones.objects.filter(id=pk).first()
-    
+
     if mencion:
 
         nombre = data.get('nombre')
@@ -1311,10 +1371,78 @@ def mencion_editar(request, pk):
 
         if abrev:
             setattr(mencion, 'nombre_abrev', abrev)
-        
+
         # Guarda los cambios en la base de datos
         mencion.save()
 
         return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
     else:
         return JsonResponse({"error": "Mención no encontrada."}, status=404)
+
+
+@login_required(login_url="/login/")
+def crearProfesores(request):
+    if request.method == 'POST':
+        form = ProfesorForm(request.POST)
+        if form.is_valid():
+
+            Profesor.objects.create(**form.cleaned_data)
+
+            print("")
+            print(form.cleaned_data)
+            print("")
+
+    form = ProfesorForm()
+
+    content = 'home/form-content/crear_profesor_form.html'
+    context = {
+        'form':form,
+        'segment':'profesores',
+        'title':'Crear Profesor',
+        'table':content
+    }
+
+    return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def actualizar_notas(request, pk):
+
+    anio = request.GET.get('anio')
+    mencion = request.GET.get('mencion')
+    seccion = request.GET.get('seccion')
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    tiempo = data.get('tiempo')
+    materia = data.get('materia')
+    # materia = MateriasAniosMenciones.objects.get(id=materia)
+    nota = data.get('nota')
+    if nota == '': nota = 0
+
+    inst_nota = Notas.objects.get(estudiante = pk, materia = materia)
+
+    notas_lapsos = Notas.objects.values('lapso1', 'lapso2', 'lapso3').filter(estudiante = pk, materia = materia).first()
+    if tiempo == 'lapso1':
+        setattr(inst_nota, 'lapso1', nota)
+        definitiva = (int(nota) + notas_lapsos['lapso2'] + notas_lapsos['lapso3'])/3
+    elif tiempo == 'lapso2':
+        setattr(inst_nota, 'lapso2', nota)
+        definitiva = (notas_lapsos['lapso1'] + int(nota) + notas_lapsos['lapso3'])/3
+    elif tiempo == 'lapso3':
+        setattr(inst_nota, 'lapso3', nota)
+        definitiva = (notas_lapsos['lapso1'] + notas_lapsos['lapso2'] + int(nota))/3
+    elif tiempo == 'revision':
+        setattr(inst_nota, 'revision', nota)
+
+    if tiempo == 'lapso1' or tiempo == 'lapso2' or tiempo == 'lapso3':
+        definitiva = int(round(definitiva, 0))
+        setattr(inst_nota, 'definitiva', definitiva)
+
+    inst_nota.save()
+
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
+
+    return JsonResponse({"message": "Los datos se actualizaron correctamente.", "estudiantes": estudiantes}, status=200)

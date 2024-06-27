@@ -5,7 +5,18 @@
 <link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
 {% endblock stylesheets %}
 
-<div class="container-fluid">
+<div class="container">
 
+    <div class="w-5 mb-5">
+        
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <div class="col pt-3">
+                <button class="btn btn-primary" type="submit">Enviar</button>
+            </div>
+        </form>
+
+    </div>
 
 </div>
