@@ -59,9 +59,9 @@
 
               <tr>
                 <th contenteditable="true" class="solid-1_text-center p-2" colspan="1">I</th>
-                <th contenteditable="true" class="solid-1_text-center P-2" colspan="9">LAPSO AÑO: 1ERO SECCIÓN: "MM"</th>
-                <th contenteditable="true" class="solid-1_text-center P-2" colspan="6">ESCOLARIDAD: 2023-2024</th>
-                <th contenteditable="true" class="solid-1_text-center P-2" colspan="{{ col_span }}">PROF. GUÍA: MARÍA KELLYS</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="9">LAPSO AÑO: {{ anio.nombre }} SECCIÓN: "{{ seccion.nombre }}"</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="6">ESCOLARIDAD: {{ escolaridad.periodo__nombre }}</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="{{ col_span }}">PROF. GUÍA:</th>
               </tr>
 
               <tr>
@@ -82,7 +82,7 @@
                 <th class="solid-1_text-center" colspan="5" width="200">NOMBRES Y APELLIDOS</th>
                 <td class="solid-1_text-center" colspan="1" width="50"></td>
                 {% for i in materias %}
-                <td class="solid-1_text-center" colspan="1" width="50">{{ forloop.counter }}</td>
+                <th class="solid-1_text-center" colspan="1" width="50">{{ forloop.counter }}</th>
                 {% endfor %}
                 <td class="solid-1_text-center" colspan="1" width="50"></td>
               </tr>
