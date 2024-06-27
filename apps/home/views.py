@@ -16,7 +16,7 @@ from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, Profesor
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 from .models import *
 from .forms import *
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas, Boletas
 import json
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas
 
@@ -1457,3 +1457,29 @@ def actualizar_notas(request, pk):
     estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
 
     return JsonResponse({"message": "Los datos se actualizaron correctamente.", "estudiantes": estudiantes}, status=200)
+
+
+@login_required(login_url="/login/")
+def boletas(request):
+
+    if request.method == 'POST':
+
+        pass
+
+        anio = request.POST.get('anio')
+        mencion = request.POST.get('mencion')
+        seccion = request.POST.get('seccion')
+
+        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}')
+
+    form = Boletas()
+
+    content = 'home/boletas/index.html'
+    context = {
+        'segment':'notas',
+        'title':'Notas',
+        'table':content,
+        'form':form
+    }
+
+    return render(request, 'home/table.html', context)

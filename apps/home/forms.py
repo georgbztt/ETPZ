@@ -74,6 +74,19 @@ class CargarNotas(forms.Form):
         self.fields['mencion'].choices = [('', '')] + [(mencion.id, mencion.nombre_abrev) for mencion in Menciones.objects.all()]
         self.fields['seccion'].choices = [('', '')] + [(seccion.id, seccion.nombre) for seccion in Secciones.objects.all()]
 
+class Boletas(forms.Form):
+    anio = forms.ChoiceField(label="Año", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    mencion = forms.ChoiceField(label="Mención", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    seccion = forms.ChoiceField(label="Sección", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+    periodo = forms.ChoiceField(label="Año escolar", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
+
+    def __init__(self, *args, **kwargs):
+        super(Boletas, self).__init__(*args, **kwargs)
+        self.fields['anio'].choices = [('', '')] + [(anio.id, anio.nombre) for anio in Anios.objects.all()]
+        self.fields['mencion'].choices = [('', '')] + [(mencion.id, mencion.nombre_abrev) for mencion in Menciones.objects.all()]
+        self.fields['seccion'].choices = [('', '')] + [(seccion.id, seccion.nombre) for seccion in Secciones.objects.all()]
+        self.fields['periodo'].choices = [(periodo.id, periodo.nombre) for periodo in PeriodosAcademicos.objects.order_by('-id').all()]
+
         
 
         
