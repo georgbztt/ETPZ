@@ -1296,6 +1296,10 @@ def materiaEditar(request, pk):
 
                         MateriasAniosMenciones.objects.get(id=i['id']).delete()
 
+                else:
+
+                    MateriasAniosMenciones.objects.get(id=i['id']).delete()
+
         anios = list(Anios.objects.values('id', 'nombre'))
         menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
 
