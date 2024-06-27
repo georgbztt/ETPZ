@@ -149,15 +149,17 @@ def finales(request):
 def revision(request):
 
     table = 'home/form-content/planillas_form.html'
+    rows = range(33)
     context={
         'planillas':planillas,
         'segment':'planilla',
         'title':'Planilla Revisión',
         'buscar':True,
         'table':table,
+        'rows':rows,
     }
     
-    return render(request, 'home/table.html', context)
+    return render(request, 'home/planillas/revision.html', context)
 
 def materiaPendientes(request):
 
