@@ -1105,6 +1105,10 @@ def Cargar_Notas(request):
 
     col_span = (len(materias) - 3)
 
+    anio = Anios.objects.values('nombre').filter(id=anio).first()
+    seccion = Secciones.objects.values('nombre').filter(id=seccion).first()
+    escolaridad = DatosPlantel.objects.values('periodo__nombre').first()
+
     table = 'home/form-content/planillas_form.html'
     context={
         'Cargar_Notas':Cargar_Notas,
@@ -1114,7 +1118,10 @@ def Cargar_Notas(request):
         'table':table,
         'estudiantes': estudiantes,
         'materias': materias,
-        'col_span': col_span
+        'col_span': col_span,
+        'anio': anio,
+        'seccion': seccion,
+        'escolaridad': escolaridad
     }
 
     return render(request, 'home/Cargar_Notas/notas.html', context)
