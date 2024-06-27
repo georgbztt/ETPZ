@@ -1,12 +1,12 @@
 #import datetime, decimal
 from urllib import request
 from django import template
-from django.db import IntegrityError, transaction 
+from django.db import IntegrityError, transaction
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.forms import formset_factory
 from django.template import loader
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
@@ -1066,7 +1066,32 @@ def materiaCrear(request):
     }
     
     return render(request, 'home/table.html', context)
-      
+
+def obtener_estudiantes_notas(anio, mencion, seccion):
+    estudiantes = Estudiantes.objects.filter(
+        anio=anio, 
+        mencion=mencion, 
+        seccion=seccion
+    ).filter(
+        Q(estado=1) | Q(estado=2)
+    ).values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos')
+
+    # Crear una lista para almacenar el resultado final
+    resultado = []
+
+    # Iterar sobre la lista de estudiantes
+    for estudiante in estudiantes:
+        # Obtener las notas del estudiante
+        notas = list(Notas.objects.filter(estudiante_id=estudiante['id']).values(
+            'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia'
+        ))
+
+        estudiante['notas'] = notas
+
+        resultado.append(estudiante)
+
+    return resultado
+
 @login_required(login_url="/login/")
 def Cargar_Notas(request):
 
@@ -1074,9 +1099,9 @@ def Cargar_Notas(request):
     mencion = request.GET.get('mencion')
     seccion = request.GET.get('seccion')
 
-    estudiantes = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos').filter(anio=anio, mencion=mencion, seccion=seccion).filter(Q(estado=1) | Q(estado=2)).all()
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
 
-    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).all()
+    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).order_by('id').all()
 
     col_span = (len(materias) - 3)
 
@@ -1091,7 +1116,7 @@ def Cargar_Notas(request):
         'materias': materias,
         'col_span': col_span
     }
-    
+
     return render(request, 'home/Cargar_Notas/notas.html', context)
 
 @login_required(login_url="/login/")
@@ -1102,11 +1127,11 @@ def notas(request):
         anio = request.POST.get('anio')
         mencion = request.POST.get('mencion')
         seccion = request.POST.get('seccion')
-        
+
         return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}')
 
     form = CargarNotas()
-    
+
     content = 'home/Cargar_Notas/index.html'
     context = {
         'segment':'notas',
@@ -1114,7 +1139,7 @@ def notas(request):
         'table':content,
         'form':form
     }
-    
+
     return render(request, 'home/table.html', context)
 
 
@@ -1177,9 +1202,9 @@ def estudianteCrear(request):
 
             for materia in materias:
                 Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo)
-        
+
         return redirect('estudiantes')
-    
+
     form = EstudiantesForm()
 
     content = 'home/estudiantes/estudiantes_crear.html'
@@ -1189,13 +1214,13 @@ def estudianteCrear(request):
         'title':'Crear estudiantes',
         'table':content
     }
-    
+
     return render(request, 'home/table.html', context)
 
 ### Editar Estudiantes ###
 @login_required(login_url="/login/")
 def estudianteEditar(request, id):
-   
+
     if request.POST:
         estudiante = EstudiantesForm(request.POST)
         if estudiante.is_valid():
@@ -1212,7 +1237,7 @@ def estudianteEditar(request, id):
         estudiante = Estudiantes.objects.values().get(id=id)
         form = EstudiantesForm(initial=estudiante)
         estudiante['fecha_de_nacimiento'] = estudiante['fecha_de_nacimiento'].strftime("%Y-%m-%d")
-        
+
     content = 'home/estudiantes/estudiantes_editar.html'
     context = {
     'form':form,
@@ -1220,7 +1245,7 @@ def estudianteEditar(request, id):
     'title':'Editar estudiantes',
     'table':content
     }
-    
+
     return render(request, 'home/table.html', context)
 
 @login_required(login_url="/login/")
@@ -1266,7 +1291,7 @@ def materiaEditar(request, pk):
             for i in inst_materias:
 
                 if str(i['anio']) in datos:
-                    
+
                     if not str(i['mencion']) in datos[str(i['anio'])]:
 
                         MateriasAniosMenciones.objects.get(id=i['id']).delete()
@@ -1317,7 +1342,7 @@ def materiaEditar(request, pk):
             'title':'Crear Materia',
             'table':content
         }
-        
+
         return render(request, 'home/table.html', context)
     except ObjectDoesNotExist:
         print("El objeto con el ID dado no existe en la base de datos.")
@@ -1333,7 +1358,7 @@ def mencion_editar(request, pk):
         return JsonResponse({"error": "JSON inválido"}, status=400)
 
     mencion = Menciones.objects.filter(id=pk).first()
-    
+
     if mencion:
 
         nombre = data.get('nombre')
@@ -1344,14 +1369,14 @@ def mencion_editar(request, pk):
 
         if abrev:
             setattr(mencion, 'nombre_abrev', abrev)
-        
+
         # Guarda los cambios en la base de datos
         mencion.save()
 
         return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
     else:
         return JsonResponse({"error": "Mención no encontrada."}, status=404)
-    
+
 
 @login_required(login_url="/login/")
 def crearProfesores(request):
@@ -1376,3 +1401,46 @@ def crearProfesores(request):
     }
 
     return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def actualizar_notas(request, pk):
+
+    anio = request.GET.get('anio')
+    mencion = request.GET.get('mencion')
+    seccion = request.GET.get('seccion')
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    tiempo = data.get('tiempo')
+    materia = data.get('materia')
+    # materia = MateriasAniosMenciones.objects.get(id=materia)
+    nota = data.get('nota')
+    if nota == '': nota = 0
+
+    inst_nota = Notas.objects.get(estudiante = pk, materia = materia)
+
+    notas_lapsos = Notas.objects.values('lapso1', 'lapso2', 'lapso3').filter(estudiante = pk, materia = materia).first()
+    if tiempo == 'lapso1':
+        setattr(inst_nota, 'lapso1', nota)
+        definitiva = (int(nota) + notas_lapsos['lapso2'] + notas_lapsos['lapso3'])/3
+    elif tiempo == 'lapso2':
+        setattr(inst_nota, 'lapso2', nota)
+        definitiva = (notas_lapsos['lapso1'] + int(nota) + notas_lapsos['lapso3'])/3
+    elif tiempo == 'lapso3':
+        setattr(inst_nota, 'lapso3', nota)
+        definitiva = (notas_lapsos['lapso1'] + notas_lapsos['lapso2'] + int(nota))/3
+    elif tiempo == 'revision':
+        setattr(inst_nota, 'revision', nota)
+
+    if tiempo == 'lapso1' or tiempo == 'lapso2' or tiempo == 'lapso3':
+        definitiva = int(round(definitiva, 0))
+        setattr(inst_nota, 'definitiva', definitiva)
+
+    inst_nota.save()
+
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
+
+    return JsonResponse({"message": "Los datos se actualizaron correctamente.", "estudiantes": estudiantes}, status=200)

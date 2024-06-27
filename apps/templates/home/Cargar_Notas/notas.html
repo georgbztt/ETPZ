@@ -30,103 +30,64 @@
         </div>
         <div class="card-body p-0 d-flex justify-content-center pb-5">
           <table id="tabla-notas" width="900">
-            <tr>
-              <th class="text-center" colspan="8"><img src="{{ ASSETS_ROOT }}/img/etpz.png" alt="Logo de la Institución"
-                  width="120">
-              </th>
+            <tbody id="cuerpo-tabla">
+              <tr>
+                <th class="text-center" colspan="8"><img src="{{ ASSETS_ROOT }}/img/etpz.png" alt="Logo de la Institución"
+                    width="120">
+                </th>
 
-              <th colspan="10" class="text-center">
-                    REPÚBLICA BOLIVARIANA DE VENEZUELA <br>
-                    MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN <br>
-                    ESCUELA TÉCNICA INDUSTRIAL PEDRO ZARAZA <br>
-                    SAN JUAN DE LOS MORROS-EDO.GUÁRICO
-              </th>
-              <th colspan="4"></th>
-            </tr>
-            <tr>
-                <th colspan="8"></th>
-                <th colspan="10" class="text-center pt-3">
-                    LISTADO DE CONSEJO DE CURSO
+                <th colspan="10" class="text-center">
+                      REPÚBLICA BOLIVARIANA DE VENEZUELA <br>
+                      MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN <br>
+                      ESCUELA TÉCNICA INDUSTRIAL PEDRO ZARAZA <br>
+                      SAN JUAN DE LOS MORROS-EDO.GUÁRICO
                 </th>
                 <th colspan="4"></th>
-            </tr>
-            <tr>
-              <th height="10" colspan="22"></th>
-            </tr>
-            <tr>
-              <th contenteditable="true" class="solid-1_text-center p-2" colspan="1">I</th>
-              <th contenteditable="true" class="solid-1_text-center P-2" colspan="9">LAPSO AÑO: 1ERO SECCIÓN: "MM"</th>
-              <th contenteditable="true" class="solid-1_text-center P-2" colspan="6">ESCOLARIDAD: 2023-2024</th>
-              <th contenteditable="true" class="solid-1_text-center P-2" colspan="{{ col_span }}">PROF. GUÍA: MARÍA KELLYS</th>
-          </tr>
-          <tr>
-            <td class="solid-1_text-center" colspan="12" rowspan="2">ASIGNATURAS</td>
-            {% for materia in materias %}
-            <td class="solid-1_text-center text-vertical p-2 uppercase" rowspan="2" width="50" height="150px">{{ materia.materia__nombre }}</td>
-            {% endfor %}
-            <td class="solid-1_text-center text-vertical p-2"  rowspan="2" colspan="2" width="50">PROMEDIO</td>
-          </tr>
-          <tr>
-            <th height="10" colspan="22"></th>
-          </tr>
-          <tr>
-            <th class="solid-1_text-center" colspan="1">Nro</th>
-            <th class="solid-1_text-center" colspan="5" width="120">CÉDULA</th>
-            <th class="solid-1_text-center" colspan="5" width="200">NOMBRES Y APELLIDOS</th>
-            <td class="solid-1_text-center" colspan="1" width="50"></td>
-            {% for i in materias %}
-            <td class="solid-1_text-center" colspan="1" width="50">{{ forloop.counter }}</td>
-            {% endfor %}
-            <td class="solid-1_text-center" colspan="1" width="50"></td>
-          </tr>
+              </tr>
 
-          {% comment %} Datos del estudiante comienza aqui {% endcomment %}
+              <tr>
+                  <th colspan="8"></th>
+                  <th colspan="10" class="text-center pt-3">
+                      LISTADO DE CONSEJO DE CURSO
+                  </th>
+                  <th colspan="4"></th>
+              </tr>
 
-          {% for estudiante in estudiantes %}
+              <tr>
+                <th height="10" colspan="22"></th>
+              </tr>
 
-          <tr>
-            <th class="solid-1_text-center" colspan="1" rowspan="5">{{ forloop.counter }}</th>
-            <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">{{ estudiante.ci_tipo }}-{{ estudiante.ci }}</td>
-            <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">{{ estudiante.nombres }} {{ estudiante.apellidos }}</td>
-            <th class="solid-1_text-center" colspan="1" rowspan="1">I Lapso</th>
-            {% for i in materias %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-            {% endfor %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-          </tr>
-          <tr>
-            <th class="solid-1_text-center" colspan="1" rowspan="1">II Lapso</th>
-            {% for i in materias %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-            {% endfor %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-          </tr>
-          <tr>
-            <th class="solid-1_text-center" colspan="1" rowspan="1">III Lapso</th>
-            {% for i in materias %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-            {% endfor %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-          </tr>
-          <tr class="bg-blue">
-            <th class="solid-1_text-center" colspan="1" rowspan="1">Definitiva</th>
-            {% for i in materias %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-            {% endfor %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-          </tr>
-          <tr class="bg-red">
-            <th class="solid-1_text-center c-red" colspan="1" rowspan="1">Revisión</th>
-            {% for i in materias %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-            {% endfor %}
-            <td contenteditable="true" class="solid-1_text-center" colspan="1" rowspan="1"></td>
-          </tr>
+              <tr>
+                <th contenteditable="true" class="solid-1_text-center p-2" colspan="1">I</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="9">LAPSO AÑO: 1ERO SECCIÓN: "MM"</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="6">ESCOLARIDAD: 2023-2024</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="{{ col_span }}">PROF. GUÍA: MARÍA KELLYS</th>
+              </tr>
 
-          {% endfor %}
+              <tr>
+                <td class="solid-1_text-center" colspan="12" rowspan="2">ASIGNATURAS</td>
+                {% for materia in materias %}
+                <td class="solid-1_text-center text-vertical p-2 uppercase" rowspan="2" width="50" height="150px">{{ materia.materia__nombre }}</td>
+                {% endfor %}
+                <td class="solid-1_text-center text-vertical p-2"  rowspan="2" colspan="2" width="50">PROMEDIO</td>
+              </tr>
 
-          {% comment %} Datos del estudiante termina aqui {% endcomment %}
+              <tr>
+                <th height="10" colspan="22"></th>
+              </tr>
 
+              <tr>
+                <th class="solid-1_text-center" colspan="1">Nro</th>
+                <th class="solid-1_text-center" colspan="5" width="120">CÉDULA</th>
+                <th class="solid-1_text-center" colspan="5" width="200">NOMBRES Y APELLIDOS</th>
+                <td class="solid-1_text-center" colspan="1" width="50"></td>
+                {% for i in materias %}
+                <td class="solid-1_text-center" colspan="1" width="50">{{ forloop.counter }}</td>
+                {% endfor %}
+                <td class="solid-1_text-center" colspan="1" width="50"></td>
+              </tr>
+            
+            </tbody>
           </table>
         </div>
       </div>
@@ -139,7 +100,192 @@
 
 <!-- Specific JS goes HERE --> 
 {% block javascripts %}
-<script> 
+<script>
+
+  const tablaNotas = document.getElementById('cuerpo-tabla')
+
+  const cabecera_tabla = tablaNotas.innerHTML;
+
+  const searchParams = new URLSearchParams(window.location.search);
+
+  const q_anio = searchParams.get('anio')
+  const q_mencion = searchParams.get('mencion')
+  const q_seccion = searchParams.get('seccion')
+
+  function activarBotonesActualizarNotas() {
+    const inputs_nota = document.querySelectorAll(".input-nota")
+
+    inputs_nota.forEach((item) => {
+        item.addEventListener('blur', () => {
+
+            tiempo = item.getAttribute("data-tiempo")
+            materia = item.getAttribute("data-id-materia")
+            estudiante = item.getAttribute("data-id-estudiante")
+            nota = item.innerText
+
+            actualizarNota({tiempo: tiempo, materia: materia, estudiante: estudiante, nota: nota})
+
+        })
+    })
+
+    const celdasEditables = document.querySelectorAll('[contenteditable="true"]');
+    celdasEditables.forEach(celda => {
+        celda.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                celda.blur();
+            }
+        });
+    });
+  }
+
+  function agregarNotasEstudiante(estudiante, lapso) {
+    let datos = ''
+    let promedio = 0
+    let diferentesACero = 0
+    estudiante.notas.forEach((i) => {
+      promedio += parseInt(i[lapso])
+      if (parseInt(i[lapso]) != 0) {
+        diferentesACero += 1
+      }
+      datos += `
+      <td
+        contenteditable="true"
+        class="solid-1_text-center input-nota"
+        colspan="1"
+        rowspan="1"
+        data-id-materia="${ i.materia }"
+        data-id-estudiante="${ estudiante.id }"
+        data-tiempo="${lapso}"
+      >
+        ${ i[lapso] !== 0 ? i[lapso] : '' }
+      </td>
+      `
+    })
+    promedio = diferentesACero !== 0 ? (promedio/diferentesACero).toFixed(2) : ''
+    datos += `<td class="solid-1_text-center" colspan="1" rowspan="1">${promedio}</td>`
+    return datos
+  }
+
+  function agregarDefinitivaEstudiante(estudiante) {
+    let datos =''
+    let promedio = 0
+    let diferentesACero = 0
+    estudiante.notas.forEach((i) => {
+      promedio += parseInt(i.definitiva)
+      if (parseInt(i.definitiva) != 0) {
+        diferentesACero += 1
+      }
+      datos += `
+      <td
+        class="solid-1_text-center input-nota"
+        colspan="1"
+        rowspan="1"
+        data-tiempo="definitiva"
+      >
+        ${ i.definitiva !== 0 ? i.definitiva : '' }
+      </td>
+      `
+    })
+    promedio = diferentesACero !== 0 ? (promedio/diferentesACero).toFixed(2) : ''
+    datos += `<td class="solid-1_text-center" colspan="1" rowspan="1">${promedio}</td>`
+    return datos
+  }
+
+  function agregarRevisionEstudiante(estudiante) {
+    let datos = ''
+    estudiante.notas.forEach((i) => {
+      datos += `
+      <td
+        contenteditable="true"
+        class="solid-1_text-center input-nota"
+        colspan="1"
+        rowspan="1"
+        data-id-materia="${ i.materia }"
+        data-id-estudiante="${ estudiante.id }"
+        data-tiempo="revision"
+      >
+        ${ i.revision !== 0 ? i.revision : '' }
+      </td>
+      `
+    })
+    datos += `<td class="solid-1_text-center" colspan="1" rowspan="1"></td>`
+    return datos
+  }
+  
+  function mostrarNotas(estudiantes) {
+    let datos = ''
+    estudiantes.forEach((estudiante, index) => {
+      
+      {% comment %} console.log(agregarNotasEstudiante(estudiante, 'lapso1')) {% endcomment %}
+
+      datos += `
+      <tr>
+        <th class="solid-1_text-center" colspan="1" rowspan="5">${index + 1}</th>
+        <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">${estudiante.ci_tipo}-${ estudiante.ci }</td>
+        <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">${ estudiante.nombres } ${ estudiante.apellidos }</td>
+        <th class="solid-1_text-center" colspan="1" rowspan="1">I Lapso</th>
+        ${agregarNotasEstudiante(estudiante, 'lapso1')}
+      </tr>
+      <tr>
+        <th class="solid-1_text-center" colspan="1" rowspan="1">II Lapso</th>
+        ${agregarNotasEstudiante(estudiante, 'lapso2')}
+      </tr>
+      <tr>
+        <th class="solid-1_text-center" colspan="1" rowspan="1">III Lapso</th>
+        ${agregarNotasEstudiante(estudiante, 'lapso3')}
+      </tr>
+      <tr class="bg-blue">
+        <th class="solid-1_text-center" colspan="1" rowspan="1">Definitiva</th>
+        ${agregarDefinitivaEstudiante(estudiante)}
+      </tr>
+      <tr class="bg-red">
+        <th class="solid-1_text-center c-red" colspan="1" rowspan="1">Revisión</th>
+        ${agregarRevisionEstudiante(estudiante)}
+      </tr>
+      `
+    });
+    tablaNotas.innerHTML = cabecera_tabla;
+    tablaNotas.innerHTML += datos;
+  }
+
+  mostrarNotas({{ estudiantes|safe }})
+
+  function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  function actualizarNota({tiempo, materia, estudiante, nota}) {
+
+    console.log(tiempo)
+    console.log(materia)
+    console.log(estudiante)
+    console.log(nota)
+      
+    fetch(`/notas/actualizar/${estudiante}?anio=${q_anio}&mencion=${q_mencion}&seccion=${q_seccion}`, {
+        method: 'PUT',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tiempo: tiempo, materia: materia, nota: nota }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        mostrarNotas(data.estudiantes)
+        activarBotonesActualizarNotas()
+    })
+    .catch(error => {
+        console.error('Error al enviar la solicitud:', error);
+    });
+  }
+
+  activarBotonesActualizarNotas()
+
+
   
   function imprimirTabla() {
       // Guardar el contenido original del cuerpo
@@ -171,30 +317,9 @@
         dataType: 'json',
         success: function(data) {
             $('#contenedor-tabla').html(data.table_html);
-            //$('#contenedor-paginador').html(data.paginator_html);
         }
     });
   })
-  /*
-  $(document).on('click', '.paginador', function(e) {
-    e.preventDefault();
-    var page = $(this).attr('href').split('page=')[1];
-    var params = new URLSearchParams(window.location.search);
-    var data = {};
-    for (var pair of params.entries()) {
-        data[pair[0]] = pair[1];
-    }
-    data['page'] = page;
-    $.ajax({
-        url: "{% url segment %}",
-        data: data,
-        dataType: 'json',
-        success: function(data) {
-            $('#contenedor-tabla').html(data.table_html);
-            //$('#contenedor-paginador').html(data.paginator_html);
-        }
-    });
-  });*/
   
 </script>
 {% endblock javascripts %}

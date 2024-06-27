@@ -135,3 +135,14 @@ class EstudiantesMaterias(models.Model):
 
     def __str__(self):
         return self.materia.materia.nombre
+    
+
+class Notas(models.Model):
+    estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
+    materia = models.ForeignKey(MateriasAniosMenciones, on_delete=models.CASCADE)
+    lapso1 = models.PositiveIntegerField(default=0, null=True)
+    lapso2 = models.PositiveIntegerField(default=0, null=True)
+    lapso3 = models.PositiveIntegerField(default=0, null=True)
+    definitiva = models.PositiveIntegerField(default=0, null=True)
+    revision = models.PositiveIntegerField(default=0, null=True)
+    periodo = models.ForeignKey(PeriodosAcademicos, on_delete=models.CASCADE, null=True)
