@@ -18,7 +18,7 @@ from .models import *
 from .forms import *
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas
 import json
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas
+from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas, Profesores
 
 from .utils import getInputsMenciones
 
@@ -223,49 +223,72 @@ def cargaEliminar(request, pk):
         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
     return redirect('carga')#Redireccionar normalmente
 
-
-
-
 ### Seccion de profesores ###
-
 @login_required(login_url="/login/")
 def profesores(request):
-    table = 'home/table-content/profesores.html'
-    context= {  
-        'profesores': profesores,
+    profesores = Profesores.objects.values('id', 'ci_tipo', 'ci', 'nombre', 'apellido', 'materias')
+    profesores = Profesores.objects.all().order_by('ci')
+    content = 'home/profesores/profesores.html'
+    context = {
         'segment':'profesores',
-        'title': 'Profesores',
-        'buscar': True,
-        'table': table,
+        'title':'Profesores',
+        'table':content,
+        'profesores':profesores
     }
 
     return render(request, 'home/table.html', context)
 
 
-# @login_required(login_url="/login/")
-# def crearProfesores(request):
-#     if request.method == 'POST':
-#         form = ProfesorForm(request.POST)
-#         if form.is_valid():
+### Crear Profesores ###
+@login_required(login_url="/login/")
+def crearProfesores(request):
+    if request.method == 'POST':
+        ci = request.POST.get('ci')
+        ci_tipo = request.POST.get('ci_tipo')
+        nombre = request.POST.get('nombre')
+        apellido = request.POST.get('apellido')
+        materias = request.POST.get('materias')
+        materia = Materias.objects.get(id = materias)
+        Profesores.objects.create(ci=ci, ci_tipo=ci_tipo, nombre=nombre, apellido=apellido, materias=materia)
+        return redirect('profesores')
+    form = ProfesorForm()
 
-#             Profesores.objects.create(**form.cleaned_data)
-            
-#             print("")
-#             print(form.cleaned_data)
-#             print("")
+    content = 'home/profesores/crear_profesores.html'
+    context = {
+        'form':form,
+        'segment':'profesores',
+        'title':'Crear Profesor',
+        'table':content
+    }
 
-#     form = ProfesorForm()
+    return render(request, 'home/table.html', context)
 
-#     content = 'home/form-content/crear_profesor_form.html'
-#     context = {
-#         'form':form,
-#         'segment':'profesores',
-#         'title':'Crear Profesor',
-#         'table':content
-#     }
+### Editar Profesores ###
+@login_required(login_url="/login/")
+def editarProfesores(request, id):
+    if request.POST:
+        profesor = ProfesorForm(request.POST)
+        if profesor.is_valid():
+            profesor = profesor.cleaned_data
+            profesor['materias']  = Materias.objects.get(id = profesor['materias'])
+            Profesores.objects.filter(id=id).update(**profesor)
+            return redirect('profesores')
+        else:
+            print(profesor.errors)
 
-#     return render(request, 'home/table.html', context)
-
+    else:
+        profesor = Profesores.objects.values().get(id=id)
+        form = ProfesorForm(initial=profesor)
+        
+    content = 'home/profesores/editar_profesores.html'
+    context = {
+    'form':form,
+    'segment':'profesores',
+    'title':'Editar profesores',
+    'table':content
+    }
+    
+    return render(request, 'home/table.html', context)
 
 ### Seccion de Estudiantes ###
 
@@ -1376,31 +1399,6 @@ def mencion_editar(request, pk):
         return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
     else:
         return JsonResponse({"error": "Mención no encontrada."}, status=404)
-
-
-@login_required(login_url="/login/")
-def crearProfesores(request):
-    if request.method == 'POST':
-        form = ProfesorForm(request.POST)
-        if form.is_valid():
-
-            Profesor.objects.create(**form.cleaned_data)
-
-            print("")
-            print(form.cleaned_data)
-            print("")
-
-    form = ProfesorForm()
-
-    content = 'home/form-content/crear_profesor_form.html'
-    context = {
-        'form':form,
-        'segment':'profesores',
-        'title':'Crear Profesor',
-        'table':content
-    }
-
-    return render(request, 'home/table.html', context)
 
 @login_required(login_url="/login/")
 def actualizar_notas(request, pk):

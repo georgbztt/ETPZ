@@ -1,0 +1,39 @@
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+    <div class="container">
+        <div class="w-100"></div>
+        <div class="col pt-3">
+            <a class="btn btn-primary" href="{% url 'crear_profesores' %}" role="button">Crear Profesor</a>
+        </div>
+    </div>
+
+    <h6 class="text-xs font-weight-bolder opacity-7 mt-5">Profesores Registrados</h6>
+    
+    <table class="table table-striped">
+        <tbody>
+            <tr>
+                <th class="font-weight-bold p-2">Cédula</th>
+                <th class="font-weight-bold p-2">Nombres y Apellidos</th>
+                <th class="font-weight-bold p-2">Materias</th>
+                <th class="font-weight-bold p-2">Opciones</th>
+            </tr>
+            {% for profesor in profesores %}
+                <tr>
+                    <td class="text-left p-2">{{ profesor.ci_tipo }}-{{ profesor.ci}}</td>
+                    <td class="text-left p-2">{{ profesor.nombre }}&thinsp;{{ profesor.apellido }}</td>
+                    <td class="text-left p-2">{{ profesor.materias}}</td>
+                    <td class="text-left p-2">
+                        <a class=" m-1 p-1" href="{% url 'editar_profesores' profesor.id|safe%}">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
