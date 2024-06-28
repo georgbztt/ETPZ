@@ -1114,7 +1114,7 @@ def Cargar_Notas(request):
     table = 'home/form-content/planillas_form.html'
     context={
         'Cargar_Notas':Cargar_Notas,
-        'segment':'Cargar_Notas',
+        'segment':'notas',
         'title':'',
         'buscar':True,
         'table':table,
@@ -1210,7 +1210,7 @@ def estudianteCrear(request):
             periodo = PeriodosAcademicos.objects.get(id=datos.periodo.id)
 
             for materia in materias:
-                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo)
+                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo, anio=anio, mencion=mencion, seccion=seccion)
 
         return redirect('estudiantes')
 
@@ -1469,17 +1469,48 @@ def boletas(request):
         anio = request.POST.get('anio')
         mencion = request.POST.get('mencion')
         seccion = request.POST.get('seccion')
+        periodo = request.POST.get('periodo')
 
-        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}')
+        return redirect(f'boletas/lista?anio={anio}&mencion={mencion}&seccion={seccion}&periodo={periodo}')
 
     form = Boletas()
 
     content = 'home/boletas/index.html'
     context = {
-        'segment':'notas',
-        'title':'Notas',
+        'segment':'boletas',
+        'title':'Generar Boletas',
         'table':content,
         'form':form
     }
 
     return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def boletas_lista_estudiantes(request):
+
+    anio = request.GET.get('anio')
+    mencion = request.GET.get('mencion')
+    seccion = request.GET.get('seccion')
+    periodo = request.GET.get('periodo')
+
+    estudiantes = Notas.objects.values('estudiante__id', 'estudiante__ci_tipo', 'estudiante__ci', 'estudiante__nombres', 'estudiante__apellidos').filter(anio=anio, mencion=mencion, seccion=seccion, periodo=periodo).distinct()
+
+    anio = Anios.objects.values('nombre').filter(id=anio).first()
+    mencion = Menciones.objects.values('nombre').filter(id=mencion).first()
+    seccion = Secciones.objects.values('nombre').filter(id=seccion).first()
+    escolaridad = DatosPlantel.objects.values('nombre').filter(id = periodo).first()
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'segment':'notas',
+        'title':'Cargar boletas',
+        'buscar':True,
+        'table':table,
+        'estudiantes': estudiantes,
+        'anio': anio['nombre'],
+        'mencion': mencion['nombre'],
+        'seccion': seccion['nombre'],
+        'escolaridad': escolaridad
+    }
+
+    return render(request, 'home/boletas/lista_boletas.html', context)
