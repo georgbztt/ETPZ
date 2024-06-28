@@ -1069,22 +1069,25 @@ def materiaCrear(request):
     
     return render(request, 'home/table.html', context)
 
-def obtener_estudiantes_notas(anio, mencion, seccion):
-    estudiantes = Estudiantes.objects.filter(
-        anio=anio, 
-        mencion=mencion, 
-        seccion=seccion
-    ).filter(
-        Q(estado=1) | Q(estado=2)
-    ).values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos')
+def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
 
-    # Crear una lista para almacenar el resultado final
+    estudiantes = Notas.objects.values(
+        'estudiante__id',
+        'estudiante__ci_tipo',
+        'estudiante__ci',
+        'estudiante__nombres',
+        'estudiante__apellidos'
+        ).filter(
+            anio=anio, 
+            mencion=mencion, 
+            seccion=seccion,
+            periodo=periodo
+        ).distinct()
+    
     resultado = []
 
-    # Iterar sobre la lista de estudiantes
     for estudiante in estudiantes:
-        # Obtener las notas del estudiante
-        notas = list(Notas.objects.filter(estudiante_id=estudiante['id']).values(
+        notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id']).values(
             'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia'
         ))
 
@@ -1100,8 +1103,9 @@ def Cargar_Notas(request):
     anio = request.GET.get('anio')
     mencion = request.GET.get('mencion')
     seccion = request.GET.get('seccion')
+    periodo = request.GET.get('periodo')
 
-    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion, periodo)
 
     materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).order_by('id').all()
 
@@ -1136,8 +1140,9 @@ def notas(request):
         anio = request.POST.get('anio')
         mencion = request.POST.get('mencion')
         seccion = request.POST.get('seccion')
+        periodo = request.POST.get('periodo')
 
-        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}')
+        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}&periodo={periodo}')
 
     form = CargarNotas()
 
@@ -1421,6 +1426,7 @@ def actualizar_notas(request, pk):
     anio = request.GET.get('anio')
     mencion = request.GET.get('mencion')
     seccion = request.GET.get('seccion')
+    periodo = request.GET.get('periodo')
 
     try:
         data = json.loads(request.body)
@@ -1454,7 +1460,7 @@ def actualizar_notas(request, pk):
 
     inst_nota.save()
 
-    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion, periodo)
 
     return JsonResponse({"message": "Los datos se actualizaron correctamente.", "estudiantes": estudiantes}, status=200)
 

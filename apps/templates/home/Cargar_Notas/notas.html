@@ -111,6 +111,7 @@
   const q_anio = searchParams.get('anio')
   const q_mencion = searchParams.get('mencion')
   const q_seccion = searchParams.get('seccion')
+  const q_periodo = searchParams.get('periodo')
 
   function activarBotonesActualizarNotas() {
     const inputs_nota = document.querySelectorAll(".input-nota")
@@ -155,7 +156,7 @@
         colspan="1"
         rowspan="1"
         data-id-materia="${ i.materia }"
-        data-id-estudiante="${ estudiante.id }"
+        data-id-estudiante="${ estudiante.estudiante__id }"
         data-tiempo="${lapso}"
       >
         ${ i[lapso] !== 0 ? i[lapso] : '' }
@@ -202,7 +203,7 @@
         colspan="1"
         rowspan="1"
         data-id-materia="${ i.materia }"
-        data-id-estudiante="${ estudiante.id }"
+        data-id-estudiante="${ estudiante.estudiante__id }"
         data-tiempo="revision"
       >
         ${ i.revision !== 0 ? i.revision : '' }
@@ -216,14 +217,12 @@
   function mostrarNotas(estudiantes) {
     let datos = ''
     estudiantes.forEach((estudiante, index) => {
-      
-      {% comment %} console.log(agregarNotasEstudiante(estudiante, 'lapso1')) {% endcomment %}
 
       datos += `
       <tr>
         <th class="solid-1_text-center" colspan="1" rowspan="5">${index + 1}</th>
-        <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">${estudiante.ci_tipo}-${ estudiante.ci }</td>
-        <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">${ estudiante.nombres } ${ estudiante.apellidos }</td>
+        <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">${estudiante.estudiante__ci_tipo}-${ estudiante.estudiante__ci }</td>
+        <td contenteditable="true" class="solid-1_text-center" colspan="5" rowspan="5">${ estudiante.estudiante__nombres } ${ estudiante.estudiante__apellidos }</td>
         <th class="solid-1_text-center" colspan="1" rowspan="1">I Lapso</th>
         ${agregarNotasEstudiante(estudiante, 'lapso1')}
       </tr>
@@ -264,7 +263,7 @@
     console.log(estudiante)
     console.log(nota)
       
-    fetch(`/notas/actualizar/${estudiante}?anio=${q_anio}&mencion=${q_mencion}&seccion=${q_seccion}`, {
+    fetch(`/notas/actualizar/${estudiante}?anio=${q_anio}&mencion=${q_mencion}&seccion=${q_seccion}&periodo=${q_periodo}`, {
         method: 'PUT',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
