@@ -3,7 +3,7 @@ Copyright (c) 2023 - present, Daniel Escalona
 """
 from django import forms
 from django.core.validators import *
-from .models import PeriodosAcademicos, Anios, Secciones, Menciones
+from .models import PeriodosAcademicos, Anios, Secciones, Menciones, Materias
 
 class PlantelForm(forms.Form):
 
@@ -30,6 +30,11 @@ class ProfesorForm(forms.Form):
     apellido = forms.CharField(label="Apellido", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
     ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
+    materias = forms.ChoiceField(label="Materias", required=True, widget=forms.Select(attrs={'class': 'form-control', 'id':'materias'}))
+    
+    def __init__(self, *args, **kwargs):
+        super(ProfesorForm, self).__init__(*args, **kwargs)
+        self.fields['materias'].choices = [('', '')] + [(materias.id, materias.nombre) for materias in Materias.objects.all()]
 
 class SeccionesForm(forms.Form):
     nombre = forms.CharField(label="Sección", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))

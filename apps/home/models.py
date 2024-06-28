@@ -118,15 +118,20 @@ class Estudiantes(models.Model):
         verbose_name_plural = "Estudiantes"  # Nombre en plural para el panel de administración
 
 
-class Profesor(models.Model):
-    id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=255)
-    apellido = models.CharField(max_length=255)
-    ci_tipo = models.CharField(max_length=1, null=False)
-    ci = models.PositiveIntegerField(null=False)
-
+class Profesores(models.Model):
+    id = models.AutoField(primary_key=True) # Llave primaria autoincremental
+    ci_tipo = models.CharField(max_length=1, null=False)  # String de un solo carácter no nulo
+    ci = models.PositiveIntegerField(null=False)  # Número no nulo
+    nombre = models.CharField(max_length=255)  # Cadena de texto no nula
+    apellido = models.CharField(max_length=255)  # Cadena de texto no nula
+    #materias = models.CharField(max_length=255)
+    materias = models.ForeignKey(Materias, on_delete=models.CASCADE)
+    
     def __str__(self):
-        return self.nombre
+        return f'{ self.nombre }'
+    
+    class Meta:
+        verbose_name_plural = "Profesores" # Nombre en plural para el panel de administración
     
 
 class EstudiantesMaterias(models.Model):
