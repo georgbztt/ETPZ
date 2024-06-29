@@ -101,7 +101,7 @@ class MateriasAniosMenciones(models.Model):
 
 class Estudiantes(models.Model):
     id = models.AutoField(primary_key=True)  # Llave primaria autoincremental
-    ci_tipo = models.CharField(max_length=1, null=False)  # String de un solo carácter no nulo
+    ci_tipo = models.CharField(max_length=2, null=False)  # String de un solo carácter no nulo
     ci = models.PositiveIntegerField(null=False)  # Número no nulo
     nombres = models.CharField(max_length=255)  # Cadena de texto no nula
     apellidos = models.CharField(max_length=255)  # Cadena de texto no nula

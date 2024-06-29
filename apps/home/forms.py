@@ -51,7 +51,7 @@ class MencionesForm(forms.Form):
     
 class EstudiantesForm(forms.Form):
     ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
-    ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
+    ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E"), ("CE", "CE")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
     nombres = forms.CharField(label="Nombres", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     apellidos = forms.CharField(label="Apellidos", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     sexo = forms.ChoiceField(choices=[("M", "M"), ("F", "F")], required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
