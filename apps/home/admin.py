@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.template.loader import get_template
 from django.contrib.admin.options import TabularInline
-from .models import DatosPlantel, Secciones, AniosMencionSec, Anios, Menciones, PeriodosAcademicos, Materias, MateriasAniosMenciones, Estudiantes, EstudiantesMaterias, Notas
+from .models import DatosPlantel, Secciones, AniosMencionSec, Anios, Menciones, PeriodosAcademicos, Materias, MateriasAniosMenciones, Estudiantes, Notas
 
 class EstudiantesMateriasAdmin(admin.ModelAdmin):
     list_display = ('estudiante', 'materia')
@@ -22,5 +22,3 @@ admin.site.register(Materias)
 admin.site.register(MateriasAniosMenciones, MateriasAniosMencionesAdmin)
 admin.site.register(Estudiantes)
 admin.site.register(Notas)
-
-admin.site.register(EstudiantesMaterias, EstudiantesMateriasAdmin)

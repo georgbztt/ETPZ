@@ -1075,13 +1075,15 @@ def materiaCrear(request):
 
         materia = request.POST.get('materia')
         abrev = request.POST.get('abrev')
+        literal = request.POST.get('literal')
 
-        inst_materia = Materias.objects.create(nombre=materia, nombre_abrev=abrev)
+        inst_materia = Materias.objects.create(nombre=materia, nombre_abrev=abrev, literal=literal)
 
         datos = request.POST.copy()
         datos.pop('materia')
         datos.pop('abrev')
         datos.pop('csrfmiddlewaretoken')
+        datos.pop('literal')
 
         for id_anio in datos:
 
@@ -1107,6 +1109,19 @@ def materiaCrear(request):
             <input type="text" name="materia" class="form-control" id="materia" required>
             <label for="seccion">Ingrese la abreviatura de la materia</label>
             <input type="text" name="abrev" class="form-control w-15" id="abrev" required>
+            <label for="seccion">¿La materia es literal?</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="literal" id="flexRadioDefault1" value="f" checked>
+                <label class="form-check-label" for="flexRadioDefault1">
+                    No
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="literal" id="flexRadioDefault2" value="t">
+                <label class="form-check-label" for="flexRadioDefault2">
+                    Si
+                </label>
+            </div>
         </div>
     </div>
     <div class="w-100"></div>
@@ -1141,6 +1156,128 @@ def materiaCrear(request):
     }
     
     return render(request, 'home/table.html', context)
+
+
+@login_required(login_url="/login/")
+def materiaEditar(request, pk):
+
+    try:
+
+        materia = Materias.objects.get(id=pk)
+
+        if request.method == 'POST':
+
+            nombre_materia = request.POST.get('materia')
+            abrev = request.POST.get('abrev')
+            literal = request.POST.get('literal')
+
+            setattr(materia, "nombre", nombre_materia)
+            setattr(materia, "nombre_abrev", abrev)
+            setattr(materia, "literal", literal)
+
+            materia.save()
+
+            datos = request.POST.copy()
+            datos.pop('materia')
+            datos.pop('abrev')
+            datos.pop('csrfmiddlewaretoken')
+            datos.pop('literal')
+
+            datos = dict(datos)
+
+            for anio, menciones in datos.items():
+
+                for mencion in menciones:
+
+                    inst_materia = MateriasAniosMenciones.objects.filter(materia=pk, anio=anio, mencion=mencion)
+
+                    if not inst_materia:
+
+                        inst_anio = Anios.objects.get(id=anio)
+                        inst_mencion = Menciones.objects.get(id=mencion)
+                        inst_materia = Materias.objects.get(id=pk)
+
+                        MateriasAniosMenciones.objects.create(anio=inst_anio, mencion=inst_mencion, materia=inst_materia)
+
+            inst_materias = MateriasAniosMenciones.objects.values("id", "anio", "mencion").filter(materia=pk)
+
+            for i in inst_materias:
+
+                if str(i['anio']) in datos:
+
+                    if not str(i['mencion']) in datos[str(i['anio'])]:
+
+                        MateriasAniosMenciones.objects.get(id=i['id']).delete()
+
+                else:
+
+                    MateriasAniosMenciones.objects.get(id=i['id']).delete()
+
+        anios = list(Anios.objects.values('id', 'nombre'))
+        menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
+
+        data = MateriasAniosMenciones.objects.filter(materia=materia)
+
+        form = ''
+
+        form += f"""
+        <div class="col-4">
+            <div class="form-group">
+                <label for="seccion">Ingrese el nombre de la materia</label>
+                <input type="text" name="materia" class="form-control" id="materia" value="{materia.nombre}" required>
+                <label for="seccion">Ingrese la abreviatura de la materia</label>
+                <input type="text" name="abrev" class="form-control w-15" id="abrev" value="{materia.nombre_abrev}" required>
+                <label for="seccion">¿La materia es literal?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="literal" id="flexRadioDefault1" value="f" {'checked' if not materia.literal else ''}>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        No
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="literal" id="flexRadioDefault2" value="t" {'checked' if materia.literal else ''}>
+                    <label class="form-check-label" for="flexRadioDefault2">
+                        Si
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="w-100"></div>
+        <p>Seleccione las menciones a las cuales pertenece la materia a crear</p>
+        """
+
+        for index, anio in enumerate(anios):
+            form += f"""
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h6>{anio['nombre']}</h6>
+                        <div class="px-4">
+                            <p>Menciones</p>
+                            {getInputsMenciones(anio['id'], menciones, data)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
+            if index == 2:
+                form += """
+                <div class="w-100 pb-4"></div>
+                """
+
+        content = 'home/materias/crear.html'
+        context = {
+            'form': form,
+            'segment':'materia',
+            'title':'Crear Materia',
+            'table':content
+        }
+
+        return render(request, 'home/table.html', context)
+    except ObjectDoesNotExist:
+        print("El objeto con el ID dado no existe en la base de datos.")
+        return render(request, 'home/page-404.html')
+    
 
 def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
 
@@ -1334,111 +1471,6 @@ def estudianteEditar(request, id):
     }
 
     return render(request, 'home/table.html', context)
-
-@login_required(login_url="/login/")
-def materiaEditar(request, pk):
-
-    try:
-
-        materia = Materias.objects.get(id=pk)
-
-        if request.method == 'POST':
-
-            nombre_materia = request.POST.get('materia')
-            abrev = request.POST.get('abrev')
-
-            setattr(materia, "nombre", nombre_materia)
-            setattr(materia, "nombre_abrev", abrev)
-
-            materia.save()
-
-            datos = request.POST.copy()
-            datos.pop('materia')
-            datos.pop('abrev')
-            datos.pop('csrfmiddlewaretoken')
-
-            datos = dict(datos)
-
-            for anio, menciones in datos.items():
-
-                for mencion in menciones:
-
-                    inst_materia = MateriasAniosMenciones.objects.filter(materia=pk, anio=anio, mencion=mencion)
-
-                    if not inst_materia:
-
-                        inst_anio = Anios.objects.get(id=anio)
-                        inst_mencion = Menciones.objects.get(id=mencion)
-                        inst_materia = Materias.objects.get(id=pk)
-
-                        MateriasAniosMenciones.objects.create(anio=inst_anio, mencion=inst_mencion, materia=inst_materia)
-
-            inst_materias = MateriasAniosMenciones.objects.values("id", "anio", "mencion").filter(materia=pk)
-
-            for i in inst_materias:
-
-                if str(i['anio']) in datos:
-
-                    if not str(i['mencion']) in datos[str(i['anio'])]:
-
-                        MateriasAniosMenciones.objects.get(id=i['id']).delete()
-
-                else:
-
-                    MateriasAniosMenciones.objects.get(id=i['id']).delete()
-
-        anios = list(Anios.objects.values('id', 'nombre'))
-        menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
-
-        data = MateriasAniosMenciones.objects.filter(materia=materia)
-
-        form = ''
-
-        form += f"""
-        <div class="col-4">
-            <div class="form-group">
-                <label for="seccion">Ingrese el nombre de la materia</label>
-                <input type="text" name="materia" class="form-control" id="materia" value="{materia.nombre}" required>
-                <label for="seccion">Ingrese la abreviatura de la materia</label>
-                <input type="text" name="abrev" class="form-control w-15" id="abrev" value="{materia.nombre_abrev}" required>
-            </div>
-        </div>
-        <div class="w-100"></div>
-        <p>Seleccione las menciones a las cuales pertenece la materia a crear</p>
-        """
-
-        for index, anio in enumerate(anios):
-            form += f"""
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <h6>{anio['nombre']}</h6>
-                        <div class="px-4">
-                            <p>Menciones</p>
-                            {getInputsMenciones(anio['id'], menciones, data)}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            """
-            if index == 2:
-                form += """
-                <div class="w-100 pb-4"></div>
-                """
-
-        content = 'home/materias/crear.html'
-        context = {
-            'form': form,
-            'segment':'materia',
-            'title':'Crear Materia',
-            'table':content
-        }
-
-        return render(request, 'home/table.html', context)
-    except ObjectDoesNotExist:
-        print("El objeto con el ID dado no existe en la base de datos.")
-        return render(request, 'home/page-404.html')
-
 
 @require_POST
 def mencion_editar(request, pk):

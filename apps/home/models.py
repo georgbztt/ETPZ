@@ -78,6 +78,7 @@ class AniosMencionSec(models.Model):
 class Materias(models.Model):
     nombre = models.CharField(max_length=255, null=False, unique=True)  # String de 255 de longitud
     nombre_abrev = models.CharField(max_length=4, null=False, unique=True)  # String de 4 de longitud
+    literal = models.BooleanField(null=True)
 
     def __str__(self):
         return self.nombre  # Representación en cadena del objeto
@@ -135,14 +136,6 @@ class Profesores(models.Model):
     
     class Meta:
         verbose_name_plural = "Profesores" # Nombre en plural para el panel de administración
-    
-
-class EstudiantesMaterias(models.Model):
-    materia = models.ForeignKey(MateriasAniosMenciones, on_delete=models.CASCADE)
-    estudiante = models.ForeignKey(Estudiantes, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.materia.materia.nombre
     
 
 class Notas(models.Model):
