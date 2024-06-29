@@ -57,6 +57,9 @@ urlpatterns = [
     path('notas/cargar', views.Cargar_Notas, name='Cargar_Notas'),
     path('notas/actualizar/<str:pk>', views.actualizar_notas, name='actualizar_notas'),
 
+    path('boletas', views.boletas, name='boletas'),
+    path('boletas/lista', views.boletas_lista_estudiantes, name='lista_boletas'),
+
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
 

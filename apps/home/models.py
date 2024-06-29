@@ -90,6 +90,9 @@ class MateriasAniosMenciones(models.Model):
     anio = models.ForeignKey(Anios, on_delete=models.CASCADE)
     mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.materia.nombre} - {self.anio.nombre} - {self.mencion.nombre}"
+
     class Meta:
         verbose_name_plural = "Materias Años Menciones"
         constraints = [
@@ -112,7 +115,7 @@ class Estudiantes(models.Model):
     estado = models.PositiveIntegerField(null=True)
     
     def __str__(self):
-        return f'{ self.nombres }'  # Representación en cadena del objeto
+        return f'{self.nombres}'
     
     class Meta:
         verbose_name_plural = "Estudiantes"  # Nombre en plural para el panel de administración
@@ -151,3 +154,9 @@ class Notas(models.Model):
     definitiva = models.PositiveIntegerField(default=0, null=True)
     revision = models.PositiveIntegerField(default=0, null=True)
     periodo = models.ForeignKey(PeriodosAcademicos, on_delete=models.CASCADE, null=True)
+    anio = models.ForeignKey(Anios, on_delete=models.CASCADE, null=True)
+    mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE, null=True)
+    seccion= models.ForeignKey(Secciones, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.estudiante.nombres

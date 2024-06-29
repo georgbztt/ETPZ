@@ -19,15 +19,15 @@
               {{ form.ci }}
             </div>
           </div>
-  
-        <div class="col-6 pb-1 pe-3 {% if form.nombres.errors %}form-error{% endif %}">
-          <label for="{{ form.nombres.id_for_label }}">{{ form.nombres.label }}</label>
-          {{ form.nombres }}
-        </div>
 
         <div class="col-6 pb-1 pe-3 {% if form.apellidos.errors %}form-error{% endif %}">
           <label for="{{ form.apellidos.id_for_label }}">{{ form.apellidos.label }}</label>
           {{ form.apellidos }}
+        </div>
+  
+        <div class="col-6 pb-1 pe-3 {% if form.nombres.errors %}form-error{% endif %}">
+          <label for="{{ form.nombres.id_for_label }}">{{ form.nombres.label }}</label>
+          {{ form.nombres }}
         </div>
   
         <div class="col-md-1 pb-1 pe-3 {% if form.sexo.errors %}form-error{% endif %}">
@@ -49,26 +49,26 @@
   
         <div class="w-100"></div>
 
-        <div class="col-md-2 me-10 pb-1 pe-3 {% if form.mencion_id.errors %}form-error{% endif %}">
+        <div class="col-md-6 pb-1 pe-3 {% if form.mencion_id.errors %}form-error{% endif %}">
           <label for="{{ form.mencion_id.id_for_label }}">{{ form.mencion_id.label }}</label>
           {{ form.mencion_id }}
         </div>
   
-        <div class="col-md-1 ms-8 pb-1 pe-3 {% if form.seccion_id.errors %}form-error{% endif %}">
+        <div class="col-md-1 pb-1 pe-3 {% if form.seccion_id.errors %}form-error{% endif %}">
           <label for="{{ form.seccion_id.id_for_label }}">{{ form.seccion_id.label }}</label>
           {{ form.seccion_id }}
         </div>
 
         <div class="w-100"></div>
-
-        <div class="col-6 pb-1 pe-3 {% if form.entidad_federal.errors %}form-error{% endif %}">
-          <label for="{{ form.entidad_federal.id_for_label }}">{{ form.entidad_federal.label }}</label>
-          {{ form.entidad_federal }}
-        </div>
   
         <div class="col-6 pb-1 pe-3 {% if form.lugar_de_nacimiento.errors %}form-error{% endif %}">
           <label for="{{ form.lugar_de_nacimiento.id_for_label }}">{{ form.lugar_de_nacimiento.label }}</label>
           {{ form.lugar_de_nacimiento }}
+        </div>
+
+        <div class="col-6 pb-1 pe-3 {% if form.entidad_federal.errors %}form-error{% endif %}">
+          <label for="{{ form.entidad_federal.id_for_label }}">{{ form.entidad_federal.label }}</label>
+          {{ form.entidad_federal }}
         </div>
 
         <div class="w-100"></div>
@@ -79,7 +79,7 @@
         <div class="form-check">
           <input class="form-check-input" type="radio" name="estado" id="flexRadioDefault1" value="1" checked>
           <label class="form-check-label" for="flexRadioDefault1">
-            Normal
+            Regular
           </label>
         </div>
         <div class="form-check">

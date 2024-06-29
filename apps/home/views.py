@@ -16,7 +16,7 @@ from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, Profesor
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 from .models import *
 from .forms import *
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas, Boletas
 import json
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas, Profesores
 
@@ -1092,22 +1092,25 @@ def materiaCrear(request):
     
     return render(request, 'home/table.html', context)
 
-def obtener_estudiantes_notas(anio, mencion, seccion):
-    estudiantes = Estudiantes.objects.filter(
-        anio=anio, 
-        mencion=mencion, 
-        seccion=seccion
-    ).filter(
-        Q(estado=1) | Q(estado=2)
-    ).values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos')
+def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
 
-    # Crear una lista para almacenar el resultado final
+    estudiantes = Notas.objects.values(
+        'estudiante__id',
+        'estudiante__ci_tipo',
+        'estudiante__ci',
+        'estudiante__nombres',
+        'estudiante__apellidos'
+        ).filter(
+            anio=anio, 
+            mencion=mencion, 
+            seccion=seccion,
+            periodo=periodo
+        ).distinct()
+    
     resultado = []
 
-    # Iterar sobre la lista de estudiantes
     for estudiante in estudiantes:
-        # Obtener las notas del estudiante
-        notas = list(Notas.objects.filter(estudiante_id=estudiante['id']).values(
+        notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id']).values(
             'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia'
         ))
 
@@ -1123,8 +1126,9 @@ def Cargar_Notas(request):
     anio = request.GET.get('anio')
     mencion = request.GET.get('mencion')
     seccion = request.GET.get('seccion')
+    periodo = request.GET.get('periodo')
 
-    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion, periodo)
 
     materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).order_by('id').all()
 
@@ -1137,7 +1141,7 @@ def Cargar_Notas(request):
     table = 'home/form-content/planillas_form.html'
     context={
         'Cargar_Notas':Cargar_Notas,
-        'segment':'Cargar_Notas',
+        'segment':'notas',
         'title':'',
         'buscar':True,
         'table':table,
@@ -1159,8 +1163,9 @@ def notas(request):
         anio = request.POST.get('anio')
         mencion = request.POST.get('mencion')
         seccion = request.POST.get('seccion')
+        periodo = request.POST.get('periodo')
 
-        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}')
+        return redirect(f'notas/cargar?anio={anio}&mencion={mencion}&seccion={seccion}&periodo={periodo}')
 
     form = CargarNotas()
 
@@ -1233,7 +1238,7 @@ def estudianteCrear(request):
             periodo = PeriodosAcademicos.objects.get(id=datos.periodo.id)
 
             for materia in materias:
-                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo)
+                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo, anio=anio, mencion=mencion, seccion=seccion)
 
         return redirect('estudiantes')
 
@@ -1419,6 +1424,7 @@ def actualizar_notas(request, pk):
     anio = request.GET.get('anio')
     mencion = request.GET.get('mencion')
     seccion = request.GET.get('seccion')
+    periodo = request.GET.get('periodo')
 
     try:
         data = json.loads(request.body)
@@ -1452,6 +1458,63 @@ def actualizar_notas(request, pk):
 
     inst_nota.save()
 
-    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion)
+    estudiantes = obtener_estudiantes_notas(anio, mencion, seccion, periodo)
 
     return JsonResponse({"message": "Los datos se actualizaron correctamente.", "estudiantes": estudiantes}, status=200)
+
+
+@login_required(login_url="/login/")
+def boletas(request):
+
+    if request.method == 'POST':
+
+        pass
+
+        anio = request.POST.get('anio')
+        mencion = request.POST.get('mencion')
+        seccion = request.POST.get('seccion')
+        periodo = request.POST.get('periodo')
+
+        return redirect(f'boletas/lista?anio={anio}&mencion={mencion}&seccion={seccion}&periodo={periodo}')
+
+    form = Boletas()
+
+    content = 'home/boletas/index.html'
+    context = {
+        'segment':'boletas',
+        'title':'Generar Boletas',
+        'table':content,
+        'form':form
+    }
+
+    return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def boletas_lista_estudiantes(request):
+
+    anio = request.GET.get('anio')
+    mencion = request.GET.get('mencion')
+    seccion = request.GET.get('seccion')
+    periodo = request.GET.get('periodo')
+
+    estudiantes = Notas.objects.values('estudiante__id', 'estudiante__ci_tipo', 'estudiante__ci', 'estudiante__nombres', 'estudiante__apellidos').filter(anio=anio, mencion=mencion, seccion=seccion, periodo=periodo).distinct()
+
+    anio = Anios.objects.values('nombre').filter(id=anio).first()
+    mencion = Menciones.objects.values('nombre').filter(id=mencion).first()
+    seccion = Secciones.objects.values('nombre').filter(id=seccion).first()
+    escolaridad = DatosPlantel.objects.values('nombre').filter(id = periodo).first()
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'segment':'notas',
+        'title':'Cargar boletas',
+        'buscar':True,
+        'table':table,
+        'estudiantes': estudiantes,
+        'anio': anio['nombre'],
+        'mencion': mencion['nombre'],
+        'seccion': seccion['nombre'],
+        'escolaridad': escolaridad
+    }
+
+    return render(request, 'home/boletas/lista_boletas.html', context)

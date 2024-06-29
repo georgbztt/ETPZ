@@ -1,0 +1,71 @@
+{% extends 'layouts/base.html' %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="pagestyle_dark" href="{{ ASSETS_ROOT }}/css/table.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+{% block content %}
+{% load tags %}
+
+<div class="container-fluid py-4">
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div class="d-flex justify-content-between">
+            <h6>{{ title }}</h6>
+            {% if url_crear %}
+            <a href="{{ url_crear }}" title="Agregar {{ segment }}">
+              <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-body p-0 d-flex justify-content-center pb-5 p-3 flex-column">
+          <div>
+            <h6>Año: {{ anio }}</h6>
+            <h6>Mencion: {{ mencion }}</h6>
+            <h6>Seccion: {{ seccion }}</h6>
+          </div>
+          </br>
+          <p>Lista de estudiantes</p>
+          <table class="table mb-0 table-striped" >
+            <tbody>
+              <tr>
+                <th class="font-weight-bolder">N°</th>
+                <th class="font-weight-bolder">Cédula</th> 
+                <th class="font-weight-bolder">Estudiante</th>
+                <th class="font-weight-bolder text-center">Ver boleta</th>
+              </tr>
+              {% for estudiante in estudiantes %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ estudiante.estudiante__ci_tipo }}-{{ estudiante.estudiante__ci }}</td>
+                  <td>{{ estudiante.estudiante__nombres }} {{ estudiante.estudiante__apellidos }}</td>
+                  <td class="font-weight-bold align-middle text-center user-select-none">
+                    <a href="#">
+                    <i class="fa fa-eye info-icon" aria-hidden="true"></i>
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script>
+
+  
+</script>
+{% endblock javascripts %}
