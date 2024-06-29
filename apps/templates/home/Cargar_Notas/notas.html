@@ -169,6 +169,7 @@
       `
     })
     promedio = diferentesACero !== 0 ? (promedio/diferentesACero).toFixed(2) : ''
+    promedio = promedio.toString().replace('.', ',')
     datos += `<td class="solid-1_text-center" colspan="1" rowspan="1">${promedio}</td>`
     return datos
   }
@@ -199,6 +200,7 @@
       `
     })
     promedio = diferentesACero !== 0 ? (promedio/diferentesACero).toFixed(2) : ''
+    promedio = promedio.toString().replace('.', ',')
     datos += `<td class="solid-1_text-center" colspan="1" rowspan="1">${promedio}</td>`
     return datos
   }
