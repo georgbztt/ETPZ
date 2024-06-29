@@ -1497,8 +1497,8 @@ def actualizar_notas(request, pk):
             dividir_por += 1
             if notas_lapsos['lapso2'] != 0:
                 dividir_por += 1
-                if notas_lapsos['lapso3'] != 0:
-                    dividir_por += 1
+            if notas_lapsos['lapso3'] != 0:
+                dividir_por += 1
         if dividir_por != 0:                    
             setattr(inst_nota, 'lapso1', nota)
             definitiva = (int(nota) + notas_lapsos['lapso2'] + notas_lapsos['lapso3'])/dividir_por
@@ -1507,8 +1507,8 @@ def actualizar_notas(request, pk):
             dividir_por += 1
             if notas_lapsos['lapso1'] != 0:
                 dividir_por += 1
-                if notas_lapsos['lapso3'] != 0:
-                    dividir_por += 1
+            if notas_lapsos['lapso3'] != 0:
+                dividir_por += 1
         if dividir_por != 0:
             setattr(inst_nota, 'lapso2', nota)
             definitiva = (notas_lapsos['lapso1'] + int(nota) + notas_lapsos['lapso3'])/dividir_por
@@ -1517,8 +1517,8 @@ def actualizar_notas(request, pk):
             dividir_por += 1
             if notas_lapsos['lapso1'] != 0:
                 dividir_por += 1
-                if notas_lapsos['lapso2'] != 0:
-                    dividir_por += 1
+            if notas_lapsos['lapso2'] != 0:
+                dividir_por += 1
         if dividir_por != 0:
             setattr(inst_nota, 'lapso3', nota)
             definitiva = (notas_lapsos['lapso1'] + notas_lapsos['lapso2'] + int(nota))/dividir_por
