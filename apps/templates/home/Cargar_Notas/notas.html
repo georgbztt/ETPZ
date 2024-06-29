@@ -149,6 +149,11 @@
       if (parseInt(i[lapso]) != 0) {
         diferentesACero += 1
       }
+      nota = i[lapso] !== 0 ? i[lapso] : ''
+      nota = nota.toString()
+      if (nota.length === 1) {
+        nota = `0${nota}`
+      }
       datos += `
       <td
         contenteditable="true"
@@ -159,7 +164,7 @@
         data-id-estudiante="${ estudiante.estudiante__id }"
         data-tiempo="${lapso}"
       >
-        ${ i[lapso] !== 0 ? i[lapso] : '' }
+        ${ nota }
       </td>
       `
     })
@@ -177,6 +182,11 @@
       if (parseInt(i.definitiva) != 0) {
         diferentesACero += 1
       }
+      nota = i.definitiva !== 0 ? i.definitiva : ''
+      nota = nota.toString()
+      if (nota.length === 1) {
+        nota = `0${nota}`
+      }
       datos += `
       <td
         class="solid-1_text-center input-nota"
@@ -184,7 +194,7 @@
         rowspan="1"
         data-tiempo="definitiva"
       >
-        ${ i.definitiva !== 0 ? i.definitiva : '' }
+        ${ nota }
       </td>
       `
     })
@@ -196,6 +206,11 @@
   function agregarRevisionEstudiante(estudiante) {
     let datos = ''
     estudiante.notas.forEach((i) => {
+      nota = i.revision !== 0 ? i.revision : ''
+      nota = nota.toString()
+      if (nota.length === 1) {
+        nota = `0${nota}`
+      }
       datos += `
       <td
         contenteditable="true"
@@ -206,7 +221,7 @@
         data-id-estudiante="${ estudiante.estudiante__id }"
         data-tiempo="revision"
       >
-        ${ i.revision !== 0 ? i.revision : '' }
+        ${ nota !== 0 ? nota : '' }
       </td>
       `
     })
@@ -257,11 +272,6 @@
   }
 
   function actualizarNota({tiempo, materia, estudiante, nota}) {
-
-    console.log(tiempo)
-    console.log(materia)
-    console.log(estudiante)
-    console.log(nota)
       
     fetch(`/notas/actualizar/${estudiante}?anio=${q_anio}&mencion=${q_mencion}&seccion=${q_seccion}&periodo=${q_periodo}`, {
         method: 'PUT',
