@@ -1146,8 +1146,8 @@ def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
 
     estudiantes = Notas.objects.values(
         'estudiante__id',
-        'estudiante__ci_tipo',
-        'estudiante__ci',
+        'ci_tipo',
+        'ci',
         'estudiante__nombres',
         'estudiante__apellidos'
         ).filter(
@@ -1155,7 +1155,7 @@ def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
             mencion=mencion, 
             seccion=seccion,
             periodo=periodo
-        ).order_by('-estudiante__ci').distinct()
+        ).order_by('-ci').distinct()
     
     resultado = []
 
@@ -1288,7 +1288,7 @@ def estudianteCrear(request):
             periodo = PeriodosAcademicos.objects.get(id=datos.periodo.id)
 
             for materia in materias:
-                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo, anio=anio, mencion=mencion, seccion=seccion)
+                Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo, anio=anio, mencion=mencion, seccion=seccion, ci_tipo=ci_tipo, ci=ci)
 
         return redirect('estudiantes')
 

@@ -156,7 +156,9 @@ class Notas(models.Model):
     periodo = models.ForeignKey(PeriodosAcademicos, on_delete=models.CASCADE, null=True)
     anio = models.ForeignKey(Anios, on_delete=models.CASCADE, null=True)
     mencion = models.ForeignKey(Menciones, on_delete=models.CASCADE, null=True)
-    seccion= models.ForeignKey(Secciones, on_delete=models.CASCADE, null=True)
+    seccion = models.ForeignKey(Secciones, on_delete=models.CASCADE, null=True)
+    ci_tipo = models.CharField(max_length=2, null=True)
+    ci = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return self.estudiante.nombres
