@@ -59,7 +59,7 @@ class EstudiantesForm(forms.Form):
     anio_id = forms.ChoiceField(label="Año", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
     mencion_id = forms.ChoiceField(label="Mención", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
     seccion_id = forms.ChoiceField(label="Sección", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2'}))
-    entidad_federal = forms.CharField(label="Entidad federal", max_length=3, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    entidad_federal = forms.CharField(label="EF", max_length=3, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     lugar_de_nacimiento =  forms.CharField(label="Lugar de nacimiento", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
         
     def __init__(self, *args, **kwargs):

@@ -229,7 +229,7 @@ def cargaEliminar(request, pk):
 @login_required(login_url="/login/")
 def profesores(request):
     profesores = Profesores.objects.values('id', 'ci_tipo', 'ci', 'nombre', 'apellido', 'materias')
-    profesores = Profesores.objects.all().order_by('ci')
+    profesores = Profesores.objects.all().order_by('-ci')
     content = 'home/profesores/profesores.html'
     context = {
         'segment':'profesores',
@@ -1372,7 +1372,7 @@ def notas(request):
 def estudiantes(request):
     busqueda = request.POST.get('buscar')
     data_table = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos', 'sexo', 'anio', 'mencion', 'seccion',  'lugar_de_nacimiento', 'estado')
-    data_table = Estudiantes.objects.all().order_by('ci')
+    data_table = Estudiantes.objects.all().order_by('-ci')
     if busqueda:
         data_table = Estudiantes.objects.filter(
             Q(ci_tipo__icontains = busqueda) |
