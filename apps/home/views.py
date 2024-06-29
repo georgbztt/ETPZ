@@ -1155,7 +1155,7 @@ def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
             mencion=mencion, 
             seccion=seccion,
             periodo=periodo
-        ).distinct()
+        ).order_by('-estudiante__ci').distinct()
     
     resultado = []
 
