@@ -272,24 +272,27 @@
   }
 
   function actualizarNota({tiempo, materia, estudiante, nota}) {
-      
-    fetch(`/notas/actualizar/${estudiante}?anio=${q_anio}&mencion=${q_mencion}&seccion=${q_seccion}&periodo=${q_periodo}`, {
+
+    if (!isNaN(parseInt(nota)) && isFinite(nota) && parseInt(nota) > 0) {
+
+      fetch(`/notas/actualizar/${estudiante}?anio=${q_anio}&mencion=${q_mencion}&seccion=${q_seccion}&periodo=${q_periodo}`, {
         method: 'PUT',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ tiempo: tiempo, materia: materia, nota: nota }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Respuesta del servidor:', data);
-        mostrarNotas(data.estudiantes)
-        activarBotonesActualizarNotas()
-    })
-    .catch(error => {
-        console.error('Error al enviar la solicitud:', error);
-    });
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Respuesta del servidor:', data);
+          mostrarNotas(data.estudiantes)
+          activarBotonesActualizarNotas()
+      })
+      .catch(error => {
+          console.error('Error al enviar la solicitud:', error);
+      });
+    }
   }
 
   activarBotonesActualizarNotas()
