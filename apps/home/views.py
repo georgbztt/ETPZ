@@ -1490,21 +1490,45 @@ def actualizar_notas(request, pk):
     inst_nota = Notas.objects.get(estudiante = pk, materia = materia)
 
     notas_lapsos = Notas.objects.values('lapso1', 'lapso2', 'lapso3').filter(estudiante = pk, materia = materia).first()
+    
+    dividir_por = 0
     if tiempo == 'lapso1':
-        setattr(inst_nota, 'lapso1', nota)
-        definitiva = (int(nota) + notas_lapsos['lapso2'] + notas_lapsos['lapso3'])/3
+        if int(nota) != 0:
+            dividir_por += 1
+            if notas_lapsos['lapso2'] != 0:
+                dividir_por += 1
+                if notas_lapsos['lapso3'] != 0:
+                    dividir_por += 1
+        if dividir_por != 0:                    
+            setattr(inst_nota, 'lapso1', nota)
+            definitiva = (int(nota) + notas_lapsos['lapso2'] + notas_lapsos['lapso3'])/dividir_por
     elif tiempo == 'lapso2':
-        setattr(inst_nota, 'lapso2', nota)
-        definitiva = (notas_lapsos['lapso1'] + int(nota) + notas_lapsos['lapso3'])/3
+        if int(nota) != 0:
+            dividir_por += 1
+            if notas_lapsos['lapso1'] != 0:
+                dividir_por += 1
+                if notas_lapsos['lapso3'] != 0:
+                    dividir_por += 1
+        if dividir_por != 0:
+            setattr(inst_nota, 'lapso2', nota)
+            definitiva = (notas_lapsos['lapso1'] + int(nota) + notas_lapsos['lapso3'])/dividir_por
     elif tiempo == 'lapso3':
-        setattr(inst_nota, 'lapso3', nota)
-        definitiva = (notas_lapsos['lapso1'] + notas_lapsos['lapso2'] + int(nota))/3
+        if int(nota) != 0:
+            dividir_por += 1
+            if notas_lapsos['lapso1'] != 0:
+                dividir_por += 1
+                if notas_lapsos['lapso2'] != 0:
+                    dividir_por += 1
+        if dividir_por != 0:
+            setattr(inst_nota, 'lapso3', nota)
+            definitiva = (notas_lapsos['lapso1'] + notas_lapsos['lapso2'] + int(nota))/dividir_por
     elif tiempo == 'revision':
         setattr(inst_nota, 'revision', nota)
 
     if tiempo == 'lapso1' or tiempo == 'lapso2' or tiempo == 'lapso3':
-        definitiva = int(round(definitiva, 0))
-        setattr(inst_nota, 'definitiva', definitiva)
+        if dividir_por != 0:
+            definitiva = int(round(definitiva, 0))
+            setattr(inst_nota, 'definitiva', definitiva)
 
     inst_nota.save()
 
