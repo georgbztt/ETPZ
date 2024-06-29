@@ -744,7 +744,7 @@ def crearPeriodoAcademico(request):
 
     form = PeriodosForm()
 
-    data_table = list(PeriodosAcademicos.objects.values('nombre'))
+    data_table = list(PeriodosAcademicos.objects.values('id', 'nombre'))
 
     content = 'home/configuracion/periodos-academicos.html'
     context = {
@@ -757,6 +757,31 @@ def crearPeriodoAcademico(request):
     }
 
     return render(request, 'home/table.html', context)
+
+@require_POST
+def periodoAcademico_editar(request, pk):
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    periodoA = PeriodosAcademicos.objects.filter(id=pk).first()
+
+    if periodoA:
+
+        nombre = data.get('nombre')
+
+        if nombre:
+            setattr(periodoA, 'nombre', nombre)
+
+
+        # Guarda los cambios en la base de datos
+        periodoA.save()
+
+        return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
+    else:
+        return JsonResponse({"error": "Periodo no encontrado."}, status=404)
 
 @login_required(login_url="/login/")
 def secciones(request):
@@ -971,6 +996,31 @@ def crearAnios(request):
     }
 
     return render(request, 'home/table.html', context)
+
+@require_POST
+def anio_editar(request, pk):
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    anio = Anios.objects.filter(id=pk).first()
+
+    if anio:
+
+        nombre = data.get('nombre')
+
+        if nombre:
+            setattr(anio, 'nombre', nombre)
+
+
+        # Guarda los cambios en la base de datos
+        anio.save()
+
+        return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
+    else:
+        return JsonResponse({"error": "Año no encontrado."}, status=404)
 
 
 ### Crear Menciones ###

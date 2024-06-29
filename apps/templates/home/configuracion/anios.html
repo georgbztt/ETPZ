@@ -39,9 +39,54 @@
             </tr>
             {% for i in data_table %}
                 <tr>
-                    <td>{{ i.nombre }}</td>
+                    <td class="guardar nombre" contenteditable="true" data-id="{{ i.id }}">{{ i.nombre }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+<script>
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function actualizarAnio({id, nombre=null}) {
+
+        fetch(`/configuracion/años/${id}/editar`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nombre: nombre }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+        })
+        .catch(error => {
+            console.error('Error al enviar la solicitud:', error);
+        });
+
+
+    }
+
+    const guardar = document.querySelectorAll(".guardar")
+
+    guardar.forEach((item) => {
+        item.addEventListener('blur', () => {
+
+            id = item.getAttribute("data-id")
+            text = item.innerText
+
+            if (item.classList.contains('nombre')) {
+                actualizarAnio({ id: id, nombre: text })
+            }
+        })
+    })
+
+</script>

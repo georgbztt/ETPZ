@@ -49,7 +49,9 @@ urlpatterns = [
     path('configuracion/secciones/crear', views.crear_seccion, name='crear_seccion'),
     path('configuracion/secciones/<str:pk>/editar', views.editar_seccion, name='editar_seccion'),
     path('configuracion/periodos-academicos', views.crearPeriodoAcademico, name='crear_periodo'),
+    path('configuracion/periodos-academicos/<str:pk>/editar', views.periodoAcademico_editar, name='editar_periodo'),
     path('configuracion/años', views.crearAnios, name='crear_anios'),
+    path('configuracion/años/<str:pk>/editar', views.anio_editar, name='editar_anios'),
     path('configuracion/menciones', views.crearMenciones, name='crear_menciones'),
     path('configuracion/menciones/<str:pk>/editar', views.mencion_editar, name='editar_menciones'),
     
