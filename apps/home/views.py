@@ -1298,8 +1298,11 @@ def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
 
     for estudiante in estudiantes:
         notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id']).values(
-            'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia'
+            'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia', 'materia__materia__literal'
         ))
+
+        for nota in notas:
+            nota['materia__materia__literal'] = str(nota['materia__materia__literal']).lower()
 
         estudiante['notas'] = notas
 
@@ -1317,7 +1320,7 @@ def Cargar_Notas(request):
 
     estudiantes = obtener_estudiantes_notas(anio, mencion, seccion, periodo)
 
-    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).order_by('id').all()
+    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre', 'materia__literal').filter(anio=anio, mencion=mencion).order_by('id').all()
 
     col_span = (len(materias) - 3)
 
