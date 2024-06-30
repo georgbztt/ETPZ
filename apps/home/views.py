@@ -97,6 +97,7 @@ def registroTitulos(request):
         'title':'Planilla Registro de Titulos',
         'buscar':True,
         'table':table,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/table.html', context)
@@ -111,6 +112,7 @@ def finales(request):
         'title':'Planilla Finales',
         'buscar':True,
         'table':table,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/planillas/finales.html', context)
@@ -126,6 +128,7 @@ def revision(request):
         'buscar':True,
         'table':table,
         'rows':rows,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/planillas/revision.html', context)
@@ -139,6 +142,7 @@ def materiaPendientes(request):
         'title':'Planilla Materia Pendientes',
         'buscar':True,
         'table':table,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/table.html', context)
@@ -260,7 +264,8 @@ def crearProfesores(request):
         'form':form,
         'segment':'profesores',
         'title':'Crear Profesor',
-        'table':content
+        'table':content,
+        'url_back': '/profesores'
     }
 
     return render(request, 'home/table.html', context)
@@ -287,7 +292,8 @@ def editarProfesores(request, id):
     'form':form,
     'segment':'profesores',
     'title':'Editar profesores',
-    'table':content
+    'table':content,
+    'url_back': '/profesores'
     }
     
     return render(request, 'home/table.html', context)
@@ -837,12 +843,12 @@ def crear_seccion(request):
     form += f"""
     <div class="col-1">
         <div class="form-group">
-            <label for="seccion">Seccion</label>
+            <label for="seccion">Sección</label>
             <input type="text" name="seccion" class="form-control" id="seccion" required>
         </div>
     </div>
     <div class="w-100"></div>
-    <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
+    <p>Seleccione las menciones a las cuales pertenece la sección a crear</p>
     """
 
     for index, anio in enumerate(anios):
@@ -930,12 +936,12 @@ def editar_seccion(request, pk):
         form += f"""
         <div class="col-1">
             <div class="form-group">
-                <label for="seccion">Seccion</label>
+                <label for="seccion">Sección</label>
                 <input type="text" name="seccion" class="form-control" id="seccion" value="{inst_seccion.nombre}" required>
             </div>
         </div>
         <div class="w-100"></div>
-        <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
+        <p>Seleccione las menciones a las cuales pertenece la sección a crear</p>
         """
 
         for index, anio in enumerate(anios):
@@ -1152,7 +1158,8 @@ def materiaCrear(request):
         'form': form,
         'segment':'materia',
         'title':'Crear Materia',
-        'table':content
+        'table':content,
+        'url_back': '/materias'
     }
     
     return render(request, 'home/table.html', context)
@@ -1270,7 +1277,8 @@ def materiaEditar(request, pk):
             'form': form,
             'segment':'materia',
             'title':'Crear Materia',
-            'table':content
+            'table':content,
+            'url_back': '/materias'
         }
 
         return render(request, 'home/table.html', context)
@@ -1436,7 +1444,8 @@ def estudianteCrear(request):
         'form':form,
         'segment':'estudiantes',
         'title':'Crear estudiantes',
-        'table':content
+        'table':content,
+        'url_back': '/estudiantes'
     }
 
     return render(request, 'home/table.html', context)
@@ -1467,7 +1476,8 @@ def estudianteEditar(request, id):
     'form':form,
     'segment':'estudiantes',
     'title':'Editar estudiantes',
-    'table':content
+    'table':content,
+    'url_back': '/estudiantes'
     }
 
     return render(request, 'home/table.html', context)
@@ -1566,7 +1576,7 @@ def actualizar_notas(request, pk):
 
     estudiantes = obtener_estudiantes_notas(anio, mencion, seccion, periodo)
 
-    return JsonResponse({"message": "Los datos se actualizaron correctamente.", "estudiantes": estudiantes}, status=200)
+    return JsonResponse({"message": "Los datos se actualizaron correctamente.", "estudiantes": estudiantes,}, status=200)
 
 
 @login_required(login_url="/login/")
@@ -1590,7 +1600,7 @@ def boletas(request):
         'segment':'boletas',
         'title':'Generar Boletas',
         'table':content,
-        'form':form
+        'form':form,
     }
 
     return render(request, 'home/table.html', context)
