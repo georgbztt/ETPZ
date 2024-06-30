@@ -45,7 +45,7 @@
                   <td>{{ estudiante.estudiante__ci_tipo }}-{{ estudiante.estudiante__ci }}</td>
                   <td>{{ estudiante.estudiante__nombres }} {{ estudiante.estudiante__apellidos }}</td>
                   <td class="font-weight-bold align-middle text-center user-select-none">
-                    <a href="#">
+                    <a href="/boletas/{{ estudiante.estudiante__id }}/ver?periodo={{ periodo }}">
                     <i class="fa fa-eye info-icon" aria-hidden="true"></i>
                     </a>
                   </td>

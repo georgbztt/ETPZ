@@ -1615,7 +1615,7 @@ def boletas_lista_estudiantes(request):
 
     table = 'home/form-content/planillas_form.html'
     context={
-        'segment':'notas',
+        'segment':'boletas',
         'title':'Cargar boletas',
         'buscar':True,
         'table':table,
@@ -1623,7 +1623,67 @@ def boletas_lista_estudiantes(request):
         'anio': anio['nombre'],
         'mencion': mencion['nombre'],
         'seccion': seccion['nombre'],
-        'escolaridad': escolaridad
+        'escolaridad': escolaridad,
+        'periodo': periodo
     }
 
     return render(request, 'home/boletas/lista_boletas.html', context)
+
+@login_required(login_url="/login/")
+def generar_boleta(request, pk):
+
+    periodo = request.GET.get('periodo')
+    periodo_nombre = PeriodosAcademicos.objects.values('nombre').filter(id=periodo).first()
+
+    estudiante = Notas.objects.values(
+        'estudiante__id',
+        'ci_tipo',
+        'ci',
+        'estudiante__nombres',
+        'estudiante__apellidos',
+        'anio__nombre',
+        'mencion__nombre',
+        'seccion__nombre'
+        ).filter(
+            estudiante=pk,
+            periodo=periodo
+        ).first()
+
+    notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id'], periodo=periodo).values(
+        'lapso1', 'lapso2', 'lapso3', 'definitiva', 'materia__materia__nombre', 'materia__materia__literal'
+    ))
+    estudiante['notas'] = notas
+    
+    p_lapso1 = 0
+    p_lapso2 = 0
+    p_lapso3 = 0
+    p_definitiva = 0
+    for nota in notas:
+        p_lapso1 += nota['lapso1']
+        p_lapso2 += nota['lapso2']
+        p_lapso3 += nota['lapso3']
+        p_definitiva += nota['definitiva']
+    p_lapso1 = round(p_lapso1 / len(notas), 2)
+    p_lapso2 = round(p_lapso2 / len(notas), 2)
+    p_lapso3 = round(p_lapso3 / len(notas), 2)
+    p_definitiva = round(p_definitiva / len(notas), 2)
+
+    promedios = {
+        '1': p_lapso1,
+        '2': p_lapso2,
+        '3': p_lapso3,
+        '4': p_definitiva
+    }
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'segment':'boleta',
+        'title':'Generar boletas',
+        'buscar':True,
+        'table':table,
+        'estudiante': estudiante,
+        'periodo': periodo_nombre['nombre'],
+        'promedios': promedios
+    }
+
+    return render(request, 'home/boletas/boleta.html', context)

@@ -61,6 +61,7 @@ urlpatterns = [
 
     path('boletas', views.boletas, name='boletas'),
     path('boletas/lista', views.boletas_lista_estudiantes, name='lista_boletas'),
+    path('boletas/<str:pk>/ver', views.generar_boleta, name='generar_boletas'),
 
     # Matches any html file
     re_path(r'^.*\.*', views.pages, name='pages'),
