@@ -1699,10 +1699,10 @@ def obtener_datos_boleta(pk, periodo):
         pi_lapso2 += 0 if nota['i_lapso2'] == -1 else nota['i_lapso2']
         pi_lapso3 += 0 if nota['i_lapso3'] == -1 else nota['i_lapso3']
         pi_total += nota['total_i']
-    p_lapso1 = str(round(p_lapso1 / d_lapso1, 2)).replace('.', ',')
-    p_lapso2 = str(round(p_lapso2 / d_lapso2, 2)).replace('.', ',')
-    p_lapso3 = str(round(p_lapso3 / d_lapso3, 2)).replace('.', ',')
-    p_definitiva = str(round(p_definitiva / d_definitiva, 2)).replace('.', ',')
+    p_lapso1 = str(round(p_lapso1 / d_lapso1, 2)).replace('.', ',') if d_lapso1 != 0 else ''
+    p_lapso2 = str(round(p_lapso2 / d_lapso2, 2)).replace('.', ',') if d_lapso2 != 0 else ''
+    p_lapso3 = str(round(p_lapso3 / d_lapso3, 2)).replace('.', ',') if d_lapso3 != 0 else ''
+    p_definitiva = str(round(p_definitiva / d_definitiva, 2)).replace('.', ',') if d_definitiva != 0 else ''
 
     promedios = {
         '1': p_lapso1,
