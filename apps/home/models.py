@@ -152,6 +152,10 @@ class Notas(models.Model):
     seccion = models.ForeignKey(Secciones, on_delete=models.CASCADE, null=True)
     ci_tipo = models.CharField(max_length=2, null=True)
     ci = models.PositiveIntegerField(null=True)
+    i_lapso1 = models.IntegerField(default=0)
+    i_lapso2 = models.IntegerField(default=0)
+    i_lapso3 = models.IntegerField(default=0)
+    total_i = models.IntegerField(default=0)
 
     def __str__(self):
         return self.estudiante.nombres

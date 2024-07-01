@@ -59,7 +59,7 @@
 
               <tr>
                 <th contenteditable="true" class="solid-1_text-center p-2" colspan="1">I</th>
-                <th contenteditable="true" class="solid-1_text-center P-2" colspan="9">LAPSO AÑO: {{ anio.nombre }} SECCIÓN: "{{ seccion.nombre }}"</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="11">LAPSO AÑO: {{ anio.nombre }} SECCIÓN: "{{ seccion.nombre }}"</th>
                 <th contenteditable="true" class="solid-1_text-center P-2" colspan="6">ESCOLARIDAD: {{ escolaridad.periodo__nombre }}</th>
                 <th contenteditable="true" class="solid-1_text-center P-2" colspan="{{ col_span }}">PROF. GUÍA:</th>
               </tr>
@@ -67,9 +67,9 @@
               <tr>
                 <td class="solid-1_text-center" colspan="12" rowspan="2">ASIGNATURAS</td>
                 {% for materia in materias %}
-                <td class="solid-1_text-center text-vertical p-2 uppercase" rowspan="2" width="50" height="150px">{{ materia.materia__nombre }}</td>
+                <td class="solid-1_text-center text-vertical p-2 uppercase" rowspan="2" colspan="{% if materia.materia__literal %}2{% endif %}" width="40" height="150px">{{ materia.materia__nombre }}</td>
                 {% endfor %}
-                <td class="solid-1_text-center text-vertical p-2"  rowspan="2" colspan="2" width="50">PROMEDIO</td>
+                <td class="solid-1_text-center text-vertical p-2"  rowspan="2" width="40">PROMEDIO</td>
               </tr>
 
               <tr>
@@ -80,11 +80,12 @@
                 <th class="solid-1_text-center" colspan="1">Nro</th>
                 <th class="solid-1_text-center" colspan="5" width="120">CÉDULA</th>
                 <th class="solid-1_text-center" colspan="5" width="200">NOMBRES Y APELLIDOS</th>
-                <td class="solid-1_text-center" colspan="1" width="50"></td>
+                <td class="solid-1_text-center" colspan="1" width="40"></td>
                 {% for i in materias %}
-                <th class="solid-1_text-center" colspan="1" width="50">{{ forloop.counter }}</th>
+                <th class="solid-1_text-center" colspan="1" width="40">{{ forloop.counter }}</th>
+                {% if i.materia__literal %} <th class="solid-1_text-center" colspan="1" width="40">LT</th> {% endif %}
                 {% endfor %}
-                <td class="solid-1_text-center" colspan="1" width="50"></td>
+                <td class="solid-1_text-center" colspan="1" width="40"></td>
               </tr>
             
             </tbody>
@@ -140,6 +141,21 @@
     });
   }
 
+  function obtenerLiteral(nota) {
+    if (nota > 0 && nota < 10) {
+      return 'E'
+    } else if (nota >= 10 && nota <= 11) {
+      return 'D'
+    } else if (nota >= 12 && nota <= 15) {
+      return 'C'
+    } else if (nota >= 16 && nota <= 18) {
+      return 'B'
+    } else if (nota >= 19 && nota <= 20) {
+      return 'A'
+    }
+    return ''
+  }
+
   function agregarNotasEstudiante(estudiante, lapso) {
     let datos = ''
     let promedio = 0
@@ -167,6 +183,18 @@
         ${ nota }
       </td>
       `
+      isLiteral = i.materia__materia__literal === 'true' ? true : false
+      if (isLiteral) {
+        datos += `
+        <td
+          class="solid-1_text-center input-nota"
+          colspan="1"
+          rowspan="1"
+        >
+          ${obtenerLiteral(nota)}
+        </td>
+        `
+      }
     })
     promedio = diferentesACero !== 0 ? (promedio/diferentesACero).toFixed(2) : ''
     promedio = promedio.toString().replace('.', ',')
@@ -198,6 +226,18 @@
         ${ nota }
       </td>
       `
+      isLiteral = i.materia__materia__literal === 'true' ? true : false
+      if (isLiteral) {
+        datos += `
+        <td
+          class="solid-1_text-center input-nota"
+          colspan="1"
+          rowspan="1"
+        >
+          ${obtenerLiteral(nota)}
+        </td>
+        `
+      }
     })
     promedio = diferentesACero !== 0 ? (promedio/diferentesACero).toFixed(2) : ''
     promedio = promedio.toString().replace('.', ',')
@@ -226,6 +266,18 @@
         ${ nota !== 0 ? nota : '' }
       </td>
       `
+      isLiteral = i.materia__materia__literal === 'true' ? true : false
+      if (isLiteral) {
+        datos += `
+        <td
+          class="solid-1_text-center input-nota"
+          colspan="1"
+          rowspan="1"
+        >
+          
+        </td>
+        `
+      }
     })
     datos += `<td class="solid-1_text-center" colspan="1" rowspan="1"></td>`
     return datos

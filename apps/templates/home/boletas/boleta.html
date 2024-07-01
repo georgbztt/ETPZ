@@ -1,0 +1,279 @@
+{% extends 'layouts/base.html' %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="pagestyle_dark" href="{{ ASSETS_ROOT }}/css/table.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+{% block content %}
+{% load tags %}
+
+<div class="container-fluid py-4">
+
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header pb-0">
+      <div class="d-flex justify-content-between">
+        <h6>{{ title }}</h6>
+        <div>
+          <button class="btn btn-icon btn-3 btn-primary btn-sm" type="button" onclick="imprimirTabla()">
+            <span class="btn-inner--icon"><i class="fas fa-print"></i></span>
+            <span class="btn-inner--text">Imprimir</span>
+          </button>
+        </div>
+        {% if url_crear %}
+        <a href="{{ url_crear }}" title="Agregar {{ segment }}">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="p-0 d-flex justify-content-center pb-5 p-3 flex-column">
+      <div class="text-dark border border-dark position-relative" id="tabla-notas">
+
+        <div class="d-flex justify-content-center p-3">
+          <div class="text-center">
+            <p>República Bolivariana de Venezuela</p>
+            <p>Ministerio del Poder Popular para la Educación</p>
+            <p>Escuela Técnica Industrial Pedro Zaraza</p>
+            <p>San Juan de los Morros - Estado Guárico  </p>
+          </div>
+        </div>
+    
+        <div style="position: absolute; right: 100px; top:10px;">
+          <img src="{{ ASSETS_ROOT }}/img/logo-alt.svg" width="110" height="110" class=""></img>
+        </div>
+        
+        <div class="container text-center pt-0 pb-3 px-1 text-dark">
+          <div class="fw-bold row">
+            <p class="">Boletín Informativo</p>
+          </div>
+          <div class="fw-bold row">
+            <p class="">Escolaridad {{ periodo }}</p>
+          </div>
+
+          </br>
+  
+          <div class="row">
+            <div class="d-flex">
+              <p class="fw-bold">Estudiante:&nbsp;</p> 
+              <p class="fw-normal text-start me-5">
+                {{ estudiante.estudiante__nombres }} {{ estudiante.estudiante__apellidos }}
+              </p>
+              <p class="fw-bold">
+                C.I.:
+              </p>
+              <p class="fw-normal text-start">&nbsp;
+                {{ estudiante.ci_tipo }}-{{ estudiante.ci }}
+              </p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="d-flex">
+              <p class="fw-bold">Cursante del:&nbsp;</p> 
+              <p class="fw-normal text-start me-5">
+                {{ estudiante.anio__nombre }}
+              </p>
+              <p class="fw-bold">Mencion:&nbsp;</p> 
+              <p class="fw-normal text-start me-5">
+                {{ estudiante.mencion__nombre }}
+              </p>
+              <p class="fw-bold">Seccion:&nbsp;</p> 
+              <p class="fw-normal text-start me-5">
+                {{ estudiante.seccion__nombre }}
+              </p>
+            </div>
+          </div>
+        </div>
+    
+          <table class="table table-bordered">
+            <thead>
+              <tr class="text-xs">
+                <td>Asignaturas</td>
+                <td colspan="2" class="text-center">I Lapso</td>
+                <td colspan="2" class="text-center">II Lapso</td>
+                <td colspan="2" class="text-center">III Lapso</td>
+                <td class="text-center" width="50">Definitiva</td>
+                <td class="text-center" width="50">Total Inasist.</td>
+              </tr>
+            </thead>
+            <tbody id='t-body'>
+              <tr class="text-xs">
+                <td></td>
+                <td class="text-center">Calif.</td>
+                <td class="text-center">Inas.</td>
+                <td class="text-center">Calif.</td>
+                <td class="text-center">Inas.</td>
+                <td class="text-center">Calif.</td>
+                <td class="text-center">Inas.</td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+    
+        <div class="d-flex justify-content-center mt-5">
+          <div class="row gap-3">
+            <div class="col-3 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;">Maria Kelly <br> Prof.  Guía </div>
+            <div class="col-5 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;">Omar Mendoza  <br> Dptto. Control de Estudio y Evaluación </div>
+            <div class="col-3 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;">Aimara Ruiz <br> Directora </div>
+          </div>
+        </div>
+    
+        <div class="pt-3 text-xxs text-center">
+          Generado por el sistema: {% now "F j, Y" %}
+        </div>
+    
+      </div>
+    </div>
+  </div>
+</div>
+  
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script>  
+
+  function activarBotonesActualizarNotas() {
+
+    const ins = document.querySelectorAll(".ins")
+    ins.forEach((item) => {
+      item.addEventListener("blur", () => {
+
+        const tiempo = item.getAttribute("data-tiempo")
+        const id = item.getAttribute("data-id")
+        const inasistencia = item.innerText
+
+        actualizarInasistencias({id_materia: id, tiempo: tiempo, inasistencia: inasistencia})
+      })
+    })
+
+    const celdasEditables = document.querySelectorAll('[contenteditable="true"]');
+    celdasEditables.forEach(celda => {
+        celda.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                celda.blur();
+            }
+        });
+    });
+
+  }
+
+  const tBody = document.getElementById('t-body')
+  const originalBody = tBody.innerHTML
+
+  const searchParams = new URLSearchParams(window.location.search);
+
+  const q_periodo = searchParams.get('periodo')
+  const pathname = window.location.pathname;
+  const pathname_split = pathname.split('/');
+  const id_estudiante = pathname_split[2];
+
+  function obtenerLiteral(nota) {
+    if (nota > 0 && nota < 10) {
+      return 'E'
+    } else if (nota >= 10 && nota <= 11) {
+      return 'D'
+    } else if (nota >= 12 && nota <= 15) {
+      return 'C'
+    } else if (nota >= 16 && nota <= 18) {
+      return 'B'
+    } else if (nota >= 19 && nota <= 20) {
+      return 'A'
+    }
+    return ''
+  }
+
+  function mostrarNotas(notas, promedios, inasistencias){
+    datos = ''
+    notas.forEach((nota) => {
+      datos += `
+      <tr id="row-1" class="text-xs">
+        <td class="ps-3" >${ nota.materia__materia__nombre }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.lapso1 != 0) ? nota.lapso1 : '') : obtenerLiteral(nota.lapso1) }</td>
+        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso1">${ (nota.i_lapso1 != 0) ? ((nota.i_lapso1 != -1) ? nota.i_lapso1 : 'IN') : '' }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.lapso2 != 0) ? nota.lapso2 : '') : obtenerLiteral(nota.lapso2) }</td>
+        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso2">${ (nota.i_lapso2 != 0) ? ((nota.i_lapso2 != -1) ? nota.i_lapso2 : 'IN') : '' }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.lapso3 != 0) ? nota.lapso3 : '') : obtenerLiteral(nota.lapso3) }</td>
+        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso3">${ (nota.i_lapso3 != 0) ? ((nota.i_lapso3 != -1) ? nota.i_lapso3 : 'IN') : '' }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.definitiva != 0) ? nota.definitiva : '') : obtenerLiteral(nota.definitiva) }</td>
+        <td class="text-center">${ (nota.total_i != 0) ? ((nota.total_i != -3) ? nota.total_i : 'IN') : '' }</td>
+      </tr>
+      `
+    })
+    datos += `
+    <tr class="fw-bold text-xs">
+      <td class="ps-3">Promedio por lapso:</td>
+      <td class="text-center" id="prom-1">${ promedios['1'] }</td>
+      <td class="text-center" id="pi-1">${ inasistencias['1'] != 0 ? inasistencias['1'] : '' }</td>
+      <td class="text-center" id="prom-2">${ promedios['2'] }</td>
+      <td class="text-center" id="pi-2">${ inasistencias['2'] != 0 ? inasistencias['2'] : '' }</td>
+      <td class="text-center" id="prom-3">${ promedios['3'] }</td>
+      <td class="text-center" id="pi-3">${ inasistencias['3'] != 0 ? inasistencias['3'] : '' }</td>
+      <td class="text-center" id="prom-f">${ promedios['4'] }</td>
+      <td class="text-center" id="ti-f">${ inasistencias['4'] != 0 ? inasistencias['4'] : '' }</td>
+    </tr>
+    <tr>
+      <td class="ps-3" colspan="9">Observacion:</td>
+    </tr>
+    `
+    tBody.innerHTML = originalBody + datos
+  }
+
+  mostrarNotas({{ notas|safe }}, {{ promedios|safe }}, {{ inasistencias|safe }})
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  function actualizarInasistencias({id_materia, tiempo, inasistencia}) {
+
+    fetch(`/inasistencias/actualizar/${id_estudiante}`, {
+      method: 'PUT',
+      headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tiempo: tiempo, id_materia: id_materia, inasistencia: inasistencia, periodo: q_periodo }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        mostrarNotas(data.notas, data.promedios, data.inasistencias);
+        activarBotonesActualizarNotas();
+    })
+    .catch(error => {
+        console.error('Error al enviar la solicitud:', error);
+    });
+
+  }
+
+  activarBotonesActualizarNotas()
+
+  function imprimirTabla() {
+    // Guardar el contenido original del cuerpo
+    var cuerpoOriginal = document.body.innerHTML;
+
+    // Obtener el contenido de la tabla
+    var contenidoTabla = document.getElementById("tabla-notas").outerHTML;
+
+    // Reemplazar el contenido del cuerpo por el contenido de la tabla
+    document.body.innerHTML = contenidoTabla;
+
+    // Imprimir el documento
+    window.print();
+
+    // Revertir los cambios en el cuerpo
+    document.body.innerHTML = cuerpoOriginal;
+  }
+  
+</script>
+{% endblock javascripts %}

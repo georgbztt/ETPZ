@@ -1316,8 +1316,11 @@ def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
 
     for estudiante in estudiantes:
         notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id']).values(
-            'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia'
+            'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia', 'materia__materia__literal'
         ))
+
+        for nota in notas:
+            nota['materia__materia__literal'] = str(nota['materia__materia__literal']).lower()
 
         estudiante['notas'] = notas
 
@@ -1335,7 +1338,7 @@ def Cargar_Notas(request):
 
     estudiantes = obtener_estudiantes_notas(anio, mencion, seccion, periodo)
 
-    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).order_by('id').all()
+    materias = MateriasAniosMenciones.objects.values('id', 'materia__nombre', 'materia__literal').filter(anio=anio, mencion=mencion).order_by('id').all()
 
     col_span = (len(materias) - 3)
 
@@ -1634,7 +1637,7 @@ def boletas_lista_estudiantes(request):
 
     table = 'home/form-content/planillas_form.html'
     context={
-        'segment':'notas',
+        'segment':'boletas',
         'title':'Cargar boletas',
         'buscar':True,
         'table':table,
@@ -1642,7 +1645,139 @@ def boletas_lista_estudiantes(request):
         'anio': anio['nombre'],
         'mencion': mencion['nombre'],
         'seccion': seccion['nombre'],
-        'escolaridad': escolaridad
+        'escolaridad': escolaridad,
+        'periodo': periodo
     }
 
     return render(request, 'home/boletas/lista_boletas.html', context)
+
+def obtener_datos_boleta(pk, periodo):
+
+    estudiante = Notas.objects.values(
+        'estudiante__id',
+        'ci_tipo',
+        'ci',
+        'estudiante__nombres',
+        'estudiante__apellidos',
+        'anio__nombre',
+        'mencion__nombre',
+        'seccion__nombre'
+        ).filter(
+            estudiante=pk,
+            periodo=periodo
+        ).first()
+
+    notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id'], periodo=periodo).values(
+        'lapso1', 'lapso2', 'lapso3', 'definitiva', 'materia__materia__nombre', 'materia__materia__literal', 'id', 'i_lapso1', 'i_lapso2', 'i_lapso3', 'total_i'
+    ))
+
+    for nota in notas:
+        nota['materia__materia__literal'] = str(nota['materia__materia__literal']).lower()
+    
+    p_lapso1 = 0
+    p_lapso2 = 0
+    p_lapso3 = 0
+    p_definitiva = 0
+    pi_lapso1 = 0
+    pi_lapso2 = 0
+    pi_lapso3 = 0
+    pi_total = 0
+    d_lapso1 = 0
+    d_lapso2 = 0
+    d_lapso3 = 0
+    d_definitiva = 0
+    for nota in notas:
+        p_lapso1 += nota['lapso1']
+        p_lapso2 += nota['lapso2']
+        p_lapso3 += nota['lapso3']
+        d_lapso1 += 1 if nota['lapso1'] != 0 else 0
+        d_lapso2 += 1 if nota['lapso2'] != 0 else 0
+        d_lapso3 += 1 if nota['lapso3'] != 0 else 0
+        d_definitiva += 1 if nota['definitiva'] != 0 else 0
+        p_definitiva += nota['definitiva']
+        pi_lapso1 += 0 if nota['i_lapso1'] == -1 else nota['i_lapso1']
+        pi_lapso2 += 0 if nota['i_lapso2'] == -1 else nota['i_lapso2']
+        pi_lapso3 += 0 if nota['i_lapso3'] == -1 else nota['i_lapso3']
+        pi_total += nota['total_i']
+    p_lapso1 = str(round(p_lapso1 / d_lapso1, 2)).replace('.', ',')
+    p_lapso2 = str(round(p_lapso2 / d_lapso2, 2)).replace('.', ',')
+    p_lapso3 = str(round(p_lapso3 / d_lapso3, 2)).replace('.', ',')
+    p_definitiva = str(round(p_definitiva / d_definitiva, 2)).replace('.', ',')
+
+    promedios = {
+        '1': p_lapso1,
+        '2': p_lapso2,
+        '3': p_lapso3,
+        '4': p_definitiva
+    }
+
+    inasistencias = {
+        '1': pi_lapso1,
+        '2': pi_lapso2,
+        '3': pi_lapso3,
+        '4': pi_total,
+    }
+
+    return notas, promedios, inasistencias, estudiante
+
+@login_required(login_url="/login/")
+def generar_boleta(request, pk):
+
+    periodo = request.GET.get('periodo')
+    periodo_nombre = PeriodosAcademicos.objects.values('nombre').filter(id=periodo).first()
+
+    notas, promedios, inasistencias, estudiante = obtener_datos_boleta(pk, periodo)
+
+    table = 'home/form-content/planillas_form.html'
+    context={
+        'segment':'boleta',
+        'title':'Generar boletas',
+        'buscar':True,
+        'table':table,
+        'estudiante': estudiante,
+        'periodo': periodo_nombre['nombre'],
+        'promedios': promedios,
+        'inasistencias': inasistencias,
+        'notas': notas
+    }
+
+    return render(request, 'home/boletas/boleta.html', context)
+
+@login_required(login_url="/login/")
+def actualizar_inasistencias(request, pk):
+    
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+    
+    tiempo = data.get('tiempo')
+    materia = data.get('id_materia')
+    periodo = data.get('periodo')
+    inasistencia = data.get('inasistencia')
+    if str(inasistencia).lower() == 'in':
+        inasistencia = -1
+    elif inasistencia == '':
+        inasistencia = 0
+
+    materia = Notas.objects.get(id=materia)
+
+    setattr(materia, f'i_{tiempo}', inasistencia)
+
+    if inasistencia != -1:
+        i_lapso1 = 0 if materia.i_lapso1 == -1 else materia.i_lapso1
+        i_lapso2 = 0 if materia.i_lapso2 == -1 else materia.i_lapso2
+        i_lapso3 = 0 if materia.i_lapso3 == -1 else materia.i_lapso3
+        if tiempo == 'lapso1':
+            total_ins = int(inasistencia) + i_lapso2 + i_lapso3
+        elif tiempo == 'lapso2':
+            total_ins = int(inasistencia) + i_lapso1 + i_lapso3
+        elif tiempo == 'lapso3':
+            total_ins = int(inasistencia) + i_lapso1 + i_lapso2     
+        setattr(materia, 'total_i', total_ins)
+
+    materia.save()
+
+    notas, promedios, inasistencias, estudiante = obtener_datos_boleta(pk, periodo)
+
+    return JsonResponse({"message": "Los datos se actualizaron correctamente.", "notas": notas, "promedios": promedios, "inasistencias": inasistencias, "estudiante": estudiante}, status=200)
