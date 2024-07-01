@@ -28,40 +28,24 @@
             {% endif %}
           </div>
         </div>
-        <div class="card-body p-0 d-flex justify-content-center pb-5">
-          <table id="tabla-notas" width="900">
+        <div class="card-body p-0 d-flex align-items-center pb-5 flex-column position-relative" id="tabla-notas" width="900">
+          <img class="position-absolute top-0 start-10" src="{{ ASSETS_ROOT }}/img/logo.svg" alt="Logo de la Institución" width="120">
+          <div class="fw-bold d-flex align-items-center flex-column w-100">
+            <p class="fw-bold text-sm">REPÚBLICA BOLIVARIANA DE VENEZUELA</p>
+            <p class="fw-bold text-sm">MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN</p>
+            <p class="fw-bold text-sm">ESCUELA TÉCNICA INDUSTRIAL PEDRO ZARAZA</p>
+            <p class="fw-bold text-sm">SAN JUAN DE LOS MORROS-EDO.GUÁRICO</p>
+            </br>
+            <p class="fw-bold text-sm">LISTADO DE CONSEJO DE CURSO</p>
+          </div>
+          <table>
             <tbody id="cuerpo-tabla">
-              <tr>
-                <th class="text-center" colspan="8"><img src="{{ ASSETS_ROOT }}/img/etpz.png" alt="Logo de la Institución"
-                    width="120">
-                </th>
-
-                <th colspan="10" class="text-center">
-                      REPÚBLICA BOLIVARIANA DE VENEZUELA <br>
-                      MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN <br>
-                      ESCUELA TÉCNICA INDUSTRIAL PEDRO ZARAZA <br>
-                      SAN JUAN DE LOS MORROS-EDO.GUÁRICO
-                </th>
-                <th colspan="4"></th>
-              </tr>
-
-              <tr>
-                  <th colspan="8"></th>
-                  <th colspan="10" class="text-center pt-3">
-                      LISTADO DE CONSEJO DE CURSO
-                  </th>
-                  <th colspan="4"></th>
-              </tr>
-
-              <tr>
-                <th height="10" colspan="22"></th>
-              </tr>
 
               <tr>
                 <th contenteditable="true" class="solid-1_text-center p-2" colspan="1">I</th>
-                <th contenteditable="true" class="solid-1_text-center P-2" colspan="11">LAPSO AÑO: {{ anio.nombre }} SECCIÓN: "{{ seccion.nombre }}"</th>
-                <th contenteditable="true" class="solid-1_text-center P-2" colspan="6">ESCOLARIDAD: {{ escolaridad.periodo__nombre }}</th>
-                <th contenteditable="true" class="solid-1_text-center P-2" colspan="{{ col_span }}">PROF. GUÍA:</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="{% if anio.nombre == '6TO AÑO' %}5{% endif %}{% if anio.nombre != '6TO AÑO' %}11{% endif %}">LAPSO AÑO: {{ anio.nombre }} SECCIÓN: "{{ seccion.nombre }}"</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="{% if anio.nombre == '6TO AÑO' %}2{% endif %}{% if anio.nombre != '6TO AÑO' %}5{% endif %}">ESCOLARIDAD: {{ escolaridad.periodo__nombre }}</th>
+                <th contenteditable="true" class="solid-1_text-center P-2" colspan="6">PROF. GUÍA:</th>
               </tr>
 
               <tr>

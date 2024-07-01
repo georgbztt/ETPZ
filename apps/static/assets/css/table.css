@@ -76,7 +76,22 @@ td {
   background-color: rgba(0, 0, 255, 0.3);
 }
 
+tr {
+  page-break-inside: avoid;
+}
+
 @page {
-  margin: 10px 12px 12px 10px;
+  margin: 30px 15px 15px 20px;
   size: 8.5in 13in;
+  page-break-before: auto;
+}
+
+@media print {
+  html, div {
+    background-color: white !important;
+  }
+
+  td, th, p {
+    color: black;
+  }
 }
