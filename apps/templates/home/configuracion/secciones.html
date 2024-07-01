@@ -24,12 +24,12 @@
         <tbody>
             <tr>
                 <th class="font-weight-bold align-middle ps-4">Nombre de Sección</th>
-                <th class="font-weight-bold align-middle ps-4">Opciones</th>
+                <th class="font-weight-bold align-middle ps-4 text-center">Opciones</th>
             </tr>
             {% for i in data_table %}
                 <tr>
-                    <td>{{ i.nombre }}</td>
-                    <td>
+                    <td class="text-left">{{ i.nombre }}</td>
+                    <td class="text-center">
                         <a href="{% url 'editar_seccion' i.id%}">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>

@@ -10,6 +10,7 @@ from django.db.models import Q, Count, F
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.http import require_POST
 from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, ProfesorForm
@@ -97,6 +98,7 @@ def registroTitulos(request):
         'title':'Planilla Registro de Titulos',
         'buscar':True,
         'table':table,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/table.html', context)
@@ -111,6 +113,7 @@ def finales(request):
         'title':'Planilla Finales',
         'buscar':True,
         'table':table,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/planillas/finales.html', context)
@@ -126,6 +129,7 @@ def revision(request):
         'buscar':True,
         'table':table,
         'rows':rows,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/planillas/revision.html', context)
@@ -139,6 +143,7 @@ def materiaPendientes(request):
         'title':'Planilla Materia Pendientes',
         'buscar':True,
         'table':table,
+        'url_back': '/planillas'
     }
     
     return render(request, 'home/table.html', context)
@@ -229,7 +234,7 @@ def cargaEliminar(request, pk):
 @login_required(login_url="/login/")
 def profesores(request):
     profesores = Profesores.objects.values('id', 'ci_tipo', 'ci', 'nombre', 'apellido', 'materias')
-    profesores = Profesores.objects.all().order_by('ci')
+    profesores = Profesores.objects.all().order_by('-ci')
     content = 'home/profesores/profesores.html'
     context = {
         'segment':'profesores',
@@ -252,7 +257,9 @@ def crearProfesores(request):
         materias = request.POST.get('materias')
         materia = Materias.objects.get(id = materias)
         Profesores.objects.create(ci=ci, ci_tipo=ci_tipo, nombre=nombre, apellido=apellido, materias=materia)
+        messages.success(request, 'Profesor creado correctamente')
         return redirect('profesores')
+        
     form = ProfesorForm()
 
     content = 'home/profesores/crear_profesores.html'
@@ -260,7 +267,8 @@ def crearProfesores(request):
         'form':form,
         'segment':'profesores',
         'title':'Crear Profesor',
-        'table':content
+        'table':content,
+        'url_back': '/profesores'
     }
 
     return render(request, 'home/table.html', context)
@@ -274,6 +282,7 @@ def editarProfesores(request, id):
             profesor = profesor.cleaned_data
             profesor['materias']  = Materias.objects.get(id = profesor['materias'])
             Profesores.objects.filter(id=id).update(**profesor)
+            messages.success(request, 'Los datos del profesor se han actualizado correctamente')
             return redirect('profesores')
         else:
             print(profesor.errors)
@@ -287,7 +296,8 @@ def editarProfesores(request, id):
     'form':form,
     'segment':'profesores',
     'title':'Editar profesores',
-    'table':content
+    'table':content,
+    'url_back': '/profesores'
     }
     
     return render(request, 'home/table.html', context)
@@ -741,6 +751,7 @@ def crearPeriodoAcademico(request):
         if form.is_valid():
 
             PeriodosAcademicos.objects.create(**form.cleaned_data)
+            messages.success(request, 'Periodo académico creado correctamente')
 
     form = PeriodosForm()
 
@@ -812,11 +823,12 @@ def crear_seccion(request):
         seccion = request.POST.get('seccion')
 
         inst_seccion = Secciones.objects.create(nombre=seccion)
+        messages.success(request, 'La sección se ha creado correctamente')
 
         datos = request.POST.copy()
         datos.pop('seccion')
         datos.pop('csrfmiddlewaretoken')
-
+        
         for id_anio in datos:
 
             list_menciones = datos.getlist(str(id_anio))
@@ -828,7 +840,7 @@ def crear_seccion(request):
                 inst_mencion = Menciones.objects.get(id=id_mencion)
 
                 AniosMencionSec.objects.create(anio=inst_anio, mencion=inst_mencion, seccion=inst_seccion)
-
+            return redirect('secciones')
     anios = list(Anios.objects.values('id', 'nombre'))
     menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
 
@@ -837,12 +849,12 @@ def crear_seccion(request):
     form += f"""
     <div class="col-1">
         <div class="form-group">
-            <label for="seccion">Seccion</label>
+            <label for="seccion">Sección</label>
             <input type="text" name="seccion" class="form-control" id="seccion" required>
         </div>
     </div>
     <div class="w-100"></div>
-    <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
+    <p>Seleccione las menciones a las cuales pertenece la sección a crear</p>
     """
 
     for index, anio in enumerate(anios):
@@ -889,7 +901,7 @@ def editar_seccion(request, pk):
             setattr(inst_seccion, 'nombre', seccion)
 
             inst_seccion.save()
-
+            messages.success(request, 'La sección se ha actualizado correctamente')
             datos = request.POST.copy()
             datos.pop('seccion')
             datos.pop('csrfmiddlewaretoken')
@@ -919,7 +931,7 @@ def editar_seccion(request, pk):
                     if not str(i['mencion']) in datos[str(i['anio'])]:
 
                         AniosMencionSec.objects.get(id=i['id']).delete()
-
+                    return redirect('secciones')
         anios = list(Anios.objects.values('id', 'nombre'))
         menciones = list(Menciones.objects.values('id', 'nombre', 'nombre_abrev'))
 
@@ -930,12 +942,12 @@ def editar_seccion(request, pk):
         form += f"""
         <div class="col-1">
             <div class="form-group">
-                <label for="seccion">Seccion</label>
+                <label for="seccion">Sección</label>
                 <input type="text" name="seccion" class="form-control" id="seccion" value="{inst_seccion.nombre}" required>
             </div>
         </div>
         <div class="w-100"></div>
-        <p>Seleccione las menciones a las cuales pertenece la seccion a crear</p>
+        <p>Seleccione las menciones a las cuales pertenece la sección a crear</p>
         """
 
         for index, anio in enumerate(anios):
@@ -980,6 +992,7 @@ def crearAnios(request):
         if form.is_valid():
             
             Anios.objects.create(**form.cleaned_data)
+            messages.success(request, 'Año creado correctamente')
 
     form = AniosForm()
 
@@ -1033,6 +1046,7 @@ def crearMenciones(request):
             
             try:
                 Menciones.objects.create(**form.cleaned_data)
+                messages.success(request, 'La mención se ha creado correctamente')
             except IntegrityError as e:
                 if 'unique constraint' in str(e.args):
                     return HttpResponse("Esta mención ya existe. Inténtalo de nuevo.", status=400)
@@ -1078,6 +1092,7 @@ def materiaCrear(request):
         literal = request.POST.get('literal')
 
         inst_materia = Materias.objects.create(nombre=materia, nombre_abrev=abrev, literal=literal)
+        messages.success(request, 'La materia se ha creado correctamente')
 
         datos = request.POST.copy()
         datos.pop('materia')
@@ -1152,7 +1167,8 @@ def materiaCrear(request):
         'form': form,
         'segment':'materia',
         'title':'Crear Materia',
-        'table':content
+        'table':content,
+        'url_back': '/materias'
     }
     
     return render(request, 'home/table.html', context)
@@ -1176,6 +1192,7 @@ def materiaEditar(request, pk):
             setattr(materia, "literal", literal)
 
             materia.save()
+            messages.success(request, 'La materia se ha actualizado correctamente')
 
             datos = request.POST.copy()
             datos.pop('materia')
@@ -1208,7 +1225,7 @@ def materiaEditar(request, pk):
                     if not str(i['mencion']) in datos[str(i['anio'])]:
 
                         MateriasAniosMenciones.objects.get(id=i['id']).delete()
-
+                        
                 else:
 
                     MateriasAniosMenciones.objects.get(id=i['id']).delete()
@@ -1270,7 +1287,8 @@ def materiaEditar(request, pk):
             'form': form,
             'segment':'materia',
             'title':'Crear Materia',
-            'table':content
+            'table':content,
+            'url_back': '/materias'
         }
 
         return render(request, 'home/table.html', context)
@@ -1372,7 +1390,7 @@ def notas(request):
 def estudiantes(request):
     busqueda = request.POST.get('buscar')
     data_table = Estudiantes.objects.values('id', 'ci_tipo', 'ci', 'nombres', 'apellidos', 'sexo', 'anio', 'mencion', 'seccion',  'lugar_de_nacimiento', 'estado')
-    data_table = Estudiantes.objects.all().order_by('ci')
+    data_table = Estudiantes.objects.all().order_by('-ci')
     if busqueda:
         data_table = Estudiantes.objects.filter(
             Q(ci_tipo__icontains = busqueda) |
@@ -1399,7 +1417,7 @@ def estudiantes(request):
 def estudianteCrear(request):
 
     if request.method == 'POST':
-
+        
         ci = request.POST.get('ci')
         ci_tipo = request.POST.get('ci_tipo')
         nombres = request.POST.get('nombres')
@@ -1417,7 +1435,8 @@ def estudianteCrear(request):
         estado = request.POST.get('estado')
 
         estudiante = Estudiantes.objects.create(ci=ci, ci_tipo=ci_tipo, nombres=nombres, apellidos=apellidos, sexo=sexo, fecha_de_nacimiento=fecha_de_nacimiento, anio=anio, mencion=mencion, seccion=seccion, entidad_federal=entidad_federal, lugar_de_nacimiento=lugar_de_nacimiento, estado=estado)
-
+        messages.success(request, 'El estudiante se ha creado correctamente')
+        
         if estado == "1" or estado == "2":
             materias = MateriasAniosMenciones.objects.filter(anio=anio, mencion=mencion).all()
 
@@ -1436,7 +1455,8 @@ def estudianteCrear(request):
         'form':form,
         'segment':'estudiantes',
         'title':'Crear estudiantes',
-        'table':content
+        'table':content,
+        'url_back': '/estudiantes'
     }
 
     return render(request, 'home/table.html', context)
@@ -1453,6 +1473,7 @@ def estudianteEditar(request, id):
             estudiante['mencion']  = Menciones.objects.get(id = estudiante['mencion_id'])
             estudiante['seccion']  = Secciones.objects.get(id = estudiante['seccion_id'])
             Estudiantes.objects.filter(id=id).update(**estudiante)
+            messages.success(request, 'Los datos del estudiante se han actualizado correctamente')
             return redirect('estudiantes')
         else:
             print(estudiante.errors)
@@ -1467,7 +1488,8 @@ def estudianteEditar(request, id):
     'form':form,
     'segment':'estudiantes',
     'title':'Editar estudiantes',
-    'table':content
+    'table':content,
+    'url_back': '/estudiantes'
     }
 
     return render(request, 'home/table.html', context)
