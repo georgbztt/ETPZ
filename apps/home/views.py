@@ -1660,19 +1660,27 @@ def obtener_datos_boleta(pk, periodo):
     pi_lapso2 = 0
     pi_lapso3 = 0
     pi_total = 0
+    d_lapso1 = 0
+    d_lapso2 = 0
+    d_lapso3 = 0
+    d_definitiva = 0
     for nota in notas:
         p_lapso1 += nota['lapso1']
         p_lapso2 += nota['lapso2']
         p_lapso3 += nota['lapso3']
+        d_lapso1 += 1 if nota['lapso1'] != 0 else 0
+        d_lapso2 += 1 if nota['lapso2'] != 0 else 0
+        d_lapso3 += 1 if nota['lapso3'] != 0 else 0
+        d_definitiva += 1 if nota['definitiva'] != 0 else 0
         p_definitiva += nota['definitiva']
-        pi_lapso1 += nota['i_lapso1']
-        pi_lapso2 += nota['i_lapso2']
-        pi_lapso3 += nota['i_lapso3']
+        pi_lapso1 += 0 if nota['i_lapso1'] == -1 else nota['i_lapso1']
+        pi_lapso2 += 0 if nota['i_lapso2'] == -1 else nota['i_lapso2']
+        pi_lapso3 += 0 if nota['i_lapso3'] == -1 else nota['i_lapso3']
         pi_total += nota['total_i']
-    p_lapso1 = str(round(p_lapso1 / len(notas), 2)).replace('.', ',')
-    p_lapso2 = str(round(p_lapso2 / len(notas), 2)).replace('.', ',')
-    p_lapso3 = str(round(p_lapso3 / len(notas), 2)).replace('.', ',')
-    p_definitiva = str(round(p_definitiva / len(notas), 2)).replace('.', ',')
+    p_lapso1 = str(round(p_lapso1 / d_lapso1, 2)).replace('.', ',')
+    p_lapso2 = str(round(p_lapso2 / d_lapso2, 2)).replace('.', ',')
+    p_lapso3 = str(round(p_lapso3 / d_lapso3, 2)).replace('.', ',')
+    p_definitiva = str(round(p_definitiva / d_definitiva, 2)).replace('.', ',')
 
     promedios = {
         '1': p_lapso1,
@@ -1725,20 +1733,26 @@ def actualizar_inasistencias(request, pk):
     materia = data.get('id_materia')
     periodo = data.get('periodo')
     inasistencia = data.get('inasistencia')
-    inasistencia = 0 if inasistencia == '' else inasistencia
+    if str(inasistencia).lower() == 'in':
+        inasistencia = -1
+    elif inasistencia == '':
+        inasistencia = 0
 
     materia = Notas.objects.get(id=materia)
 
     setattr(materia, f'i_{tiempo}', inasistencia)
 
-    if tiempo == 'lapso1':
-        total_ins = int(inasistencia) + materia.i_lapso2 + materia.i_lapso3
-    elif tiempo == 'lapso2':
-        total_ins = int(inasistencia) + materia.i_lapso1 + materia.i_lapso3
-    elif tiempo == 'lapso3':
-        total_ins = int(inasistencia) + materia.i_lapso1 + materia.i_lapso2
-
-    setattr(materia, 'total_i', total_ins)
+    if inasistencia != -1:
+        i_lapso1 = 0 if materia.i_lapso1 == -1 else materia.i_lapso1
+        i_lapso2 = 0 if materia.i_lapso2 == -1 else materia.i_lapso2
+        i_lapso3 = 0 if materia.i_lapso3 == -1 else materia.i_lapso3
+        if tiempo == 'lapso1':
+            total_ins = int(inasistencia) + i_lapso2 + i_lapso3
+        elif tiempo == 'lapso2':
+            total_ins = int(inasistencia) + i_lapso1 + i_lapso3
+        elif tiempo == 'lapso3':
+            total_ins = int(inasistencia) + i_lapso1 + i_lapso2     
+        setattr(materia, 'total_i', total_ins)
 
     materia.save()
 

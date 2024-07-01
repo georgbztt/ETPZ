@@ -162,7 +162,7 @@
             }
         });
     });
-    
+
   }
 
   const tBody = document.getElementById('t-body')
@@ -175,20 +175,35 @@
   const pathname_split = pathname.split('/');
   const id_estudiante = pathname_split[2];
 
+  function obtenerLiteral(nota) {
+    if (nota > 0 && nota < 10) {
+      return 'E'
+    } else if (nota >= 10 && nota <= 11) {
+      return 'D'
+    } else if (nota >= 12 && nota <= 15) {
+      return 'C'
+    } else if (nota >= 16 && nota <= 18) {
+      return 'B'
+    } else if (nota >= 19 && nota <= 20) {
+      return 'A'
+    }
+    return ''
+  }
+
   function mostrarNotas(notas, promedios, inasistencias){
     datos = ''
     notas.forEach((nota) => {
       datos += `
       <tr id="row-1" class="text-xs">
         <td class="ps-3" >${ nota.materia__materia__nombre }</td>
-        <td class="text-center" >${ nota.lapso1 }</td>
-        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso1">${ nota.i_lapso1 != 0 ? nota.i_lapso1 : '' }</td>
-        <td class="text-center" >${ nota.lapso2 }</td>
-        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso2">${ nota.i_lapso2 != 0 ? nota.i_lapso2 : '' }</td>
-        <td class="text-center" >${ nota.lapso3 }</td>
-        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso3">${ nota.i_lapso3 != 0 ? nota.i_lapso3 : '' }</td>
-        <td class="text-center" >${ nota.definitiva }</td>
-        <td class="text-center">${ nota.total_i != 0 ? nota.total_i : '' }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.lapso1 != 0) ? nota.lapso1 : '') : obtenerLiteral(nota.lapso1) }</td>
+        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso1">${ (nota.i_lapso1 != 0) ? ((nota.i_lapso1 != -1) ? nota.i_lapso1 : 'IN') : '' }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.lapso2 != 0) ? nota.lapso2 : '') : obtenerLiteral(nota.lapso2) }</td>
+        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso2">${ (nota.i_lapso2 != 0) ? ((nota.i_lapso2 != -1) ? nota.i_lapso2 : 'IN') : '' }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.lapso3 != 0) ? nota.lapso3 : '') : obtenerLiteral(nota.lapso3) }</td>
+        <td class="text-center ins" contenteditable="true" data-id="${ nota.id }" data-tiempo="lapso3">${ (nota.i_lapso3 != 0) ? ((nota.i_lapso3 != -1) ? nota.i_lapso3 : 'IN') : '' }</td>
+        <td class="text-center" >${ nota.materia__materia__literal == 'false' ? ((nota.definitiva != 0) ? nota.definitiva : '') : obtenerLiteral(nota.definitiva) }</td>
+        <td class="text-center">${ (nota.total_i != 0) ? ((nota.total_i != -3) ? nota.total_i : 'IN') : '' }</td>
       </tr>
       `
     })
@@ -196,13 +211,13 @@
     <tr class="fw-bold text-xs">
       <td class="ps-3">Promedio por lapso:</td>
       <td class="text-center" id="prom-1">${ promedios['1'] }</td>
-      <td class="text-center" id="pi-1">${ inasistencias['1'] }</td>
+      <td class="text-center" id="pi-1">${ inasistencias['1'] != 0 ? inasistencias['1'] : '' }</td>
       <td class="text-center" id="prom-2">${ promedios['2'] }</td>
-      <td class="text-center" id="pi-2">${ inasistencias['2'] }</td>
+      <td class="text-center" id="pi-2">${ inasistencias['2'] != 0 ? inasistencias['2'] : '' }</td>
       <td class="text-center" id="prom-3">${ promedios['3'] }</td>
-      <td class="text-center" id="pi-3">${ inasistencias['3'] }</td>
+      <td class="text-center" id="pi-3">${ inasistencias['3'] != 0 ? inasistencias['3'] : '' }</td>
       <td class="text-center" id="prom-f">${ promedios['4'] }</td>
-      <td class="text-center" id="ti-f">${ inasistencias['4'] }</td>
+      <td class="text-center" id="ti-f">${ inasistencias['4'] != 0 ? inasistencias['4'] : '' }</td>
     </tr>
     <tr>
       <td class="ps-3" colspan="9">Observacion:</td>
