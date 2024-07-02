@@ -30,6 +30,8 @@ urlpatterns = [
     path('estudiantes/<int:id>/editar', views.estudianteEditar, name='estudiantes_editar'),
     path('estudiantes/<str:pk>/inasistencias', views.estudianteInasistencias, name='estudiante_inasistencias'),
     path('estudiantes/<str:pk>/<str:dir>/<str:periodo_sel>', views.estudianteVer, name='estudiante_ver'),
+    path('estudiantes/<str:pk>/agregar-materia', views.agregar_materia_pendiente, name='agregar_materias_pendientes'),
+    path('estudiantes/<str:pk>/eliminar-materia', views.eliminar_materia_pendiente, name='eliminar_materia_pendiente'),
 
     path('notas', views.notas, name='notas'),
     path('notas/cargar', views.Cargar_Notas, name='cargar_notas'),

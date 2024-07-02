@@ -45,13 +45,13 @@
                 <th class="font-weight-bold p-2">Mención</th>
                 <th class="font-weight-bold p-2">Sección</th>
                 <th class="font-weight-bold p-2">Lugar de nacimiento</th>
-                <th class="font-weight-bold p-2">Editar</th>
+                <th class="font-weight-bold p-2 text-center">Opciones</th>
             </tr>
             {% for i in data_table %}
                 <tr>
                     <td class="text-left p-2">{{ i.ci_tipo }}-{{ i.ci }}</td>
                     <td class="text-left p-2">{{ i.nombres}}&thinsp;{{i.apellidos }}</td>
-                    <td class="text-left p-2">{% if i.estado == 1 %} Normal {% endif %} {% if i.estado == 2 %} Materias Pendientes {% endif %} {% if i.estado == 3 %} Repitiente {% endif %}</td>
+                    <td class="text-left p-2">{% if i.estado == 1 %} Regular {% endif %} {% if i.estado == 2 %} Materias Pendientes {% endif %} {% if i.estado == 3 %} Repitiente {% endif %}</td>
                     <td class="text-center p-2">{{ i.sexo }}</td>
                     <td class="text-left p-2">{{ i.anio }}</td>
                     <td class="text-left p-2">{{ i.mencion }}</td>
@@ -61,6 +61,8 @@
                         <a class=" m-1 p-1" href="{% url 'estudiantes_editar' i.id|safe%}">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>
+                        {% if i.estado == 2 %}<a class="btn btn-primary" href="{% url 'agregar_materias_pendientes' i.id %}" role="button">Agregar Materia Pendiente</a>{% endif %}
+                        {% if i.estado == 3 %}<a class="btn btn-primary" href="{% url 'crear_periodo' %}" role="button">Agregar Materia Repitiente</a>{% endif %}
                     </td>
                 </tr>
             {% endfor %}

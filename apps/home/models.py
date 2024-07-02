@@ -36,6 +36,7 @@ class DatosPlantel(models.Model):
 class Anios(models.Model):
     id = models.AutoField(primary_key=True)  # Llave primaria autoincremental
     nombre = models.CharField(max_length=255, null=False)  # Cadena de texto no nula
+    posicion = models.PositiveIntegerField(null=True)
 
     def __str__(self):
         return self.nombre  # Representación en cadena del objeto
@@ -156,6 +157,7 @@ class Notas(models.Model):
     i_lapso2 = models.IntegerField(default=0)
     i_lapso3 = models.IntegerField(default=0)
     total_i = models.IntegerField(default=0)
+    tipo = models.CharField(max_length=1, default='n')
 
     def __str__(self):
         return self.estudiante.nombres

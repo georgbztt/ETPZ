@@ -17,7 +17,7 @@ from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, Profesor
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 from .models import *
 from .forms import *
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas, Boletas
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas, Boletas, MateriasForm
 import json
 from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas, Profesores
 
@@ -1781,3 +1781,39 @@ def actualizar_inasistencias(request, pk):
     notas, promedios, inasistencias, estudiante = obtener_datos_boleta(pk, periodo)
 
     return JsonResponse({"message": "Los datos se actualizaron correctamente.", "notas": notas, "promedios": promedios, "inasistencias": inasistencias, "estudiante": estudiante}, status=200)
+
+@login_required(login_url="/login/")
+def agregar_materia_pendiente(request, pk):
+
+    periodo_id = DatosPlantel.objects.values('periodo').all().first()
+    periodo = PeriodosAcademicos.objects.get(id=periodo_id['periodo'])
+    estudiante = Estudiantes.objects.get(id=pk)
+    anio = Anios.objects.get(posicion=(estudiante.anio.posicion-1))
+
+    if request.POST:
+        materia = request.POST.get('materia')
+        materia = MateriasAniosMenciones.objects.get(id=materia)
+
+        Notas.objects.create(materia=materia, estudiante=estudiante, periodo=periodo, anio=anio, mencion=estudiante.mencion, seccion=estudiante.seccion, ci_tipo=estudiante.ci_tipo, ci=estudiante.ci, tipo='p')
+
+    form_materias = MateriasForm(anio=anio.id,mencion=estudiante.mencion)
+
+    data_table = Notas.objects.values('id', 'materia__materia__nombre').filter(estudiante=pk, periodo=periodo_id['periodo'], tipo='p')
+
+    content = 'home/materias/formu_agregar_pendientes.html'
+    context = {
+        'segment':'estudiantes',
+        'title':'Materias Pendientes',
+        'table':content,
+        'form':form_materias,
+        'data_table':data_table
+    }
+
+    return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def eliminar_materia_pendiente(request, pk):
+    materia = Notas.objects.get(id=pk)
+    materia.delete()
+
+    return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)

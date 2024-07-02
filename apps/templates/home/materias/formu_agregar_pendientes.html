@@ -1,0 +1,82 @@
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+  <form method="post" class="w-40">
+    {% csrf_token %}
+
+    <div class="row">
+
+      {{ form|safe }}
+
+      <div class="w-100"></div>
+
+      <div class="col pt-3">
+          <button class="btn btn-primary" type="submit">Guardar</button>
+      </div>
+    </div>
+
+  </form>
+
+  <h6>Materias Pendientes</h6>
+
+  <table class="table table-striped">
+    <tbody>
+      <tr>
+        <th class="font-weight-bold">Materia</th>
+        <th class="font-weight-bold">Opciones</th>
+      </tr>
+      {% for i in data_table %}
+        <tr>
+          <td class="guardar nombre">{{ i.materia__materia__nombre }}</td>
+          <td>
+            <a class="btn-eliminar" href="#" data-id="{{ i.id }}">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+<script>
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  function eliminarMateriaPendiente(id) {
+    fetch(`/estudiantes/${id}/eliminar-materia`, {
+      method: 'POST',
+      headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+    })
+    .catch(error => {
+        console.error('Error al enviar la solicitud:', error);
+    });
+  }
+  document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-id")
+      const message = "Seguro que desea eliminar esta materia pendiente del estudiante?"
+      if (confirm(message) === true) {
+        eliminarMateriaPendiente(id)
+        location.reload()
+      }
+    })
+  })
+</script>

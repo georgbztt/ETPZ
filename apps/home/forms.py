@@ -3,7 +3,7 @@ Copyright (c) 2023 - present, Daniel Escalona
 """
 from django import forms
 from django.core.validators import *
-from .models import PeriodosAcademicos, Anios, Secciones, Menciones, Materias
+from .models import PeriodosAcademicos, Anios, Secciones, Menciones, MateriasAniosMenciones
 
 class PlantelForm(forms.Form):
 
@@ -94,8 +94,14 @@ class Boletas(forms.Form):
         self.fields['seccion'].choices = [('', '')] + [(seccion.id, seccion.nombre) for seccion in Secciones.objects.all()]
         self.fields['periodo'].choices = [(periodo.id, periodo.nombre) for periodo in PeriodosAcademicos.objects.order_by('-id').all()]
 
-        
+class MateriasForm(forms.Form):
+    materia = forms.ChoiceField(label="Seleccione la materia", required=True, widget=forms.Select(attrs={'class': 'form-control p-2'}))
 
+    def __init__(self, *args, **kwargs):
+        mencion = kwargs.pop('mencion', None)
+        anio = kwargs.pop('anio', None)
+        super(MateriasForm, self).__init__(*args, **kwargs)
+        self.fields['materia'].choices = [('', '')] + [(materia.id, materia.materia.nombre) for materia in MateriasAniosMenciones.objects.filter(anio=anio, mencion=mencion).all()]
         
 
 
