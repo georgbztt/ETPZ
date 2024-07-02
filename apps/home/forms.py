@@ -30,11 +30,6 @@ class ProfesorForm(forms.Form):
     apellido = forms.CharField(label="Apellido", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
     ci_tipo = forms.ChoiceField(choices=[("V", "V"), ("E", "E")], required=True, widget=forms.Select(attrs={'class': 'form-control bg-light border-0 br-start'}))
     ci = forms.IntegerField(label="Cédula", required=True, widget=forms.NumberInput(attrs={'class': 'form-control padding-left-10px'}))
-    materias = forms.ChoiceField(label="Materias", required=True, widget=forms.Select(attrs={'class': 'form-control', 'id':'materias'}))
-    
-    def __init__(self, *args, **kwargs):
-        super(ProfesorForm, self).__init__(*args, **kwargs)
-        self.fields['materias'].choices = [('', '')] + [(materias.id, materias.nombre) for materias in Materias.objects.all()]
 
 class SeccionesForm(forms.Form):
     nombre = forms.CharField(label="Sección", max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -103,5 +98,14 @@ class MateriasForm(forms.Form):
         super(MateriasForm, self).__init__(*args, **kwargs)
         self.fields['materia'].choices = [('', '')] + [(materia.id, materia.materia.nombre) for materia in MateriasAniosMenciones.objects.filter(anio=anio, mencion=mencion).all()]
         
-
+class MateriaProfesorForm(forms.Form):
+    anio = forms.ChoiceField(label="Año", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2 w-10', 'onChange': 'obtenerMaterias()', 'id': 'anio'}))
+    mencion = forms.ChoiceField(label="Mención", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2 w-5', 'onChange': 'obtenerMaterias()', 'id': 'mencion'}))
+    seccion = forms.ChoiceField(label="Sección", required=True, widget=forms.Select(attrs={'class': 'form-control text-center p-2 w-5'}))
+    
+    def __init__(self, *args, **kwargs):
+        super(MateriaProfesorForm, self).__init__(*args, **kwargs)
+        self.fields['anio'].choices = [('', '')] + [(anio.id, anio.nombre) for anio in Anios.objects.all()]
+        self.fields['mencion'].choices = [('', '')] + [(mencion.id, mencion.nombre_abrev) for mencion in Menciones.objects.all()]
+        self.fields['seccion'].choices = [('', '')] + [(seccion.id, seccion.nombre) for seccion in Secciones.objects.all()]
 

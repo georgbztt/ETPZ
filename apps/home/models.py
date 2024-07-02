@@ -129,8 +129,6 @@ class Profesores(models.Model):
     ci = models.PositiveIntegerField(null=False)  # Número no nulo
     nombre = models.CharField(max_length=255)  # Cadena de texto no nula
     apellido = models.CharField(max_length=255)  # Cadena de texto no nula
-    #materias = models.CharField(max_length=255)
-    materias = models.ForeignKey(Materias, on_delete=models.CASCADE)
     
     def __str__(self):
         return f'{ self.nombre }'
@@ -161,3 +159,11 @@ class Notas(models.Model):
 
     def __str__(self):
         return self.estudiante.nombres
+    
+class MateriasProfesores(models.Model):
+    seccion = models.ForeignKey(Secciones, on_delete=models.CASCADE, null=True)
+    materia = models.ForeignKey(MateriasAniosMenciones, on_delete=models.CASCADE, null=True)
+    profesor = models.ForeignKey(Profesores, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.materia.materia.nombre

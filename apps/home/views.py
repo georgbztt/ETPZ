@@ -17,9 +17,9 @@ from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, Profesor
 from .models import DatosPlantel, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec
 from .models import *
 from .forms import *
-from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas, Boletas, MateriasForm
+from .forms import PlantelForm, PeriodosForm, AniosForm, MencionesForm, EstudiantesForm, CargarNotas, Boletas, MateriasForm, MateriaProfesorForm
 import json
-from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas, Profesores
+from .models import Anios, DatosPlantel, Materias, PeriodosAcademicos, Menciones, Secciones, AniosMencionSec, MateriasAniosMenciones, Estudiantes, Notas, Profesores, MateriasProfesores
 
 from .utils import getInputsMenciones
 
@@ -233,7 +233,7 @@ def cargaEliminar(request, pk):
 ### Seccion de profesores ###
 @login_required(login_url="/login/")
 def profesores(request):
-    profesores = Profesores.objects.values('id', 'ci_tipo', 'ci', 'nombre', 'apellido', 'materias')
+    profesores = Profesores.objects.values('id', 'ci_tipo', 'ci', 'nombre', 'apellido')
     profesores = Profesores.objects.all().order_by('-ci')
     content = 'home/profesores/profesores.html'
     context = {
@@ -254,9 +254,7 @@ def crearProfesores(request):
         ci_tipo = request.POST.get('ci_tipo')
         nombre = request.POST.get('nombre')
         apellido = request.POST.get('apellido')
-        materias = request.POST.get('materias')
-        materia = Materias.objects.get(id = materias)
-        Profesores.objects.create(ci=ci, ci_tipo=ci_tipo, nombre=nombre, apellido=apellido, materias=materia)
+        Profesores.objects.create(ci=ci, ci_tipo=ci_tipo, nombre=nombre, apellido=apellido)
         messages.success(request, 'Profesor creado correctamente')
         return redirect('profesores')
         
@@ -301,6 +299,41 @@ def editarProfesores(request, id):
     }
     
     return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def agergar_materia_profesor(request, pk):
+
+    if request.POST:
+        seccion = request.POST.get('seccion')
+        seccion = Secciones.objects.get(id=seccion)
+        materia = request.POST.get('materia')
+        materia = MateriasAniosMenciones.objects.get(id=materia)
+        profesor = Profesores.objects.get(id=pk)
+
+        MateriasProfesores.objects.create(seccion=seccion, materia=materia, profesor=profesor)
+
+    form = MateriaProfesorForm()
+
+    materias = MateriasProfesores.objects.values('id', 'seccion__nombre', 'materia__materia__nombre', 'materia__anio__nombre', 'materia__mencion__nombre').filter(profesor=pk)
+
+    content = 'home/profesores/agregar_materia.html'
+    context = {
+        'segment':'profesores',
+        'title':'Materias',
+        'table':content,
+        'form':form,
+        'materias': materias
+    }
+
+    return render(request, 'home/table.html', context)
+
+@login_required(login_url="/login/")
+def eliminar_materia_profesor(request, pk):
+
+    materia = MateriasProfesores.objects.get(id=pk)
+    materia.delete()
+
+    return JsonResponse({"message": "Los datos se actualizaron correctamente."}, status=200)
 
 ### Seccion de Estudiantes ###
 
@@ -1296,6 +1329,21 @@ def materiaEditar(request, pk):
         print("El objeto con el ID dado no existe en la base de datos.")
         return render(request, 'home/page-404.html')
     
+@login_required(login_url="/login/")
+def obtener_materias(request):
+    
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "JSON inválido"}, status=400)
+
+    anio = data.get('anio')
+    mencion = data.get('mencion')
+
+    materias = list(MateriasAniosMenciones.objects.values('id', 'materia__nombre').filter(anio=anio, mencion=mencion).all())
+
+    return JsonResponse({"message": "Datos obtenidos correctamente.", 'materias': materias}, status=200) 
+
 
 def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
 
@@ -1315,7 +1363,7 @@ def obtener_estudiantes_notas(anio, mencion, seccion, periodo):
     resultado = []
 
     for estudiante in estudiantes:
-        notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id']).values(
+        notas = list(Notas.objects.filter(estudiante_id=estudiante['estudiante__id'], tipo='n').values(
             'lapso1', 'lapso2', 'lapso3', 'definitiva', 'revision', 'materia', 'materia__materia__literal'
         ))
 

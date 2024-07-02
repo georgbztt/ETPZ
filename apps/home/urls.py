@@ -15,11 +15,14 @@ urlpatterns = [
     path('profesores', views.profesores, name='profesores'),
     path('profesores/crear', views.crearProfesores, name='crear_profesores'),
     path('profesores/<int:id>/editar', views.editarProfesores, name='editar_profesores'),
+    path('profesores/<int:pk>/agregar_materia', views.agergar_materia_profesor, name='agregar_materia_profesor'),
+    path('profesores/<str:pk>/eliminar-materia', views.eliminar_materia_profesor, name='eliminar_materia_profesor'),
     
     path('materias', views.materias, name='materia'),
     path('materias/crear', views.materiaCrear, name='materia_crear'),
     path('materias/<str:pk>/editar', views.materiaEditar, name='materia_editar'),
     path('materias/<str:pk>/eliminar', views.materiaEliminar, name='materia_eliminar'),
+    path('materias/obtener', views.obtener_materias, name='obtener_materias'),
 
     path('cargas/crear', views.cargaCrear, name='carga_crear'),
     path('cargas/<str:pk>/editar', views.cargaEditar, name='carga_editar'),

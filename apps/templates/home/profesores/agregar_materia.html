@@ -1,0 +1,123 @@
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link id="custom_style" href="{{ ASSETS_ROOT }}/css/custom.css" rel="stylesheet" />
+{% endblock stylesheets %}
+
+<div class="container-fluid">
+
+    <form method="post">
+      {% csrf_token %}
+  
+      <div class="container">
+        <div class="row">
+  
+          {{ form|safe }}
+
+          <select name="materia" class="form-select mt-3" aria-label="Seleccionar Materia" id='materia'>
+            
+          </select>
+  
+          <div class="w-100"></div>
+  
+          <div class="col pt-3">
+            <button class="btn btn-primary" type="submit">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <h6 class="text-xs font-weight-bolder opacity-7 mt-5">Materias Registrados</h6>
+    
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <th class="font-weight-bold p-2">Materia</th>
+          <th class="font-weight-bold p-2">Año</th>
+          <th class="font-weight-bold p-2">Mencion</th>
+          <th class="font-weight-bold p-2">Seccion</th>
+          <th class="font-weight-bold p-2 text-center">Opciones</th>
+        </tr>
+        {% for materia in materias %}
+          <tr>
+            <td class="text-left p-2">{{ materia.materia__materia__nombre }}</td>
+            <td class="text-left p-2">{{ materia.materia__anio__nombre }}</td>
+            <td class="text-left p-2">{{ materia.materia__mencion__nombre }}</td>
+            <td class="text-left p-2">{{ materia.seccion__nombre }}</td>
+            <td class="text-center p-2">
+              <a class="btn-eliminar" href="#" data-id="{{ materia.id }}">
+                <i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i>
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+<script>
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+  
+  function obtenerMaterias() {
+    const anio = document.getElementById("anio");
+    const mencion = document.getElementById("mencion");
+
+    if (anio.value && mencion.value) {
+      fetch(`/materias/obtener`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ anio: anio.value, mencion: mencion.value }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log('Respuesta del servidor:', data);
+          materias = '<option value="" selected>Seleccionar Materia</option>'
+          data.materias.forEach((materia) => {
+            materias += `
+            <option value="${materia.id}">${ materia.materia__nombre }</option>
+            `
+          })
+          document.getElementById('materia').innerHTML = materias
+      })
+      .catch(error => {
+          console.error('Error al enviar la solicitud:', error);
+      });
+    }
+  }
+
+  function eliminarMateriaProfesor(id) {
+    fetch(`/profesores/${id}/eliminar-materia`, {
+      method: 'POST',
+      headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+    })
+    .catch(error => {
+        console.error('Error al enviar la solicitud:', error);
+    });
+  }
+  document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-id")
+      const message = "Seguro que desea eliminar esta materia pendiente del estudiante?"
+      if (confirm(message) === true) {
+        eliminarMateriaProfesor(id)
+        location.reload()
+      }
+    })
+  })
+
+
+</script>

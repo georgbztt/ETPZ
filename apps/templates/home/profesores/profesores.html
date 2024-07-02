@@ -19,17 +19,18 @@
             <tr>
                 <th class="font-weight-bold p-2">Cédula</th>
                 <th class="font-weight-bold p-2">Nombres y Apellidos</th>
-                <th class="font-weight-bold p-2">Materias</th>
                 <th class="font-weight-bold p-2">Opciones</th>
             </tr>
             {% for profesor in profesores %}
                 <tr>
                     <td class="text-left p-2">{{ profesor.ci_tipo }}-{{ profesor.ci}}</td>
                     <td class="text-left p-2">{{ profesor.nombre }}&thinsp;{{ profesor.apellido }}</td>
-                    <td class="text-left p-2">{{ profesor.materias}}</td>
                     <td class="text-left p-2">
                         <a class=" m-1 p-1" href="{% url 'editar_profesores' profesor.id|safe%}">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                        <a class=" m-1 p-1" href="{% url 'agregar_materia_profesor' profesor.id|safe%}">
+                            <i class="fa fa-book" aria-hidden="true" title="Agregar Materia"></i>
                         </a>
                     </td>
                 </tr>
