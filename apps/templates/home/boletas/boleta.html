@@ -116,8 +116,8 @@
     
         <div class="d-flex justify-content-center mt-5">
           <div class="row gap-3">
-            <div class="col-3 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;">Maria Kelly <br> Prof.  Guía </div>
-            <div class="col-5 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;">Omar Mendoza  <br> Dptto. Control de Estudio y Evaluación </div>
+            <div class="col-3 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;" contenteditable="true"><br> Prof.  Guía </div>
+            <div class="col-5 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;"  contenteditable="true"><br> Dptto. Control de Estudio y Evaluación </div>
             <div class="col-3 text-center" style="border-top:solid 1px rgb(85, 83, 83); margin-left: 2px;">Aimara Ruiz <br> Directora </div>
           </div>
         </div>
@@ -219,8 +219,8 @@
       <td class="text-center" id="prom-f">${ promedios['4'] }</td>
       <td class="text-center" id="ti-f">${ inasistencias['4'] != 0 ? inasistencias['4'] : '' }</td>
     </tr>
-    <tr>
-      <td class="ps-3" colspan="9">Observacion:</td>
+    <tr class="text-xs">
+      <td class="ps-3" colspan="9" contenteditable="true">Observación:</td>
     </tr>
     `
     tBody.innerHTML = originalBody + datos
