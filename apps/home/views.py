@@ -303,6 +303,8 @@ def editarProfesores(request, id):
 @login_required(login_url="/login/")
 def agergar_materia_profesor(request, pk):
 
+    mensaje_error = None
+
     if request.POST:
         seccion = request.POST.get('seccion')
         seccion = Secciones.objects.get(id=seccion)
@@ -310,7 +312,15 @@ def agergar_materia_profesor(request, pk):
         materia = MateriasAniosMenciones.objects.get(id=materia)
         profesor = Profesores.objects.get(id=pk)
 
-        MateriasProfesores.objects.create(seccion=seccion, materia=materia, profesor=profesor)
+        materia_profesor = MateriasProfesores.objects.filter(seccion=seccion, materia=materia).all().first()
+
+        if materia_profesor:
+
+            mensaje_error = f"No puede realizar esta accion porque el profesor o profesora {materia_profesor.profesor.nombre} ya imparte esta materia."
+
+        else: 
+
+            MateriasProfesores.objects.create(seccion=seccion, materia=materia, profesor=profesor)
 
     form = MateriaProfesorForm()
 
@@ -322,7 +332,8 @@ def agergar_materia_profesor(request, pk):
         'title':'Materias',
         'table':content,
         'form':form,
-        'materias': materias
+        'materias': materias,
+        'mensaje_error': mensaje_error
     }
 
     return render(request, 'home/table.html', context)

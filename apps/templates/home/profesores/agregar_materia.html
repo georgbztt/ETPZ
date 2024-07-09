@@ -5,6 +5,13 @@
 
 <div class="container-fluid">
 
+    {% if mensaje_error %}
+      <div class="bg-danger text-white p-3 d-flex rounded my-2" id="toast-error">
+        <p class="mb-0">{{ mensaje_error }}</p>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" id="quit-toast"></button>
+      </div>
+    {% endif %}
+
     <form method="post">
       {% csrf_token %}
   

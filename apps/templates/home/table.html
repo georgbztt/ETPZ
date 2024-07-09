@@ -57,6 +57,13 @@
         }
     });
   })
+
+  const toastErrorQuitButton = document.getElementById("quit-toast");
+  toastErrorQuitButton.addEventListener("click", () => {
+    const toastError = document.getElementById("toast-error");
+    toastError.setAttribute("style", "display: none !important;")
+    console.log(toastError.style)
+  })
   
 </script>
 {% endblock javascripts %}
