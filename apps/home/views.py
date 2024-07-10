@@ -91,17 +91,19 @@ def planillas(request):
 @login_required(login_url="/login/")
 def registroTitulos(request):
 
-    table = 'home/form-content/planillas_form.html'
+    table = 'home/planillas/registro-titulos.html'
+    rows = range(25)
     context={
         'planillas':planillas,
         'segment':'planilla',
-        'title':'Planilla Registro de Titulos',
+        'title':'Registro Titulos',
         'buscar':True,
         'table':table,
+        'rows':rows,
         'url_back': '/planillas'
     }
-    
-    return render(request, 'home/table.html', context)
+
+    return render(request, 'home/planillas/registro-titulos.html', context)
 
 @login_required(login_url="/login/")
 def finales(request):
@@ -137,16 +139,18 @@ def revision(request):
 def materiaPendientes(request):
 
     table = 'home/form-content/planillas_form.html'
+    rows = range(13)
     context={
         'planillas':planillas,
         'segment':'planilla',
         'title':'Planilla Materia Pendientes',
         'buscar':True,
         'table':table,
+        'rows':rows,
         'url_back': '/planillas'
     }
-    
-    return render(request, 'home/table.html', context)
+
+    return render(request, 'home/planillas/materia-pendiente.html', context)
 
 
 ### Seccion de Carga de Notas ###
